@@ -1,0 +1,166 @@
+@CHARSET "UTF-8";
+
+#toolbox-tri {
+	postion:fixed;
+	top:0px;
+	left:0px;
+	width: 0px;
+	height: 0px;
+	border-style: solid;
+	border-width: 70px 70px 0 0;
+	border-color: #007bff transparent transparent transparent;
+	
+}
+#toolbox-toggle {
+	cursor: pointer;
+}
+table th {
+	font-weight:bold;
+	padding:5px;
+}
+
+table td {
+	padding:5px;
+}
+
+.left-wrapper{
+	position: fixed;
+	top:0px;
+	right:0px;
+}
+ 
+.left-wrapper1 > div {
+	background-color:rgba(255,255,255,0.8);
+	/* opacity: 0.5; */
+	border:2px dashed #CCC;
+	margin:10px;
+	
+	/* height:200px; */
+	width:300px;	
+	margin:10px;
+	padding:20px;
+	
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px; /* future proofing */
+	-khtml-border-radius: 10px; /* for old Konqueror browsers */
+}
+
+img#minimap{
+	position:fixed; bottom:20px; left:20px; width:357.9px; border:1px solid #666;}
+	
+div#img-wrapper {
+	position: absolute; 
+}	
+.cube-open {
+	display: table; 
+	background-color:rgba(22,114,209,1);
+	position:absolute;
+  	text-align: center; 
+	color:white;
+	cursor: pointer;
+	border:1px solid white;
+}
+
+.cube-open p , .cube-close p {
+	display: table-cell; 
+	vertical-align: middle; 
+	text-align: center; 
+}
+
+.cube-close{
+	display: table; 
+	background-color:red;
+	position:absolute;
+	text-align: center;
+	color:white;
+	cursor: pointer;
+	border:1px solid white;
+}
+
+.shadow {
+  -moz-box-shadow:    2px 2px 2px 2px #666;
+  -webkit-box-shadow: 2px 2px 2px 2px #666;
+  box-shadow:         2px 2px 2px 2px #666;
+}
+#accordion-resizer {
+	/* padding: 10px;
+	width: 350px;
+	height: 220px; */
+	display:none;	
+}
+
+#accordion {
+	font-size:0.8em !important;
+}
+
+#accordion div {
+	max-height:500px;
+}
+.delCube {
+	-moz-box-shadow:inset 0px 1px 0px 0px #f29c93;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #f29c93;
+	box-shadow:inset 0px 1px 0px 0px #f29c93;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #fe1a00), color-stop(1, #ce0100) );
+	background:-moz-linear-gradient( center top, #fe1a00 5%, #ce0100 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fe1a00', endColorstr='#ce0100');
+	background-color:#fe1a00;
+	-webkit-border-top-left-radius:18px;
+	-moz-border-radius-topleft:18px;
+	border-top-left-radius:18px;
+	-webkit-border-top-right-radius:18px;
+	-moz-border-radius-topright:18px;
+	border-top-right-radius:18px;
+	-webkit-border-bottom-right-radius:18px;
+	-moz-border-radius-bottomright:18px;
+	border-bottom-right-radius:18px;
+	-webkit-border-bottom-left-radius:18px;
+	-moz-border-radius-bottomleft:18px;
+	border-bottom-left-radius:18px;
+	text-indent:0;
+	border:1px solid #d83526;
+	display:inline-block;
+	color:#ffffff !important; 
+	font-family:Arial;
+	font-size:20px;
+	font-weight:bold;
+	font-style:normal;
+	height:26px;
+	line-height:26px;
+	width:85px;
+	text-decoration:none;
+	text-align:center;
+	text-shadow:1px 1px 0px #b23e35;
+}
+.delCube:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ce0100), color-stop(1, #fe1a00) );
+	background:-moz-linear-gradient( center top, #ce0100 5%, #fe1a00 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ce0100', endColorstr='#fe1a00');
+	background-color:#ce0100;
+}.delCube:active {
+	position:relative;
+	top:1px;
+}/* This button was generated using CSSButtonGenerator.com */
+
+div#commands {
+	background-color:white;
+	font-size: 0.8em;
+	text-align: center;
+	width:500px;
+	padding:10px;
+	margin:10px;
+	border:1px solid grey;
+}
+.hidden {
+	display:none;
+}
+.cube-selected {
+	background-color: green !important;
+}
+#accordion-user {
+	width:40%; 
+	position:fixed;
+	margin:0 auto;
+	right:0px;
+	display:none;
+}

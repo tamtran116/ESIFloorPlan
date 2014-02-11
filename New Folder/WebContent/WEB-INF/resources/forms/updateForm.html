@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+<title>Update Form</title>
+</head>
+<body>
+
+<form:form id="update-form" name="form" method="post" action="addCube" commandName="cube" target="_self" onsubmit="return validateForm(this)">
+	<h1>Update Cube</h1>
+	<h2>Cube ID</h2><form:input path="cube_id" id="cube_id"/>
+	<p>Occupy status:</p>
+	<form:radiobutton path="occupied" value="true"/>Yes
+          <form:radiobutton path="occupied" value="false"/>No
+          <form:hidden path="x1" id="cube_x1" readonly="true"/>
+          <form:hidden path="y1" id="cube_y1" readonly="true"/>
+          <form:hidden path="x2" id="cube_x2" readonly="true"/>
+          <form:hidden path="y2" id="cube_y2" readonly="true"/>
+          <form:hidden path="cx" id="cube_cx" readonly="true"/>
+          <form:hidden path="cy" id="cube_cy" readonly="true"/>
+          <form:hidden path="width" id="cube_width" readonly="true"/>
+          <form:hidden path="height" id="cube_height" readonly="true"/>
+          <p>Employee Name:</p><form:input path="employee_name"/>
+          <p>Team Leader:</p><form:input path="team_leader"/>
+          <p>Phone number:</p><form:input path="phone"/>
+          <p>Software Request:</p><form:textarea path="software" rows="5" cols="30" />
+          <p>New Hire Check-list :</p><hr>
+          <p>New Workspace/On-Shore</p><form:radiobutton path="onshore" value="true"/>Yes
+          <form:radiobutton path="onshore" value="false"/>No
+          <p>Off-Shore Request</p><form:radiobutton path="offshore" value="true"/>Yes
+          <form:radiobutton path="offshore" value="false"/>No
+          <p>Security Badge/Building Access</p><form:radiobutton path="badge" value="true"/>Yes
+          <form:radiobutton path="badge" value="false"/>No
+          <p>Laptop</p><form:radiobutton path="laptop" value="true"/>Yes
+          <form:radiobutton path="laptop" value="false"/>No
+          <p>Parking Registration (if applicable - site specific)</p><form:radiobutton path="parking" value="true"/>Yes
+          <form:radiobutton path="parking" value="false"/>No
+          <p>VPN Token</p><form:radiobutton path="vpn" value="true"/>Yes
+          <form:radiobutton path="vpn" value="false"/>No
+          <br><hr>
+          <input type="reset"> <input type="submit" value="Submit"><!-- <button id="ajax">Submit By Ajax</button> -->
+</form:form>
+
+</body>
+</html>

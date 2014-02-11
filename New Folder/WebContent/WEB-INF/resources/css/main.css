@@ -1,0 +1,37 @@
+@CHARSET "UTF-8";
+.outerTableDiv {
+	/*width: 800px;
+	   margin:0 auto;*/
+}
+table tr td {
+    padding: 5px;
+    border: 1px solid #eee;
+    width: 100px;
+    word-wrap: break-word;
+}
+.floorImg {
+	width: 800px;
+	height: 400px;
+	overflow: hidden;
+    position:relative;
+}
+#floorImg {
+    position:relative;
+    /*left:10px;*/
+}
+#minimap {
+    border:1px #000 solid;
+    width:399px; 
+    height:180px; 
+    overflow:hidden;
+    background: url('../images/floorplan2_20.png');
+}
+#minimap-rect {
+    position:absolute; 
+    width:160px;
+    height:80px; 
+    border:2px dashed blue; 
+    left:0px; 
+    top:0px;
+    cursor: move;
+}
