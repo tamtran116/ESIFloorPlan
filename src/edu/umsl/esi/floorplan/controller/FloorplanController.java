@@ -1,8 +1,12 @@
 package edu.umsl.esi.floorplan.controller;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.File;
 
 import javax.validation.Valid;
 
@@ -18,6 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 
 import edu.umsl.esi.floorplan.domain.Cube;
 import edu.umsl.esi.floorplan.domain.Request;
@@ -51,6 +61,31 @@ public class FloorplanController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView homePage(Map<String, Object> map) {
 		System.out.println("Going to home page");
+		String text = "98376373783"; // this is the text that we want to encode
+
+		int width = 400;
+		int height = 300; // change the height and width as per your requirement
+
+		// (ImageIO.getWriterFormatNames() returns a list of supported formats)
+		String imageFormat = "png"; // could be "gif", "tiff", "jpeg" 
+
+		BitMatrix bitMatrix = null;
+		try {
+			bitMatrix = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, width, height);
+		} catch (WriterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			MatrixToImageWriter.writeToStream(bitMatrix, imageFormat, new FileOutputStream(new File("/Users/tamtran/Documents/workspace-sts-3.4.0.RELEASE/ESIFloorPlan/WebContent/WEB-INF/qrcode_97802017507991.png")));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		return new ModelAndView("home");
     }
 	
