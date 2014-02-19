@@ -10,6 +10,7 @@
 	    <property name="password" value="12345" />
 	    <property name="initialSize" value="2" />
 	    <property name="maxActive" value="5" />
+		<property name="maxWait" value="60000" />
 	</bean>
 	 
 	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
