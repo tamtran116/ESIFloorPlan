@@ -13,7 +13,7 @@
 	padding-top:100px;
 }
 .blur{
-	width:400px;
+	width:500px;
 	margin:10px auto;
     opacity: 0.5;
     border:1px solid #CCC;
@@ -28,13 +28,22 @@ border-radius: 10px; /* future proofing */
 -khtml-border-radius: 10px; /* for old Konqueror browsers */
 }
 </style>
+<script>
+//Script to prevent accidentally hit back after login
+  function preventBack(){window.history.forward();}
+  setTimeout("preventBack()", 0);
+  window.onunload=function(){null};
+</script>
 </head>
     <body style="margin:0px;padding:0px;">
     <div class="wrapper">
 	    <div class="blur round-corner">
 	        <img src="resources/images/es.png"/>
 	        <br>
-	        <form name="f" action="<c:url value='j_spring_security_check'/>" method="POST">
+		<img src="resources/images/floorplan_icon.png"/>
+		<br>
+		<br>
+	        <form name="f" action="<c:url value='j_spring_security_check'/>" method="POST" onSubmit="window.location.replace('home.jsp');">
 	            <table style="margin: 0px auto;">
 	                <tr>
 	                    <td>Username:</td>

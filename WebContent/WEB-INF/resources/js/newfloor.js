@@ -14,14 +14,14 @@ $(window).bind("load", function() {
     } else {
     	$('.left-wrapper').fadeIn("slow");
     };
-	if (mouseHide) {
-		$('#map').mousedown(function(){
-			$('.left-wrapper').hide();
-	    });
-		$('#map').mouseup(function(){
-			$('.left-wrapper').fadeIn();
-	    });
-	};
+//	if (mouseHide) {
+//		$('#map').mousedown(function(){
+//			$('.left-wrapper').hide();
+//	    });
+//		$('#map').mouseup(function(){
+//			$('.left-wrapper').fadeIn();
+//	    });
+//	};
 	
 	//welcome user
     if ($('h1#user_role').text().toLowerCase().indexOf('admin') != -1) {
@@ -85,7 +85,8 @@ $(window).bind("load", function() {
     .load(function() {
     	image_w = Number(this.width);
         image_h = Number(this.height);
-        $('#img-wrapper').css("width",Number(this.width)+600);
+	// add more width for the image
+        //$('#img-wrapper').css("width",Number(this.width)+600);
         $('#minimap').attr("src","resources/images/floor03.jpg");
     });
 	

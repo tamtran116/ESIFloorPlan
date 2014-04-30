@@ -17,7 +17,11 @@
 <script src="resources/js/jquery.dataTables.min.js" type="text/javascript" language="javascript" ></script>
 <script src="resources/js/jquery.imgareaselect.pack.js" type="text/javascript" ></script>
 <script src="resources/js/jquery-ui.js" type="text/javascript"></script>
-
+<script>
+  function preventBack(){window.history.forward();}
+  setTimeout("preventBack()", 0);
+  window.onunload=function(){null};
+</script>
 </head>
 <body ondragstart="return false;" ondrop="return false;">
 	<div id="img-wrapper"><img id="map" src="resources/images/floor03.jpg" />
@@ -32,8 +36,8 @@
 			</c:forEach>
 		</c:if>
 	</div>
-	<div id="toolbox-tri" style="position:fixed;"></div>
-	<img id="toolbox-toggle" src="resources/images/cog-icon-small.png" style="position:fixed;top:0px;left:0px;"/>
+	<!--<div id="toolbox-tri" style="position:fixed;"></div>
+	<img id="toolbox-toggle" src="resources/images/cog-icon-small.png" style="position:fixed;top:0px;left:0px;"/>-->
 	<div id="accordion-resizer" class="left-wrapper">
 		<div id="accordion">
 			<h3>Intro</h3>
