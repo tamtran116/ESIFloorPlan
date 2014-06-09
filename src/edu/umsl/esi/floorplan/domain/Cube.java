@@ -9,8 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 @Entity
 @Table(name="CUBE")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Cube implements Serializable{
 	
     private static final String DEFAULT_NAME = "OPEN";  
@@ -87,6 +91,7 @@ public class Cube implements Serializable{
 	@Column(name="VPN")
 	private Boolean vpn = DEFAULT_VPN;
 	
+	@JsonProperty
 	public String getPhone() {
 		return phone;
 	}
@@ -95,6 +100,7 @@ public class Cube implements Serializable{
 		this.phone = phone;
 	}
 
+	@JsonProperty
 	public String getSoftware() {
 		return software;
 	}
@@ -103,6 +109,7 @@ public class Cube implements Serializable{
 		this.software = software;
 	}
 
+	@JsonProperty
 	public Boolean getOnshore() {
 		return onshore;
 	}
@@ -111,6 +118,7 @@ public class Cube implements Serializable{
 		this.onshore = onshore;
 	}
 
+	@JsonProperty
 	public Boolean getOffshore() {
 		return offshore;
 	}
@@ -119,14 +127,17 @@ public class Cube implements Serializable{
 		this.offshore = offshore;
 	}
 
+	@JsonProperty
 	public Boolean getBadge() {
 		return badge;
 	}
 
+	
 	public void setBadge(Boolean badge) {
 		this.badge = badge;
 	}
 
+	@JsonProperty
 	public Boolean getParking() {
 		return parking;
 	}
@@ -135,6 +146,7 @@ public class Cube implements Serializable{
 		this.parking = parking;
 	}
 
+	@JsonProperty
 	public Boolean getLaptop() {
 		return laptop;
 	}
@@ -143,6 +155,7 @@ public class Cube implements Serializable{
 		this.laptop = laptop;
 	}
 
+	@JsonProperty
 	public Boolean getVpn() {
 		return vpn;
 	}
@@ -151,6 +164,7 @@ public class Cube implements Serializable{
 		this.vpn = vpn;
 	}
 
+	@JsonProperty
 	public double getCurrent_distance() {
 		return current_distance;
 	}
@@ -177,6 +191,7 @@ public class Cube implements Serializable{
 
 	
 
+	@JsonProperty
 	public String getEmployee_name() {
 		return employee_name;
 	}
@@ -185,6 +200,7 @@ public class Cube implements Serializable{
 		this.employee_name = employee_name;
 	}
 
+	@JsonProperty
 	public Boolean getOccupied() {
 		return occupied;
 	}
@@ -193,6 +209,7 @@ public class Cube implements Serializable{
 		this.occupied = occupied;
 	}
 
+	@JsonProperty
 	public String getTeam_leader() {
 		return team_leader;
 	}

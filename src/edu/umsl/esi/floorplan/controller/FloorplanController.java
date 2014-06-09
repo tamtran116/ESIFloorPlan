@@ -10,6 +10,8 @@ import java.io.File;
 
 import javax.validation.Valid;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.zxing.BarcodeFormat;
@@ -76,15 +79,15 @@ public class FloorplanController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		try {
-			MatrixToImageWriter.writeToStream(bitMatrix, imageFormat, new FileOutputStream(new File("/Users/tamtran/Documents/workspace-sts-3.4.0.RELEASE/ESIFloorPlan/WebContent/WEB-INF/qrcode_97802017507991.png")));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			MatrixToImageWriter.writeToStream(bitMatrix, imageFormat, new FileOutputStream(new File("/Users/tamtran/Documents/workspace-sts-3.4.0.RELEASE/ESIFloorPlan/WebContent/WEB-INF/qrcode_97802017507991.png")));
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 		return new ModelAndView("home");
     }
@@ -173,6 +176,13 @@ public class FloorplanController {
     public String getCube(@PathVariable("cube_id") String cube_id) {
     	currentCube = cubeService.getCubeInfo(cube_id);
     	return "redirect:/list";
+    }
+    
+    @RequestMapping("/json/{cube_id}")
+    @ResponseBody
+    public Cube getCubeJson(@PathVariable("cube_id") String cube_id) {
+    	currentCube = cubeService.getCubeInfo(cube_id);
+    	return currentCube;
     }
     
     //using request param
