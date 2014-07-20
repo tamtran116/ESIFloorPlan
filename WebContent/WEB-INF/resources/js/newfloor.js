@@ -211,7 +211,7 @@ $(window).bind("load", function() {
     $("select#closestOpen").change(function () {
     	var no = $( "select#closestOpen option:selected" ).text();
     	var ct = $('span#current-team').text();
-    	$("#img-wrapper").load(ct+"/"+no+" #img-wrapper",function(){
+    	$("#container").load(ct+"/"+no+" #img-wrapper",function(){
     		$('#table-open-cubes').load(ct+"/"+no+" #table-open-cubes");
     		alert("load complete");
     	});

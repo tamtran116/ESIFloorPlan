@@ -24,17 +24,19 @@
 </script>
 </head>
 <body ondragstart="return false;" ondrop="return false;">
-	<div id="img-wrapper"><img id="map" src="resources/images/floor03.jpg" />
-		<c:if  test="${!empty cubeList}">
-			<c:forEach items="${cubeList}" var="cube">
-				<c:if test="${cube.occupied != 'true'}">
-					<div draggable="true" id="${cube.cube_id}" class="cube-open clickable swappable" style="left:${cube.x1}px; top:${cube.y1}px; width:${cube.width}px; height:${cube.height}px;"><p>${cube.employee_name}<br><span class="cube_id">${cube.cube_id}</span></p><a name="${cube.cube_id}" class="hidden">${cube.cube_id}</a></div>
-				</c:if>
-				<c:if test="${cube.occupied != 'false'}">
-					<div draggable="true" id="${cube.cube_id}" class="cube-close clickable swappable" style="left:${cube.x1}px; top:${cube.y1}px; width:${cube.width}px; height:${cube.height}px;"><p>${cube.employee_name}<br><span class="cube_id">${cube.cube_id}</span><br><span class="team" style="color:#00CCFF;">${cube.team_leader}</span></p></div>
-				</c:if>
-			</c:forEach>
-		</c:if>
+	<div id="container">
+		<div id="img-wrapper"><img id="map" src="resources/images/floor03.jpg" />
+			<c:if  test="${!empty cubeList}">
+				<c:forEach items="${cubeList}" var="cube">
+					<c:if test="${cube.occupied != 'true'}">
+						<div draggable="true" id="${cube.cube_id}" class="cube-open clickable swappable" style="left:${cube.x1}px; top:${cube.y1}px; width:${cube.width}px; height:${cube.height}px;"><p>${cube.employee_name}<br><span class="cube_id">${cube.cube_id}</span></p><a name="${cube.cube_id}" class="hidden">${cube.cube_id}</a></div>
+					</c:if>
+					<c:if test="${cube.occupied != 'false'}">
+						<div draggable="true" id="${cube.cube_id}" class="cube-close clickable swappable" style="left:${cube.x1}px; top:${cube.y1}px; width:${cube.width}px; height:${cube.height}px;"><p>${cube.employee_name}<br><span class="cube_id">${cube.cube_id}</span><br><span class="team" style="color:#00CCFF;">${cube.team_leader}</span></p></div>
+					</c:if>
+				</c:forEach>
+			</c:if>
+		</div>
 	</div>
 	<!--<div id="toolbox-tri" style="position:fixed;"></div>
 	<img id="toolbox-toggle" src="resources/images/cog-icon-small.png" style="position:fixed;top:0px;left:0px;"/>-->
