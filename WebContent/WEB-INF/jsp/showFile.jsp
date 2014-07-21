@@ -10,9 +10,8 @@
   <h3>
    File name : "<strong>${message}</strong>" uploaded successfully !
   </h3>
-  <a href="resources/uploaded/${message}">File</a>
-  <img src="<spring:url value='upload_resources/IMG_0048.JPG'/>"/>
-  <spring:url value='upload_resources/IMG_0037.JPG'/>
+  <a href="resources/uploaded_floor/${message}">File</a>
+  <img src="<spring:url value='resources/uploaded_floor/${message}'/>"/>
 
  </center>
 </body>

@@ -27,7 +27,6 @@
     
     
     <mvc:resources mapping="resources/**" location="/WEB-INF/resources/" />
-    <mvc:resources mapping="file_custom/*" location="/WEB-INF/file_custom/" />
     
     <mvc:default-servlet-handler/>
     

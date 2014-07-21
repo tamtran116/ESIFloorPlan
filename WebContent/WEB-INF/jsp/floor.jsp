@@ -227,16 +227,6 @@
 					 <h1>Warning ! All the color will be lost when you hit refresh button.<br/> 
 					 This "color assign team" will help you to differentiate teams temporaliry </h1>
 				</div>
-				<h3>File Upload:</h3>
-				<div>
-				Select a file to upload: <br />
-					<form action="UploadServlet" method="post" action="multipart/form-data">
-					<input type="file" name="file" size="50" />
-					<br />
-					<input type="submit" value="Upload File" />
-					</form>
-					<a href="uploadStatus.jsp">Upload Status</a>
-				</div>
 		</div><!-- End accordion -->
 		<div id="commands"><br/>
 		<p>To save time clicking and dragging, please hit on the click on any of the cube open or closed cube and hit the "pre-location" button and you will have the size of the cube. 
@@ -246,7 +236,7 @@
 		<button type="button" id="pre-locaton">Pre-location</button><br/><br/>
 		Optimization Option will be available when you click on the team name inside the cube database
 		<hr>
-		
+		<a class="j-ui-button" href="uploadfloor" target="_self">Upload Floor</a>
 			<div id="optimize" style="font-size:1em !important;">
 			Number of Closest Open Cube for <span id="current-team">${cubeList[0].team_leader}</span> Team
 			

@@ -2,11 +2,7 @@ package edu.umsl.esi.floorplan.domain;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -90,6 +86,10 @@ public class Cube implements Serializable{
 	
 	@Column(name="VPN")
 	private Boolean vpn = DEFAULT_VPN;
+	
+	@ManyToOne
+	@JoinColumn(name="floor_id")
+	private FloorEntity floor;
 	
 	@JsonProperty
 	public String getPhone() {
