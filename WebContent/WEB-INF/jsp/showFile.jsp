@@ -12,6 +12,7 @@
   </h3>
   <a href="resources/uploaded_floor/${message}">File</a>
   <img src="<spring:url value='resources/uploaded_floor/${message}'/>"/>
+  <a href="uploadfloor">Go back</a>
 
  </center>
 </body>

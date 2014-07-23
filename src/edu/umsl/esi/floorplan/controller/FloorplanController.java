@@ -33,8 +33,11 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import edu.umsl.esi.floorplan.domain.Cube;
+import edu.umsl.esi.floorplan.domain.FileUpload;
+import edu.umsl.esi.floorplan.domain.FloorEntity;
 import edu.umsl.esi.floorplan.domain.Request;
 import edu.umsl.esi.floorplan.services.CubeService;
+import edu.umsl.esi.floorplan.services.FloorService;
 import edu.umsl.esi.floorplan.services.RequestService;
 
 @Controller
@@ -44,12 +47,17 @@ public class FloorplanController {
     private CubeService cubeService;
 	
 	@Autowired
+	private FloorService floorService;
+	
+	@Autowired
 	private RequestService requesService;
 	
 	private Set<String> roles;
 	private String ERROR = "you don't have enough power to do this, please practice more";
+	private String floorUrl;
 	private Cube currentCube;
 	private Cube updateCube;
+	
 	
 	 @RequestMapping(value = "/incorrectPage")
      public ModelAndView incorrectPage() {
@@ -92,6 +100,14 @@ public class FloorplanController {
 		return new ModelAndView("home");
     }
 	
+    @RequestMapping(value="/floor" , method=RequestMethod.GET)
+    public String getUploadForm( @RequestParam int floorId, Map<String, Object> map ) {
+   	 this.floorUrl = floorService.getFloorInfo(floorId).getFilePath();
+   	 System.out.println("floorUrl " + floorUrl);
+   	 return "redirect:/list";
+    }
+      
+      
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ModelAndView showMap(Map<String, Object> map){
 		ModelAndView mov = new ModelAndView("floor");
@@ -109,6 +125,7 @@ public class FloorplanController {
     	if (requesService.listRequest() !=null) {
     		mov.addObject("requestList", requesService.listRequest());
     	};
+    	if (!floorUrl.isEmpty()) mov.addObject("floorUrl",floorUrl);
 		mov.addObject("cube", new Cube());
 		mov.addObject("cubeList", cubeService.listCube());
 		return mov;

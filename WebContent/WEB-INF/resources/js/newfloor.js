@@ -126,6 +126,7 @@ $(window).bind("load", function() {
 	    });
 	};
     var showOrHide = true;
+    
     //any cube div clickable + ajax load open form
     $(".clickable").click(function(){
     	var cube_href = $(this).find("span.cube_id").html();

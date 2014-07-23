@@ -25,7 +25,7 @@
 </head>
 <body ondragstart="return false;" ondrop="return false;">
 	<div id="container">
-		<div id="img-wrapper"><img id="map" src="resources/images/floor03.jpg" />
+		<div id="img-wrapper"><img id="map" src="${floorUrl}" />
 			<c:if  test="${!empty cubeList}">
 				<c:forEach items="${cubeList}" var="cube">
 					<c:if test="${cube.occupied != 'true'}">
