@@ -91,6 +91,17 @@ public class Cube implements Serializable{
 	@JoinColumn(name="floor_id")
 	private FloorEntity floor;
 	
+	
+	private int floorId;
+	
+	public int getFloorId() {
+		return floor.getFloorId();
+	}
+
+	public void setFloorId(int floorId) {
+		this.floorId = floorId;
+	}
+
 	@JsonProperty
 	public String getPhone() {
 		return phone;

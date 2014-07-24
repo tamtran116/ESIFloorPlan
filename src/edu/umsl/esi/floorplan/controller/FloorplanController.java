@@ -55,6 +55,7 @@ public class FloorplanController {
 	private Set<String> roles;
 	private String ERROR = "you don't have enough power to do this, please practice more";
 	private String floorUrl;
+	private int floorId;
 	private Cube currentCube;
 	private Cube updateCube;
 	
@@ -103,6 +104,7 @@ public class FloorplanController {
     @RequestMapping(value="/floor" , method=RequestMethod.GET)
     public String getUploadForm( @RequestParam int floorId, Map<String, Object> map ) {
    	 this.floorUrl = floorService.getFloorInfo(floorId).getFilePath();
+   	 this.floorId = floorId;
    	 System.out.println("floorUrl " + floorUrl);
    	 return "redirect:/list";
     }
@@ -125,9 +127,13 @@ public class FloorplanController {
     	if (requesService.listRequest() !=null) {
     		mov.addObject("requestList", requesService.listRequest());
     	};
-    	if (!floorUrl.isEmpty()) mov.addObject("floorUrl",floorUrl);
+    	if (!floorUrl.isEmpty()) {
+    		mov.addObject("floorUrl",floorUrl);
+    		mov.addObject("cubeList", cubeService.listCubeByFloorId(floorId));
+    		mov.addObject("floorId",floorId);
+    	}
 		mov.addObject("cube", new Cube());
-		mov.addObject("cubeList", cubeService.listCube());
+		
 		return mov;
 	}
 	
@@ -154,17 +160,17 @@ public class FloorplanController {
     
 	@RequestMapping(value = "/admin", method=RequestMethod.GET)
 	public String adminPage(Map<String, Object> map) {
-		return "redirect:/list";
+		return "redirect:/uploadfloor";
 	};
 	
 	@RequestMapping(value = "/manager", method=RequestMethod.GET)
 	public String managerPage(Map<String, Object> map) {
-		return "redirect:/list";
+		return "redirect:/uploadfloor";
 	};
 	
 	@RequestMapping(value = "/user", method=RequestMethod.GET)
 	public String userPage(Map<String, Object> map) {
-		return "redirect:/list";
+		return "redirect:/uploadfloor";
 	};
 	
 	@RequestMapping(value = "/addCube", method = RequestMethod.POST)

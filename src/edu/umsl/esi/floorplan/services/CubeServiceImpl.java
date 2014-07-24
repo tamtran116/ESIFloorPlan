@@ -114,4 +114,10 @@ public class CubeServiceImpl implements CubeService {
 		List<Cube> c_union = ListUtils.union(FreeList,TeamList);
 		return c_union;
 	}
+
+	@Override
+	public List<Cube> listCubeByFloorId(int floorId) {
+		List<Cube> allCubeList = cubeDAO.listCubeFromFloorId(floorId);
+		return allCubeList;
+	}
 }

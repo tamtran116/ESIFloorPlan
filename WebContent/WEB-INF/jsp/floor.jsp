@@ -65,6 +65,7 @@
 		            <form:hidden path="cy" id="cube_cy" readonly="true"/>
 		            <form:hidden path="width" id="cube_width" readonly="true"/>
 		            <form:hidden path="height" id="cube_height" readonly="true"/>
+		            <p>Floor ID is ${floorId}</p>
 		            <p>Employee Name:</p><form:input path="employee_name"/>
 		            <p>Team Leader:</p><form:input path="team_leader"/>
 		            <p>Phone number:</p><form:input path="phone"/>

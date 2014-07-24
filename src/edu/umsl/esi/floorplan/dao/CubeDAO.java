@@ -42,6 +42,14 @@ public class CubeDAO {
         return sessionFactory.getCurrentSession().createQuery("from Cube").list();
     }
 	
+	@SuppressWarnings("unchecked")
+	@Transactional
+    public List<Cube> listCubeFromFloorId(int floorId) {
+        Query query =  sessionFactory.getCurrentSession().createQuery("from Cube where floor_id =:floorId");
+        query.setParameter("floorId",floorId);
+		return query.list();
+    }
+	
 	public Cube getCubeById(String cube_id) {
 		Cube cube = (Cube) sessionFactory.getCurrentSession().load(Cube.class, cube_id);
 		System.out.println(cube);

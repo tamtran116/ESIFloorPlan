@@ -8,6 +8,7 @@ public interface CubeService {
 	public void addCube(Cube cube);
 	public Cube getCubeInfo(String cube_id);
 	public List<Cube> listCube();
+	public List<Cube> listCubeByFloorId(int floorId);
 	public List<Cube> listFreeCube();
 	public List<Cube> listCubesByTeam(String team);
 	public List<Cube> getClosest(String team, int c_choice);
