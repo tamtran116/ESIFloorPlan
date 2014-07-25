@@ -90,18 +90,18 @@ public class FileUploadController {
   try {
 	  
    inputStream = file.getInputStream();
-//   ServletContext sc=request.getSession().getServletContext();
    String relativeWebPath = "/WEB-INF/resources/uploaded_floor";
    String absoluteFilePath = request.getSession().getServletContext().getRealPath(relativeWebPath);
-//    for localhost
-//   String absPath = "/Users/tamtran/Documents/workspace/ESIFloorPlan_Upload/";
 
-   // The Double Backslash "\\" is applied because of window path for localhost server
-   File newFile = new File(absoluteFilePath+"\\"+fileName);
-   System.out.println(absoluteFilePath+"\\"+fileName);
+   /*   // The Double Backslash "\\" is applied because of window path for localhost server
+	**	File newFile = new File(absoluteFilePath+"\\"+fileName);
+   */
+   
+   // If you host this on linux, uncomment the line below and comment out the line above
+   File newFile = new File(absoluteFilePath+"/"+fileName);
+   
    if (!newFile.exists()) {
     newFile.createNewFile();
-//    floorEntity.setFilePath(absoluteFilePath+"\\"+fileName);
     floorEntity.setFilePath("resources/uploaded_floor/"+fileName);
     System.out.println(floorEntity.toString());
     floorService.addFloor(floorEntity);
