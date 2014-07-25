@@ -1,0 +1,7 @@
+Floor Plan app to help managing the distances between cubes or employees.
+
+Currently can optimize distances between cubes and cubes, team and team WITHIN the same floor.
+
+Utilized Spring MVC, Hibernate, MySQL database.
+
+Have Question ? please ask
