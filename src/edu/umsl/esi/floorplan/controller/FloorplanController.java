@@ -176,7 +176,8 @@ public class FloorplanController {
 	@RequestMapping(value = "/addCube", method = RequestMethod.POST)
     public String addCube(@ModelAttribute("cube") @Valid Cube cube, BindingResult result, Model m) {
 		roles = getRoles();
-		if (roles.contains("ROLE_ADMIN")) {	
+		if (roles.contains("ROLE_ADMIN")) {
+			cube.setFloor(floorService.getFloorInfo(floorId));
 			cubeService.addCube(cube);
 			return "redirect:/list";
 		} else {
