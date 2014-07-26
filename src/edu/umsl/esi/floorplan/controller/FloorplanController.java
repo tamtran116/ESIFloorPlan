@@ -209,6 +209,20 @@ public class FloorplanController {
     	return currentCube;
     }
     
+    @RequestMapping("/listcubejson")
+    @ResponseBody
+    public List<Cube> listCubeJson() {
+    	List<Cube> cubeList = cubeService.listCube();
+    	return cubeList;
+    }
+    
+    @RequestMapping("/listfloorjson")
+    @ResponseBody
+    public List<FloorEntity> listFloorJson() {
+    	List<FloorEntity> floorList = floorService.listFloor();
+    	return floorList;
+    }
+    
     //using request param
     @RequestMapping(value="/updateCube", method=RequestMethod.GET)
     public String edit(@RequestParam("id")String id) {

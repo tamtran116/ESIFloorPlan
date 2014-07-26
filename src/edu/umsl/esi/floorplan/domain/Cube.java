@@ -188,7 +188,7 @@ public class Cube implements Serializable{
 	public double getCy() {
 		return cy;
 	}
-
+	@JsonProperty
 	public String getCube_id() {
 		return cube_id;
 	}
