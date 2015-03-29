@@ -41,6 +41,8 @@ import edu.umsl.esi.floorplan.services.FloorService;
 import edu.umsl.esi.floorplan.services.RequestService;
 
 @Controller
+//@RequestMapping("/ESIFloorPlan")
+//@RequestMapping("/")
 public class FloorplanController {
 	
 	@Autowired
@@ -70,47 +72,48 @@ public class FloorplanController {
          return mov; // logical view name
       }
 	
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView homePage(Map<String, Object> map) {
+    @RequestMapping(value = {"/", "/home"}, method = {RequestMethod.GET, RequestMethod.HEAD})
+    public ModelAndView homePage() {
 		System.out.println("Going to home page");
-		String text = "98376373783"; // this is the text that we want to encode
 
+		String text = "98376373783"; // this is the text that we want to encode
 		int width = 400;
 		int height = 300; // change the height and width as per your requirement
-
 		// (ImageIO.getWriterFormatNames() returns a list of supported formats)
-		String imageFormat = "png"; // could be "gif", "tiff", "jpeg" 
-
+		String imageFormat = "png"; // could be "gif", "tiff", "jpeg"
 		BitMatrix bitMatrix = null;
 		try {
 			bitMatrix = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, width, height);
 		} catch (WriterException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 //		try {
 //			MatrixToImageWriter.writeToStream(bitMatrix, imageFormat, new FileOutputStream(new File("/Users/tamtran/Documents/workspace-sts-3.4.0.RELEASE/ESIFloorPlan/WebContent/WEB-INF/qrcode_97802017507991.png")));
 //		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		} catch (IOException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 
 		return new ModelAndView("home");
     }
-	
-    @RequestMapping(value="/floor" , method=RequestMethod.GET)
-    public String getUploadForm( @RequestParam int floorId, Map<String, Object> map ) {
-   	 this.floorUrl = floorService.getFloorInfo(floorId).getFilePath();
-   	 this.floorId = floorId;
-   	 System.out.println("floorUrl " + floorUrl);
-   	 return "redirect:/list";
-    }
+
+    @RequestMapping(value="/floor" , method={RequestMethod.GET, RequestMethod.HEAD})
+	 public String getUploadForm( @RequestParam int floorId, Map<String, Object> map ) {
+		this.floorUrl = floorService.getFloorInfo(floorId).getFilePath();
+		this.floorId = floorId;
+		System.out.println("floorUrl " + floorUrl);
+		return "redirect:list";
+	}
+
+	@RequestMapping(value="/deleteFloor" , method={RequestMethod.GET, RequestMethod.HEAD})
+	public String deleteFloor( @RequestParam int floorId, Map<String, Object> map ) {
+		floorService.removeFloor(floorId);
+		return "redirect:uploadfloor";
+	}
       
       
-	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@RequestMapping(value = "/list", method = {RequestMethod.GET, RequestMethod.HEAD})
 	public ModelAndView showMap(Map<String, Object> map){
 		ModelAndView mov = new ModelAndView("floor");
     	roles = AuthorityUtils
@@ -118,15 +121,15 @@ public class FloorplanController {
                         .getAuthentication().getAuthorities());
     	if (currentCube != null) {
     		mov.addObject("currentCube",currentCube);
-    	};
+    	}
     	if (updateCube != null) {
     		mov.addObject("updateCube",updateCube);
-    	};
+    	}
     	mov.addObject("role",roles);
     	mov.addObject("request", new Request());
     	if (requesService.listRequest() !=null) {
     		mov.addObject("requestList", requesService.listRequest());
-    	};
+    	}
     	if (!floorUrl.isEmpty()) {
     		mov.addObject("floorUrl",floorUrl);
     		mov.addObject("cubeList", cubeService.listCubeByFloorId(floorId));
@@ -137,7 +140,7 @@ public class FloorplanController {
 		return mov;
 	}
 	
-	@RequestMapping(value = "/error", method = RequestMethod.GET)
+	@RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.HEAD})
 	public ModelAndView error(Map<String, Object> map){
 		ModelAndView mov = new ModelAndView("floor");
     	roles = AuthorityUtils
@@ -158,20 +161,20 @@ public class FloorplanController {
 		return mov;
 	}
     
-	@RequestMapping(value = "/admin", method=RequestMethod.GET)
+/*	@RequestMapping(value = "/admin", method={RequestMethod.GET, RequestMethod.HEAD})
 	public String adminPage(Map<String, Object> map) {
 		return "redirect:/uploadfloor";
-	};
+	}
 	
-	@RequestMapping(value = "/manager", method=RequestMethod.GET)
+	@RequestMapping(value = "/manager", method={RequestMethod.GET, RequestMethod.HEAD})
 	public String managerPage(Map<String, Object> map) {
 		return "redirect:/uploadfloor";
-	};
+	}
 	
-	@RequestMapping(value = "/user", method=RequestMethod.GET)
+	@RequestMapping(value = "/user", method={RequestMethod.GET, RequestMethod.HEAD})
 	public String userPage(Map<String, Object> map) {
 		return "redirect:/uploadfloor";
-	};
+	}*/
 	
 	@RequestMapping(value = "/addCube", method = RequestMethod.POST)
     public String addCube(@ModelAttribute("cube") @Valid Cube cube, BindingResult result, Model m) {
@@ -224,7 +227,7 @@ public class FloorplanController {
     }
     
     //using request param
-    @RequestMapping(value="/updateCube", method=RequestMethod.GET)
+    @RequestMapping(value="/updateCube", method={RequestMethod.GET, RequestMethod.HEAD})
     public String edit(@RequestParam("id")String id) {
     	updateCube = cubeService.getCubeInfo(id);
     	System.out.println("Get cube for update , cube id = " + id);
@@ -241,9 +244,9 @@ public class FloorplanController {
 		} else {
 			return "redirect:/error";
 		}
-    };
+    }
     
-    @RequestMapping(value = "/swap", method = RequestMethod.GET )
+    @RequestMapping(value = "/swap", method = {RequestMethod.GET, RequestMethod.HEAD} )
     public String updateCube(@RequestParam("swap-one")String cube1_id, @RequestParam("swap-two")String cube2_id) {
 		Cube cube1 = cubeService.getCubeInfo(cube1_id);
 		Cube cube2 = cubeService.getCubeInfo(cube2_id);
@@ -271,7 +274,7 @@ public class FloorplanController {
 		System.out.println(cube1);
 		System.out.println(cube2);
 		return "redirect:/list";
-    };
+    }
     
 	@RequestMapping("/deleteCube/{cube_id}")
     public String deleteCube(@PathVariable("cube_id") String cube_id) {
@@ -282,33 +285,34 @@ public class FloorplanController {
 			return "redirect:/error";
 		};
         return "redirect:/list";
-    };
+    }
     
-	@RequestMapping("/{team_leader}")
-    public String getCubeByTeam(@PathVariable("team_leader") String team_leader, Map<String, Object> map) {
-		map.put("cube", new Cube());
-    	map.put("cubeList",cubeService.listCubesByTeam(team_leader));
-    	return "floor";
-    };
-	
-	@RequestMapping("/{team_leader}/{c_choice}")
-    public String getClosest(@PathVariable("team_leader") String team_leader,@PathVariable("c_choice") int c_choice, Map<String, Object> map) {
-		map.put("cube", new Cube());
-    	map.put("cubeList",cubeService.getClosest(team_leader,c_choice));
-    	return "floor";
-    };
-	@RequestMapping(value = "/login", method = RequestMethod.GET)
+//	@RequestMapping("/{team_leader}")
+//    public String getCubeByTeam(@PathVariable("team_leader") String team_leader, Map<String, Object> map) {
+//		map.put("cube", new Cube());
+//    	map.put("cubeList",cubeService.listCubesByTeam(team_leader));
+//    	return "floor";
+//    }
+//
+//	@RequestMapping("/{team_leader}/{c_choice}")
+//    public String getClosest(@PathVariable("team_leader") String team_leader,@PathVariable("c_choice") int c_choice, Map<String, Object> map) {
+//		map.put("cube", new Cube());
+//    	map.put("cubeList",cubeService.getClosest(team_leader,c_choice));
+//    	return "floor";
+//    }
+
+	/*@RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.HEAD})
     public String login(Map<String, Object> map) {
         return "login";
     };
  
-    @RequestMapping(value = "/accessdenied", method = RequestMethod.GET)
+    @RequestMapping(value = "/accessdenied", method = {RequestMethod.GET, RequestMethod.HEAD})
     public String loginerror(Map<String, Object> map) {
         map.put("error", "true");
         return "denied";
-    };
- 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    }
+ */
+    @RequestMapping(value = "/logout", method = {RequestMethod.GET, RequestMethod.HEAD})
     public String logout(Map map) {
         return "logout";
     };

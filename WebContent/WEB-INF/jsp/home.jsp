@@ -35,9 +35,7 @@ $( document ).ready(function() {
 <img src="resources/images/floorplan_icon.png"/><br/><br/>
 	<h1>Welcome to Express Script Floor Plan Web Application</h1><br/>
 	<p>Please click on the button below to start</p>
-	<a href="user" target="_self">user</a> | 
-	<a href="admin" target="_self">admin</a> | 
-	<a href="manager" target="_self">manager</a><br/>
+	<a href="login" target="_self">login</a>
 </div>
 </body>
 </html>

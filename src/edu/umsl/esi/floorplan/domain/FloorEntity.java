@@ -37,6 +37,14 @@ public class FloorEntity implements Serializable{
 	@OneToMany(mappedBy="floor")
 	private Set <Cube> cubes;
 
+	public Set<Cube> getCubes() {
+		return cubes;
+	}
+
+	public void setCubes(Set<Cube> cubes) {
+		this.cubes = cubes;
+	}
+
 	@JsonProperty
 	public Integer getFloorId() {
 		return floorId;

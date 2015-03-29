@@ -1,7 +1,9 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
- 
+<!DOCTYPE html>
+<%@taglib uri="http://www.springframework.org/tags"  prefix="spring"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
+<c:url var="rootURL" value="/"/>
 <html>
 <head>
 <meta http-equiv="Cache-control" content="NO-CACHE">
@@ -43,15 +45,19 @@ border-radius: 10px; /* future proofing */
 		<img src="resources/images/floorplan_icon.png"/>
 		<br>
 		<br>
-	        <form name="f" action="<c:url value='j_spring_security_check'/>" method="POST" onSubmit="window.location.replace('home.jsp');">
+	        <form name="f" action="${rootURL}login" method="POST">
 	            <table style="margin: 0px auto;">
 	                <tr>
 	                    <td>Username:</td>
-	                    <td><input type='text' name='j_username' /></td>
+	                    <td><input type='text' name='username' /></td>
 	                </tr>
 	                <tr>
 	                    <td>Password:</td>
-	                    <td><input type='password' name='j_password'></td>
+	                    <td>
+							<input type='password' name='password'>
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+						</td>
+
 	                </tr>
 	                <tr>
 	                    <td colspan="2">&nbsp;</td>

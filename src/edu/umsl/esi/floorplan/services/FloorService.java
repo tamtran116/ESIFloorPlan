@@ -5,12 +5,12 @@ import java.util.List;
 import edu.umsl.esi.floorplan.domain.FloorEntity;
 
 public interface FloorService {
-	public void addFloor(FloorEntity floor);
-	public FloorEntity getFloorInfo(int floorId);
-	public List<FloorEntity> listFloor();
-//	public List<Cube> listFreeCube();
-//	public List<Cube> listCubesByTeam(String team);
-//	public List<Cube> getClosest(String team, int c_choice);
-//	public void updateCube(Cube cube);
-//	public void removeCube(String cube_id);
+	void addFloor(FloorEntity floor);
+	FloorEntity getFloorInfo(int floorId);
+	List<FloorEntity> listFloor();
+//	List<Cube> listFreeCube();
+//	List<Cube> listCubesByTeam(String team);
+//	List<Cube> getClosest(String team, int c_choice);
+//	void updateCube(Cube cube);
+	void removeFloor(int floorId);
 }

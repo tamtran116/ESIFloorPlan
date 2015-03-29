@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.umsl.esi.floorplan.domain.Request;
 
+@Transactional
 @Repository
 public class requestDAO {
 
@@ -32,7 +33,6 @@ public class requestDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Transactional
     public List<Request> listRequest() {
  
         return sessionFactory.getCurrentSession().createQuery("from Request").list();

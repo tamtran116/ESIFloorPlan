@@ -232,7 +232,7 @@
 		<div id="commands"><br/>
 		<p>To save time clicking and dragging, please hit on the click on any of the cube open or closed cube and hit the "pre-location" button and you will have the size of the cube. 
 		Then you can click on the selected area and drag to a new cube and click on add cube to save the new information for the new cube. </p>
-		<button onclick="return window.location.assign('/ESIFloorPlan/list')">Refresh</button> | 
+		<button onclick="return window.location.assign('/list')">Refresh</button> |
 		<a class="j-ui-button" href="logout" target="_self">Log Out</a> | 
 		<button type="button" id="pre-locaton">Pre-location</button><br/><br/>
 		Optimization Option will be available when you click on the team name inside the cube database

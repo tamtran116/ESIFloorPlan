@@ -1,10 +1,11 @@
 package edu.umsl.esi.floorplan.validator;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import edu.umsl.esi.floorplan.domain.FileUpload;
-
+@Component
 public class FileUploadValidator implements Validator {
 	
 
@@ -19,7 +20,7 @@ public class FileUploadValidator implements Validator {
 		 FileUpload file = (FileUpload) uploadedFile;
 
 	  if (file.getFile().getSize() == 0) {
-	   errors.rejectValue("file", "uploadForm.salectFile",
+	   errors.rejectValue("file", "uploadForm.selectFile",
 	     "Please select a file!");
 	  }
 

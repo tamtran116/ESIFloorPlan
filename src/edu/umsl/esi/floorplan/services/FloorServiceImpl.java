@@ -34,10 +34,11 @@ public class FloorServiceImpl implements FloorService {
 	
 	@Override
 	@Transactional
-	public List<FloorEntity> listFloor() {
-		// TODO Auto-generated method stub
-		return floorDAO.listFloorEntity();
-	}
+	public List<FloorEntity> listFloor() {return floorDAO.listFloorEntity();}
+
+	@Override
+	@Transactional
+	public void removeFloor(int floorId) {floorDAO.removeFloorEntity(floorId);}
 
 	@Override
 	@Transactional

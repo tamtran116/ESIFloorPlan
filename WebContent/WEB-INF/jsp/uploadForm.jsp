@@ -29,7 +29,7 @@ $( document ).ready(function() {
 <center>
 	<img src="resources/images/ExpressScripts-logo1.jpg"/>
   	<h3>Please select a "floor" to upload !</h3>
-	<form:form method="post" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload.htm">
+	<form:form method="POST" enctype="multipart/form-data" modelAttribute="uploadedFile" action="fileUpload?${_csrf.parameterName}=${_csrf.token}">
 	 <table>
 	 	<tr>
 	 		<td>Floor Name</td>
@@ -58,7 +58,10 @@ $( document ).ready(function() {
 	  </tr>
 	  <tr>
 	   <td></td>
-	   <td><input type="submit" value="Upload" /></td>
+	   <td>
+		   <%--<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>--%>
+           <input type="submit" value="Upload" />
+	   </td>
 	   <td></td>
 	  </tr>
 	 </table>
@@ -74,16 +77,18 @@ $( document ).ready(function() {
 				    <th>Floor Location</th>
 				    <th>Uploaded By</th>
 				    <th>Floor Description</th>
+				    <th>Delete</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${floorList}" var="floor">
 				    <tr>
 					    <td><a href="floor?floorId=${floor.floorId}">${floor.floorName}</a></td>
-				        <td>${floor.filePath}</a></td>
+				        <td>${floor.filePath}</td>
 				        <td>${floor.floorLocation}</td>
 				        <td>${floor.uploadedBy}</td>
 				        <td>${floor.floorDesc}</td>
+				        <td><a href="deleteFloor?floorId=${floor.floorId}">DELETE</a></td>
 				    </tr>
 				</c:forEach>
 			</tbody>

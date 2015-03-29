@@ -1,10 +1,6 @@
 package edu.umsl.esi.floorplan.controller;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -35,91 +31,103 @@ import edu.umsl.esi.floorplan.validator.FileUploadValidator;
 @Controller
 public class FileUploadController {
 
- @Autowired
- FileUploadValidator fileValidator;
- 
- @Autowired
- private FloorService floorService;
- 
- 
+    private static String OS = System.getProperty("os.name").toLowerCase();
 
- @RequestMapping(value="/uploadfloor")
- public ModelAndView getUploadForm(
-   @ModelAttribute("uploadedFile") FileUpload uploadedFile,
-   BindingResult result) {
-	 ModelAndView mov = new ModelAndView("uploadForm");
-	 mov.addObject("floor", new FloorEntity());
-	 mov.addObject("floorList", floorService.listFloor());
-  return mov;
- }
- 
- 
-// @SuppressWarnings("unchecked")
-//@RequestMapping(value="/floordata", method=RequestMethod.GET)
-// public ModelAndView getFloorList() {
-//	 ModelAndView mov = new ModelAndView("uploadForm");
-//	 mov.addObject("uploadedFile", new FileUpload());
-//	 mov.addObject("floor", new FloorEntity());
-//	 mov.addObject("floorList", floorService.listFloor());
-//	 System.out.println("Controller floor size = "+floorService.listFloor().size());
-//	 return mov;
-// }
+    @Autowired
+    FileUploadValidator fileValidator;
 
-@SuppressWarnings("resource")
-@RequestMapping(value="/fileUpload", method=RequestMethod.POST)
- public ModelAndView fileUploaded(
-   @ModelAttribute("uploadedFile") FileUpload uploadedFile,
-   BindingResult result, HttpServletRequest request) {
-  InputStream inputStream = null;
-  OutputStream outputStream = null;
+    @Autowired
+    private FloorService floorService;
 
-  MultipartFile file = uploadedFile.getFile();
-  fileValidator.validate(uploadedFile, result);
+   /* @RequestMapping(value = "/upload", method = RequestMethod.GET)
+    public @ResponseBody String provideUploadInfo() {
+        return "You can upload a file by posting to this same URL";
+    }
 
-  FloorEntity floorEntity = new FloorEntity();
-  floorEntity.setFloorName(uploadedFile.getFloorName());
-  floorEntity.setFloorLocation(uploadedFile.getFloorLocation());
-  floorEntity.setUploadedBy(uploadedFile.getUploadedBy());
-  floorEntity.setFloorDesc(uploadedFile.getFloorDesc());
-  
-  String fileName = file.getOriginalFilename();
-  if (result.hasErrors()) {
-   return new ModelAndView("uploadForm");
-  }
+    @RequestMapping(value="/upload", method=RequestMethod.POST)
+    public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
+                                                 @RequestParam("file") MultipartFile file){
+        if (!file.isEmpty()) {
+            try {
+                byte[] bytes = file.getBytes();
+                BufferedOutputStream stream =
+                        new BufferedOutputStream(new FileOutputStream(new File(name)));
+                stream.write(bytes);
+                stream.close();
+                return "You successfully uploaded " + name + "!";
+            } catch (Exception e) {
+                return "You failed to upload " + name + " => " + e.getMessage();
+            }
+        } else {
+            return "You failed to upload " + name + " because the file was empty.";
+        }
+    }*/
 
-  try {
-	  
-   inputStream = file.getInputStream();
-   String relativeWebPath = "/WEB-INF/resources/uploaded_floor";
-   String absoluteFilePath = request.getSession().getServletContext().getRealPath(relativeWebPath);
+    @RequestMapping(value="/uploadfloor")
+    public ModelAndView getUploadForm(@ModelAttribute("uploadedFile") FileUpload uploadedFile, BindingResult result) {
+        ModelAndView mov = new ModelAndView("uploadForm");
+        mov.addObject("floor", new FloorEntity());
+        mov.addObject("floorList", floorService.listFloor());
+        return mov;
+    }
 
-   /*   // The Double Backslash "\\" is applied because of window path for localhost server
-	**	File newFile = new File(absoluteFilePath+"\\"+fileName);
-   */
-   
-   // If you host this on linux, uncomment the line below and comment out the line above
-   File newFile = new File(absoluteFilePath+"/"+fileName);
-   
-   if (!newFile.exists()) {
-    newFile.createNewFile();
-    floorEntity.setFilePath("resources/uploaded_floor/"+fileName);
-    System.out.println(floorEntity.toString());
-    floorService.addFloor(floorEntity);
-   }
-   outputStream = new FileOutputStream(newFile);
-   int read = 0;
-   byte[] bytes = new byte[1024];
+    // @SuppressWarnings("unchecked")
+    //@RequestMapping(value="/floordata", method=RequestMethod.GET)
+    // public ModelAndView getFloorList() {
+    //	 ModelAndView mov = new ModelAndView("uploadForm");
+    //	 mov.addObject("uploadedFile", new FileUpload());
+    //	 mov.addObject("floor", new FloorEntity());
+    //	 mov.addObject("floorList", floorService.listFloor());
+    //	 System.out.println("Controller floor size = "+floorService.listFloor().size());
+    //	 return mov;
+    // }
 
-   while ((read = inputStream.read(bytes)) != -1) {
-    outputStream.write(bytes, 0, read);
-   }
-  } catch (IOException e) {
-   // TODO Auto-generated catch block
-   e.printStackTrace();
-  }
+    @SuppressWarnings("resource")
+    @RequestMapping(value="/fileUpload", method=RequestMethod.POST)
+    public ModelAndView fileUploaded(@ModelAttribute("uploadedFile") FileUpload uploadedFile, BindingResult result, HttpServletRequest request) {
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        MultipartFile file = uploadedFile.getFile();
+        fileValidator.validate(uploadedFile, result);
+        FloorEntity floorEntity = new FloorEntity();
+        floorEntity.setFloorName(uploadedFile.getFloorName());
+        floorEntity.setFloorLocation(uploadedFile.getFloorLocation());
+        floorEntity.setUploadedBy(uploadedFile.getUploadedBy());
+        floorEntity.setFloorDesc(uploadedFile.getFloorDesc());
+        String fileName = file.getOriginalFilename();
+        if (result.hasErrors()) {
+            return new ModelAndView("uploadForm");
+        }
 
-  return new ModelAndView("showFile", "message", fileName);
- }
+        try {
+            inputStream = file.getInputStream();
+            String relativeWebPath = "/WEB-INF/resources/uploaded_floor";
+            String absoluteFilePath = request.getSession().getServletContext().getRealPath(relativeWebPath);
+            File newFile = null;
+            if (OS.indexOf("win") >= 0) {
+                // The Double Backslash "\\" is applied because of window path for localhost server
+                newFile = new File(absoluteFilePath+"\\"+fileName);
+            } else if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0) {
+                newFile = new File(absoluteFilePath+"/"+fileName);
+            }
 
+            if (!newFile.exists()) {
+                newFile.createNewFile();
+                floorEntity.setFilePath("resources/uploaded_floor/"+fileName);
+                System.out.println(floorEntity.toString());
+                floorService.addFloor(floorEntity);
+            }
+            outputStream = new FileOutputStream(newFile);
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0, read);
+            }
+        } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+        }
+        return new ModelAndView("showFile", "message", fileName);
+    }
 }
 

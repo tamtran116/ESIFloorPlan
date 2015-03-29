@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import edu.umsl.esi.floorplan.domain.Cube;
 
+@Transactional
 @Repository
 public class CubeDAO {
 
@@ -36,14 +37,12 @@ public class CubeDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@Transactional
     public List<Cube> listCube() {
  
         return sessionFactory.getCurrentSession().createQuery("from Cube").list();
     }
 	
 	@SuppressWarnings("unchecked")
-	@Transactional
     public List<Cube> listCubeFromFloorId(int floorId) {
         Query query =  sessionFactory.getCurrentSession().createQuery("from Cube where floor_id =:floorId");
         query.setParameter("floorId",floorId);
