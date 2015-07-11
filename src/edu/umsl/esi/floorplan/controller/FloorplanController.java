@@ -10,6 +10,7 @@ import java.io.File;
 
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,7 +131,7 @@ public class FloorplanController {
     	if (requesService.listRequest() !=null) {
     		mov.addObject("requestList", requesService.listRequest());
     	}
-    	if (!floorUrl.isEmpty()) {
+    	if (!StringUtils.isBlank(floorUrl)) {
     		mov.addObject("floorUrl",floorUrl);
     		mov.addObject("cubeList", cubeService.listCubeByFloorId(floorId));
     		mov.addObject("floorId",floorId);
@@ -160,22 +161,7 @@ public class FloorplanController {
     	};
 		return mov;
 	}
-    
-/*	@RequestMapping(value = "/admin", method={RequestMethod.GET, RequestMethod.HEAD})
-	public String adminPage(Map<String, Object> map) {
-		return "redirect:/uploadfloor";
-	}
-	
-	@RequestMapping(value = "/manager", method={RequestMethod.GET, RequestMethod.HEAD})
-	public String managerPage(Map<String, Object> map) {
-		return "redirect:/uploadfloor";
-	}
-	
-	@RequestMapping(value = "/user", method={RequestMethod.GET, RequestMethod.HEAD})
-	public String userPage(Map<String, Object> map) {
-		return "redirect:/uploadfloor";
-	}*/
-	
+
 	@RequestMapping(value = "/addCube", method = RequestMethod.POST)
     public String addCube(@ModelAttribute("cube") @Valid Cube cube, BindingResult result, Model m) {
 		roles = getRoles();

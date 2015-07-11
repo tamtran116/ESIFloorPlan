@@ -84,6 +84,7 @@
 		            <p>VPN Token</p><form:radiobutton path="vpn" value="true"/>Yes
 		            <form:radiobutton path="vpn" value="false"/>No
 		            <br><hr>
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 		            <input type="reset"> <input type="submit" value="Submit"><!-- <button id="ajax">Submit By Ajax</button> -->
 				</form:form>
 			</div>
@@ -123,6 +124,7 @@
 				          <p>VPN Token</p><form:radiobutton path="vpn" value="true"/>Yes
 				          <form:radiobutton path="vpn" value="false"/>No
 				          <br><hr>
+							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				          <input type="reset"> <input type="submit" value="Update"><!-- <button id="ajax">Submit By Ajax</button> -->
 				</form:form></c:if>
 			</div>

@@ -9,9 +9,6 @@
 <meta http-equiv="Cache-control" content="NO-CACHE">
 <style>
 .wrapper {
-	background: url('resources/images/floor03_blur.jpg') no-repeat;
-	width:100%;
-	height:100%;
 	padding-top:100px;
 }
 .blur{

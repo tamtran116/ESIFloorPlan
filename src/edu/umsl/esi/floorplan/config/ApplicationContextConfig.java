@@ -15,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.Ordered;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -42,16 +43,8 @@ public class ApplicationContextConfig extends WebMvcConfigurerAdapter {
     }
     @Bean(name = "dataSource")
     public DataSource getDataSource() {
-        BasicDataSource dataSource = new BasicDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/esi?autoReconnect=true");
-        dataSource.setUsername("root");
-        dataSource.setPassword("Home116");
-        dataSource.setInitialSize(2);
-        dataSource.setMaxActive(5);
-        dataSource.setMaxWait(-1);
-        dataSource.setValidationQuery("SELECT 1");
-        dataSource.setTestOnBorrow(true);
+        final JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+        DataSource dataSource = dsLookup.getDataSource("java:jboss/datasources/MySqlDS");
         return dataSource;
     }
     @Autowired

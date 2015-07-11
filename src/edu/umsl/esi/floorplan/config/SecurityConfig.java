@@ -25,10 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-//                .antMatchers("/file_custom/*").access("permitAll")
-//                .antMatchers("/list").access("hasRole('USER')")
                 .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
                 .antMatchers("/home").permitAll()
                 .antMatchers("/resources/**").permitAll()
                 .anyRequest().authenticated()
@@ -36,16 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginPage("/login").failureUrl("/accessdenied")
                     .usernameParameter("username")
                     .passwordParameter("password")
-                    .defaultSuccessUrl("/uploadfloor")
+                    .defaultSuccessUrl("/uploadfloor").permitAll()
                 .and().logout()
                     .logoutSuccessUrl("/logout")
                 .and().exceptionHandling().accessDeniedPage("/accessdenied");
     }
-//    @Override
-//     public void configure(WebSecurity web) throws Exception {
-//        web
-//           .ignoring()
-//              .antMatchers("/resources/**"); // #3
-//    }
 
 }

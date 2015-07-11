@@ -66,6 +66,7 @@ $( document ).ready(function() {
 	  </tr>
 	 </table>
 	</form:form>
+	<h4 style="color: red; font-style: italic;">${error}</h4>
 	<hr>
 	<button id="show-floor">Show Database</button>
 	<div id="floor-database">

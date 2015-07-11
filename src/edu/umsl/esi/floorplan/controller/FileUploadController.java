@@ -101,7 +101,7 @@ public class FileUploadController {
 
         try {
             inputStream = file.getInputStream();
-            String relativeWebPath = "/WEB-INF/resources/uploaded_floor";
+            String relativeWebPath = "/WEB-INF/resources/uploaded";
             String absoluteFilePath = request.getSession().getServletContext().getRealPath(relativeWebPath);
             File newFile = null;
             if (OS.indexOf("win") >= 0) {
@@ -113,7 +113,7 @@ public class FileUploadController {
 
             if (!newFile.exists()) {
                 newFile.createNewFile();
-                floorEntity.setFilePath("resources/uploaded_floor/"+fileName);
+                floorEntity.setFilePath("resources/uploaded/"+fileName);
                 System.out.println(floorEntity.toString());
                 floorService.addFloor(floorEntity);
             }
@@ -126,6 +126,7 @@ public class FileUploadController {
         } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
+            return new ModelAndView("uploadForm", "error", "Error in uploading file, contact admin or developer");
         }
         return new ModelAndView("showFile", "message", fileName);
     }
