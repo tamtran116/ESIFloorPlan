@@ -21,8 +21,7 @@ public class Cube implements Serializable{
 	private static final boolean DEFAULT_PARKING = false;
 	private static final boolean DEFAULT_LAPTOP = false;
 	private static final boolean DEFAULT_VPN = false;
-    
-    
+
 	@Id
 	@Column(name="CUBE_ID")
 	private String cube_id;

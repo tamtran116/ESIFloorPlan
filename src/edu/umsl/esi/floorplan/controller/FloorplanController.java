@@ -42,8 +42,6 @@ import edu.umsl.esi.floorplan.services.FloorService;
 import edu.umsl.esi.floorplan.services.RequestService;
 
 @Controller
-//@RequestMapping("/ESIFloorPlan")
-//@RequestMapping("/")
 public class FloorplanController {
 	
 	@Autowired
@@ -73,7 +71,7 @@ public class FloorplanController {
          return mov; // logical view name
       }
 	
-    @RequestMapping(value = {"/", "/home"}, method = {RequestMethod.GET, RequestMethod.HEAD})
+    @RequestMapping(value = {"/"}, method = {RequestMethod.GET, RequestMethod.HEAD})
     public ModelAndView homePage() {
 		System.out.println("Going to home page");
 
