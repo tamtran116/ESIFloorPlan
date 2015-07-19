@@ -285,17 +285,24 @@ public class FloorplanController {
 //    	return "floor";
 //    }
 
-	/*@RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.HEAD})
-    public String login(Map<String, Object> map) {
-        return "login";
-    };
- 
+	//Spring Security see this :
+	@RequestMapping(value = "/login",  method = {RequestMethod.GET, RequestMethod.HEAD})
+	public ModelAndView login(
+			@RequestParam(value = "error", required = false) String error) {
+
+		ModelAndView model = new ModelAndView();
+		if (error != null) {
+			model.addObject("error", "Invalid username and password!");
+		}
+		model.setViewName("login");
+		return model;
+	}
     @RequestMapping(value = "/accessdenied", method = {RequestMethod.GET, RequestMethod.HEAD})
     public String loginerror(Map<String, Object> map) {
         map.put("error", "true");
         return "denied";
     }
- */
+
     @RequestMapping(value = "/logout", method = {RequestMethod.GET, RequestMethod.HEAD})
     public String logout(Map map) {
         return "logout";

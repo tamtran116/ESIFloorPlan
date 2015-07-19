@@ -1,70 +1,62 @@
-<!DOCTYPE html>
-<%@taglib uri="http://www.springframework.org/tags"  prefix="spring"%>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags"  prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <c:url var="rootURL" value="/"/>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv="Cache-control" content="NO-CACHE">
-<style>
-.wrapper {
-	padding-top:100px;
-}
-.blur{
-	width:500px;
-	margin:10px auto;
-    opacity: 0.5;
-    border:1px solid #CCC;
-    text-align:center;
-    background: #999;
-    vertical-align:middle;
-}
-.round-corner {
--moz-border-radius: 10px;
--webkit-border-radius: 10px;
-border-radius: 10px; /* future proofing */
--khtml-border-radius: 10px; /* for old Konqueror browsers */
-}
-</style>
-<script>
-//Script to prevent accidentally hit back after login
-  function preventBack(){window.history.forward();}
-  setTimeout("preventBack()", 0);
-  window.onunload=function(){null};
-</script>
-</head>
-    <body style="margin:0px;padding:0px;">
-    <div class="wrapper">
-	    <div class="blur round-corner">
-	        <img src="resources/images/es.png"/>
-	        <br>
-		<img src="resources/images/floorplan_icon.png"/>
-		<br>
-		<br>
-	        <form name="f" action="${rootURL}login" method="POST">
-	            <table style="margin: 0px auto;">
-	                <tr>
-	                    <td>Username:</td>
-	                    <td><input type='text' name='username' /></td>
-	                </tr>
-	                <tr>
-	                    <td>Password:</td>
-	                    <td>
-							<input type='password' name='password'>
-							<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-						</td>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta http-equiv="Cache-control" content="NO-CACHE">
+	<meta name="description" content="login page for ESI">
+	<meta name="author" content="Tam Tran">
+	<title>Signin Template for Bootstrap</title>
 
-	                </tr>
-	                <tr>
-	                    <td colspan="2">&nbsp;</td>
-	                </tr>
-	                <tr>
-	                    <td colspan='2'><input name="submit" type="submit" value="login">&nbsp;<input name="reset" type="reset"></td>
-	                </tr>
-	            </table>
-	        </form>
-	    </div>
-	</div><!-- /wrapper -->
+	<!-- Bootstrap core CSS -->
+	<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom styles for this template -->
+	<link href="resources/css/signin.css" rel="stylesheet">
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<script>
+		//Script to prevent accidentally hit back after login
+		  function preventBack(){window.history.forward();}
+		  setTimeout("preventBack()", 0);
+		  window.onunload=function(){null};
+	</script>
+</head>
+    <body>
+
+		<div class="container">
+			<img class="img-responsive center-block" src="resources/images/floorplan_icon.png"/>
+			<form class="form-signin" name="f" action="${rootURL}login" method="POST">
+				<h2 class="form-signin-heading">Please sign in</h2>
+				<label for="inputUsername" class="sr-only">Email address</label>
+				<input type="text" name='username' id="inputUsername" class="form-control" placeholder="User Name" required autofocus>
+				<label for="inputPassword" class="sr-only">Password</label>
+				<input type="password" name='password' id="inputPassword" class="form-control" placeholder="Password" required>
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" value="remember-me"> Remember me
+					</label>
+				</div>
+				<input class="btn btn-lg btn-primary btn-block" name="submit" type="submit" value="Sign in">
+			</form>
+			<c:if test="${not empty error}">
+				<div class="alert alert-danger" role="alert"><strong>${error}</strong></div>
+			</c:if>
+			<c:if test="${not empty msg}">
+				<div class="alert alert-danger" role="alert"><strong>${msg}</strong></div>
+			</c:if>
+		</div> <!-- /container -->
     </body>
 </html>

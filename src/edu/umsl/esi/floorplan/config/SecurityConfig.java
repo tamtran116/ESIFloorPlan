@@ -27,25 +27,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
-
-    /*@Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication().withUser("user").password("user123").roles("USER");
         auth.inMemoryAuthentication().withUser("manager").password("manager123").roles("MANAGER");
         auth.inMemoryAuthentication().withUser("admin").password("admin123").roles("ADMIN");
-    }*/
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
             .authorizeRequests()
-                .antMatchers("/", "/list*", "/resources/**").permitAll()
+                .antMatchers("/", "/list*", "/resources/**", "/accessdenied").permitAll()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
             .formLogin()
-                .loginPage("/login").failureUrl("/accessdenied")
+                .loginPage("/login").failureUrl("/login?error")
                 .usernameParameter("username")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/uploadfloor").permitAll()
