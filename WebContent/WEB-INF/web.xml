@@ -7,9 +7,9 @@
 		 id="WebApp_ID"
 		 version="3.0">
 	<display-name>ESIFloorPlan</display-name>
-	<welcome-file-list>
-	  <welcome-file>/WEB-INF/jsp/home.jsp</welcome-file>
-	</welcome-file-list>
+	<!--<welcome-file-list>-->
+	  <!--<welcome-file>/WEB-INF/jsp/home.jsp</welcome-file>-->
+	<!--</welcome-file-list>-->
 	<servlet>
 		<servlet-name>spring-web</servlet-name>
 		<servlet-class>

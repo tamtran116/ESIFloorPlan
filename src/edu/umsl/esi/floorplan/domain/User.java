@@ -15,6 +15,8 @@ public class User {
     private String password;
     private boolean enabled;
     private Set<Authority> userRole = new HashSet<Authority>(0);
+    private Long userInfoId;
+    private UserInfo userInfo;
 
     public User() {
     }
@@ -34,7 +36,7 @@ public class User {
     }
 
     @Id
-    @Column(name = "username", unique = true,
+    @Column(name = "USERNAME", unique = true,
             nullable = false, length = 45)
     public String getUsername() {
         return this.username;
@@ -44,7 +46,7 @@ public class User {
         this.username = username;
     }
 
-    @Column(name = "password",
+    @Column(name = "PASSWORD",
             nullable = false, length = 60)
     public String getPassword() {
         return this.password;
@@ -54,7 +56,7 @@ public class User {
         this.password = password;
     }
 
-    @Column(name = "enabled", nullable = false)
+    @Column(name = "ENABLED", nullable = false)
     public boolean isEnabled() {
         return this.enabled;
     }
@@ -72,4 +74,22 @@ public class User {
         this.userRole = userRole;
     }
 
+    @Column(name = "USER_INFO_ID", nullable = false)
+    public Long getUserInfoId() {
+        return userInfoId;
+    }
+
+    public void setUserInfoId(Long userInfoId) {
+        this.userInfoId = userInfoId;
+    }
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_INFO_ID", insertable = false, updatable = false)
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
 }

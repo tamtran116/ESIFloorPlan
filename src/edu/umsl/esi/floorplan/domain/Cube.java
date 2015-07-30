@@ -77,7 +77,7 @@ public class Cube implements Serializable{
 	@Column(name="BADGE")
 	private Boolean badge = DEFAULT_BADGE;
 	
-	@Column(name="PARKING ")
+	@Column(name="PARKING")
 	private Boolean parking = DEFAULT_PARKING;
 	
 	@Column(name="LAPTOP")

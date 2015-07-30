@@ -10,6 +10,7 @@ import java.io.File;
 
 import javax.validation.Valid;
 
+import edu.umsl.esi.floorplan.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -33,10 +34,6 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
-import edu.umsl.esi.floorplan.domain.Cube;
-import edu.umsl.esi.floorplan.domain.FileUpload;
-import edu.umsl.esi.floorplan.domain.FloorEntity;
-import edu.umsl.esi.floorplan.domain.Request;
 import edu.umsl.esi.floorplan.services.CubeService;
 import edu.umsl.esi.floorplan.services.FloorService;
 import edu.umsl.esi.floorplan.services.RequestService;
@@ -71,10 +68,11 @@ public class FloorplanController {
          return mov; // logical view name
       }
 	
-    @RequestMapping(value = {"/"}, method = {RequestMethod.GET, RequestMethod.HEAD})
+    @RequestMapping(value = {"/home", "/"}, method = {RequestMethod.GET, RequestMethod.HEAD})
     public ModelAndView homePage() {
 		System.out.println("Going to home page");
-
+		ModelAndView mov = new ModelAndView("home");
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		String text = "98376373783"; // this is the text that we want to encode
 		int width = 400;
 		int height = 300; // change the height and width as per your requirement
@@ -94,7 +92,10 @@ public class FloorplanController {
 //			e.printStackTrace();
 //		}
 
-		return new ModelAndView("home");
+		if (!"anonymousUser".equals(username)) {
+			mov.addObject("username", username);
+		}
+		return mov;
     }
 
     @RequestMapping(value="/floor" , method={RequestMethod.GET, RequestMethod.HEAD})
@@ -306,7 +307,7 @@ public class FloorplanController {
     @RequestMapping(value = "/logout", method = {RequestMethod.GET, RequestMethod.HEAD})
     public String logout(Map map) {
         return "logout";
-    };
+    }
     
     public Set<String> getRoles() {
     	roles = AuthorityUtils
@@ -314,4 +315,16 @@ public class FloorplanController {
                         .getAuthentication().getAuthorities());
     	return roles;
     }
+
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public String registerUser(@ModelAttribute("userInfo") @Valid UserInfo userInfo) {
+		System.out.println(userInfo.toString());
+		return null;
+	}
+
+	@RequestMapping(value = "/register", method = {RequestMethod.GET, RequestMethod.HEAD})
+	public String register(Model m) {
+		m.addAttribute("userInfo", new UserInfo());
+		return "register";
+	}
 }
