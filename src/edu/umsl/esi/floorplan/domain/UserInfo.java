@@ -1,5 +1,8 @@
 package edu.umsl.esi.floorplan.domain;
 
+import org.apache.commons.lang3.builder.RecursiveToStringStyle;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -169,21 +172,6 @@ public class UserInfo {
 
     @Override
     public String toString() {
-        return "UserInfo{" +
-                "userInfoId=" + userInfoId +
-                ", firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", dateOfBirth='" + dateOfBirth + '\'' +
-                ", addressLine1='" + addressLine1 + '\'' +
-                ", addressLine2='" + addressLine2 + '\'' +
-                ", addressCity='" + addressCity + '\'' +
-                ", addressSubdivision='" + addressSubdivision + '\'' +
-                ", addressPostalCode='" + addressPostalCode + '\'' +
-                ", addressCountry='" + addressCountry + '\'' +
-                ", user=" + user +
-                '}';
+        return new ReflectionToStringBuilder(this, new RecursiveToStringStyle()).toString();
     }
 }
