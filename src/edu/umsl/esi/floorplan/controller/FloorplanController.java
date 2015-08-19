@@ -28,11 +28,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.google.zxing.BarcodeFormat;
+/*import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.QRCodeWriter;*/
 
 import edu.umsl.esi.floorplan.services.CubeService;
 import edu.umsl.esi.floorplan.services.FloorService;
@@ -78,12 +78,12 @@ public class FloorplanController {
 		int height = 300; // change the height and width as per your requirement
 		// (ImageIO.getWriterFormatNames() returns a list of supported formats)
 		String imageFormat = "png"; // could be "gif", "tiff", "jpeg"
-		BitMatrix bitMatrix = null;
+		/*BitMatrix bitMatrix = null;
 		try {
 			bitMatrix = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, width, height);
 		} catch (WriterException e) {
 			e.printStackTrace();
-		}
+		}*/
 //		try {
 //			MatrixToImageWriter.writeToStream(bitMatrix, imageFormat, new FileOutputStream(new File("/Users/tamtran/Documents/workspace-sts-3.4.0.RELEASE/ESIFloorPlan/WebContent/WEB-INF/qrcode_97802017507991.png")));
 //		} catch (FileNotFoundException e) {
