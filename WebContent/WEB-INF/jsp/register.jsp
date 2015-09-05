@@ -31,35 +31,64 @@
 	</script>
 </head>
     <body>
-
 		<div class="container">
-			<form class="form-signin" action="#" th:action="@{/register}" th:object="${userInfo}" method="post">
+			<form class="form-signin" action="#" th:action="@{/register}" th:object="${userRegisterRequest}" method="post">
 				<h2 class="form-signin-heading">Please sign up</h2>
 				<div class="form-group">
 					<label for="formFirstName" class="sr-only">First Name</label>
-					<input type="text" name="firstName" id="formFirstName" placeholder="First Name" th:field="*{firstName}" class="form-control"/>
+					<input type="text" name="firstName" id="formFirstName" placeholder="First Name" th:field="*{firstName}" class="form-control" aria-describedby=""/>
+					<span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+					<span id="FirstNameSuccess2Status" class="sr-only">(success)</span>
+					<span id="FirstNameError2Status" class="sr-only">(error)</span>
 				</div>
 
 				<div class="form-group">
 					<label for="formLastName" class="sr-only">Last Name</label>
-					<input type="text" name="lastName" id="formLastName" placeholder="Last Name" th:field="*{lastName}" class="form-control"/>
+					<input type="text" name="lastName" id="formLastName" placeholder="Last Name" th:field="*{lastName}" class="form-control" aria-describedby=""/>
+					<span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+					<span id="LastNameSuccess2Status" class="sr-only">(success)</span>
+					<span id="LastNameError2Status" class="sr-only">(error)</span>
 				</div>
 
 				<div class="form-group">
 					<label for="formPhoneNumber" class="sr-only">Phone Number</label>
-					<input type="tel" name="phoneNumber" id="formPhoneNumber" placeholder="+1-555-555-1212" th:field="*{phoneNumber}" class="form-control" />
+					<input type="tel" name="phoneNumber" id="formPhoneNumber" placeholder="(555) 555-1212" th:field="*{phoneNumber}" class="form-control" aria-describedby=""/>
+					<span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+					<span id="PhoneNumberSuccess2Status" class="sr-only">(success)</span>
+					<span id="PhoneNumberError2Status" class="sr-only">(error)</span>
 				</div>
 
 				<div class="form-group">
-					<input type="email" placeholder="email" th:field="*{email}" class="form-control"/>
+					<label for="formEmail" class="sr-only">Email Address</label>
+					<input type="email" name="Email" id="formEmail" placeholder="email" class="form-control" aria-describedby=""/>
+					<span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+					<span id="EmailSuccess2Status" class="sr-only">(success)</span>
+					<span id="EmailError2Status" class="sr-only">(error)</span>
 				</div>
 
 				<div class="form-group">
-					<input type="text" placeholder="Username" th:field="*{user.username}" class="form-control"/>
+					<label for="formConfirmedEmail" class="sr-only">Email Address Confirm</label>
+					<input type="text" name="ConfirmEmail" id="formConfirmedEmail" placeholder="email" th:field="*{email}" class="form-control" aria-describedby=""/>
+					<span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+					<span id="ConfirmedEmailSuccess2Status" class="sr-only">(success)</span>
+					<span id="ConfirmedEmailError2Status" class="sr-only">(error)</span>
 				</div>
 
+				<!-- TODO: real time validation (promises) / check if user name is taken-->
 				<div class="form-group">
-					<input type="password" placeholder="Password" th:field="*{user.password}" class="form-control"/>
+					<label for="formUserName" class="sr-only">User Name</label>
+					<input type="text" name="userName" id="formUserName"  placeholder="Username" th:field="*{userName}" class="form-control" aria-describedby=""/>
+					<span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+					<span id="UserNameSuccess2Status" class="sr-only">(success)</span>
+					<span id="UserNameError2Status" class="sr-only">(error)</span>
+				</div>
+				<!-- TODO: provide strong password-->
+				<div class="form-group">
+					<label for="formPassword" class="sr-only">Password</label>
+					<input type="password" name="password" id="formPassword" placeholder="Password" th:field="*{password}" class="form-control" aria-describedby="">
+					<span class="glyphicon form-control-feedback" aria-hidden="true"></span>
+					<span id="PasswordSuccess2Status" class="sr-only">(success)</span>
+					<span id="PasswordError2Status" class="sr-only">(error)</span>
 				</div>
 				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 				<div class="checkbox">
@@ -73,7 +102,10 @@
 		</div> <!-- /container -->
 		<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
 		<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+		<script src="resources/js/jquery-2.1.4.min.js"></script>
 		<!-- Form validation script -->
 		<script src="resources/js/validation.js"></script>
+		<!-- Mask Jquery plugin-->
+		<script src="resources/js/jquery.mask.js"></script>
     </body>
 </html>

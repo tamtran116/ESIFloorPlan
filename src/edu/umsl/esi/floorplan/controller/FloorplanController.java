@@ -11,6 +11,7 @@ import java.io.File;
 import javax.validation.Valid;
 
 import edu.umsl.esi.floorplan.domain.*;
+import edu.umsl.esi.floorplan.services.*;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -34,10 +35,6 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;*/
 
-import edu.umsl.esi.floorplan.services.CubeService;
-import edu.umsl.esi.floorplan.services.FloorService;
-import edu.umsl.esi.floorplan.services.RequestService;
-
 @Controller
 public class FloorplanController {
 	
@@ -49,6 +46,9 @@ public class FloorplanController {
 	
 	@Autowired
 	private RequestService requesService;
+
+	@Autowired
+	private UserService userService;
 	
 	private Set<String> roles;
 	private String ERROR = "you don't have enough power to do this, please practice more";
@@ -317,8 +317,11 @@ public class FloorplanController {
     }
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String registerUser(@ModelAttribute("userInfo") @Valid UserInfo userInfo) {
-		System.out.println(userInfo.toString());
+	public String registerUser(@ModelAttribute("userRegisterRequest") @Valid UserRegisterRequest userRegisterRequest) {
+		System.out.println(userRegisterRequest.toString());
+		//TODO: server side validation
+		userService.addUser(userRegisterRequest);
+
 		return null;
 	}
 

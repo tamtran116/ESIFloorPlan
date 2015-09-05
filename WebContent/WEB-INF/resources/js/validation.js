@@ -4,8 +4,9 @@
 var phoneRegex ='^(?:(?:\\+?1\\s*(?:[.-]\\s*)?)?(?:\\(\\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\\s*\\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\\s*(?:[.-]\\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\\s*(?:[.-]\\s*)?([0-9]{4})(?:\\s*(?:#|x\\.?|ext\\.?|extension)\\s*(\\d+))?$';
 var socialRegex ='^\\d{3}-\\d{3}-\\d{4}$';
 var emailRegex = /^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
-
+var alphaNumericRegex = /^[a-zA-Z0-9\s]*$/;
 $(document).ready(function() {
+
     console.log( "document loaded" );
     $("#formFirstName").change(function() {
         validateLength("#formFirstName", 20, 0);
@@ -34,8 +35,8 @@ function validateLength(jquerySelector, maxLength, minLength) {
     var valueLength = $(jquerySelector).val().length;
     var parentDiv = $(jquerySelector).parent();
     if (valueLength > maxLength || valueLength < minLength) {
-        addError(parentDiv, jquerySelector, describeAttribute)
-        alert("not valid due to input length = " + $(jquerySelector).val().length);
+        errorMessage =
+        addError(parentDiv, jquerySelector, describeAttribute, "not valid due to input length = " + $(jquerySelector).val().length)
     } else {
         addSuccess(parentDiv, jquerySelector, describeAttribute);
     }
@@ -49,7 +50,7 @@ function validateRegex(jquerySelector, pattern) {
     if(regex.test(value)) {
         addSuccess(parentDiv, jquerySelector, describeAttribute);
     } else {
-        addError(parentDiv, jquerySelector, describeAttribute)
+        addError(parentDiv, jquerySelector, describeAttribute, "not valid format")
     }
 }
 
@@ -62,21 +63,25 @@ function validateConfirm(jquerySelector, jsConfirmElement) {
     if (objectToConfirm == confirmObj) {
         addSuccess(parentDiv, jquerySelector, describeAttribute);
     } else {
-        addError(parentDiv, jquerySelector, describeAttribute)
+        addError(parentDiv, jquerySelector, describeAttribute, "fail confirm, value not match")
 
     }
 }
 
-function addError(jqueryObj, jsSelector, descAttr) {
+function addError(jqueryObj, jsSelector, descAttr, errorMsg) {
+    jqueryObj.find(".errorMessage").remove();
     jqueryObj.removeClass();
     jqueryObj.addClass("form-group has-error has-feedback");
     jqueryObj.find(".glyphicon").removeClass().addClass("glyphicon glyphicon-remove form-control-feedback");
     $(jsSelector).attr('aria-describedby','').attr('aria-describedby', descAttr+'Error2Status');
+    jqueryObj.append("<p class='errorMessage'>" + errorMsg + "</p>");
 }
 
 function addSuccess(jqueryObj, jsSelector, descAttr) {
+    jqueryObj.find(".errorMessage").remove();
     jqueryObj.removeClass();
     jqueryObj.addClass("form-group has-success has-feedback");
     jqueryObj.find(".glyphicon").removeClass().addClass("glyphicon glyphicon-ok form-control-feedback");
     $(jsSelector).attr('aria-describedby','').attr('aria-describedby', descAttr+'Success2Status');
+
 }

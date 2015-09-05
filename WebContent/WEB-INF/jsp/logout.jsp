@@ -25,7 +25,7 @@ $( document ).ready(function() {
 	$('a').button();
 });
 function delayedRedirect(){
-    window.location = "/ESIFloorPlan/"
+    window.location = "/"
 }
 </script>
 

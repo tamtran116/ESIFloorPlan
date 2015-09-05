@@ -22,7 +22,7 @@ import java.util.Set;
 public class MyUserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private UserDaoImpl userDAO;
+    private UserDAO userDAO;
 
     @Transactional(readOnly=true)
     @Override
