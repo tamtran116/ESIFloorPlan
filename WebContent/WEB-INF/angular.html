@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My angular app</title>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+</head>
+<body ng-app="myapp">
+
+<div ng-controller="MyController" >
+    <button ng-click="myData.doClick(item, $event)">Send AJAX Request</button>
+    <br/>
+    <ul>
+        <li ng-repeat="x in myData.names">
+            {{ x.Name + ', ' + x.Country }}
+        </li>
+    </ul>
+    <button ng-click="myData.getPlaces(item, $event)">Send Location Request</button>
+    <br/>
+    <ul>
+        <li ng-repeat="y in myData.places">
+            {{ y.name + ', ' + y.place_id }}
+        </li>
+    </ul>
+</div>
+<p>Click the button to get your coordinates.</p>
+<button onclick="getLocation()">Try It</button>
+<p id="demo"/>
+<button onclick="alertGeo()">Alert it</button>
+<p id="error"/>
+<script>
+    var x = document.getElementById("demo");
+    var y = document.getElementById("error");
+    var long;
+    var lat;
+    $(document).ready(function(){
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(setPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }});
+
+    function setPosition(position) {
+        lat = position.coords.latitude;
+        long = position.coords.longitude;
+        x.innerHTML = "Latitude: " + lat +
+                "<br>Longitude: " + long;
+        alertGeo();
+    }
+    function alertGeo() {
+        alert("lat: " + lat + ", long: " + long + " !");
+    }
+
+    angular.module("myapp", [])
+            .controller("MyController", function($scope, $http) {
+                $scope.myData = {};
+                $scope.myData.doClick = function(item, event) {
+
+                    var responsePromise = $http.get("http://www.w3schools.com/angular/customers.php");
+
+                    responsePromise.success(function(data, status, headers, config) {
+                        $scope.myData.names = data.records;
+                    });
+                    responsePromise.error(function(data, status, headers, config) {
+                        alert("AJAX failed!");
+                    });
+                }
+
+                $scope.myData.getPlaces = function(item, event) {
+                    var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+long+"&radius=500&types=food&key=AIzaSyC0CxtTnmp4k5XWITiFs4o77LU95lIpyRc";
+//                    var url = "http://www.w3schools.com/angular/customers.php";
+                    var responsePromise = $http.get(url);
+
+                    responsePromise.success(function(data, status, headers, config) {
+                        $scope.myData.places = data.results;
+//                        $scope.myData.names = data.records;
+                    });
+                    responsePromise.error(function(data, status, headers, config) {
+                        alert(status);
+                        y.innerHTML = "AJAX failed! URL is: "+ url;
+
+                    });
+                }
+
+
+            } );
+
+</script>
+
+</body>
+</html>
