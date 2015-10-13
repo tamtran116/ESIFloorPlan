@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta http-equiv="Cache-control" content="NO-CACHE">
+    <meta name="description" content="login page for ESI">
+    <meta name="author" content="Tam Tran">
     <title>My angular app</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -115,7 +121,8 @@
                 }
 
                 $scope.myData.getPlaces = function() {
-                    var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+long+"&radius=500&types=food&key=AIzaSyC0CxtTnmp4k5XWITiFs4o77LU95lIpyRc";
+                    var url = "getNearBy.php?lat="+lat+"&lng="+long;
+                    console.log(url);
                     var responsePromise = $http.get(url);
 
                     responsePromise.success(function(data, status, headers, config) {
