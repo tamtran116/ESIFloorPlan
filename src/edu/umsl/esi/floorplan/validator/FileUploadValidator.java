@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import edu.umsl.esi.floorplan.domain.FileUpload;
+import edu.umsl.esi.floorplan.model.FileUpload;
 @Component
 public class FileUploadValidator implements Validator {
 	

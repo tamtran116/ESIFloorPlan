@@ -37,10 +37,10 @@ $( document ).ready(function() {
     	$('a#correctPage').text("Manager");
 		$('a#correctPage').attr("href","manager")
     	$('#role').html("Manager");
-    } else if (role.indexOf('user') != -1) {
-    	$('a#correctPage').text("User");
-		$('a#correctPage').attr("href","user")
-    	$('#role').html("User");
+    } else if (role.indexOf('usersDO') != -1) {
+    	$('a#correctPage').text("UsersDO");
+		$('a#correctPage').attr("href","usersDO")
+    	$('#role').html("UsersDO");
     } else {
     	$('#role').html("Stranger");
     };

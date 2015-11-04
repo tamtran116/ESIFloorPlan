@@ -1,47 +1,90 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/tags"  prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<c:url var="rootURL" value="/"/>
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>ESI Floor Plan</title>
-<link rel="stylesheet" type="text/css" href="resources/css/Reset.css" />
-<link rel="stylesheet" type="text/css" href="resources/css/jquery-ui.css"/>
+	<meta charset="utf-8">
+	<meta content="IE=edge" http-equiv="X-UA-Compatible">
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	<meta content="NO-CACHE" http-equiv="Cache-control">
+	<meta content="All of my receipts in one place" name="description">
+	<meta content="Tam Tran" name="author">
+	<title>My Receipts</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
-<style>
-a {
-font-size:1em !important;
-line-height:10px;
-margin:10px;
-}
-h1 {
-font-size:1.5em;
-}
-</style>
-
-<script src="resources/js/jquery.min.js" type="text/javascript"></script>
-<script src="resources/js/jquery-ui.js" type="text/javascript"></script>
-
-<script>
-$( document ).ready(function() {
-	$('a').button();
-});
-</script>
-
+	<!-- Jquery first-->
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div style="width:60%; margin:0px auto; text-align: center;">
-<img src="resources/images/ExpressScripts-logo1.jpg"/>
-<img src="resources/images/floorplan_icon.png"/><br/><br/>
-	<c:if test="${not empty username}">
-		<h1>Welcome ${username}</h1>
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">My Receipts</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="login">login</a></li>
+				<li><a href="register">register</a></li>
+				<li><a href="uploadfloor">uploadfloor</a></li>
+				<li><a href="receipt">Save My Receipt</a></li>
+			</ul>
+			<c:choose>
+				<c:when test="${not empty username}">
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ${username}</a></li>
+					</ul>
+				</c:when>
+				<c:otherwise>
+					<form class="form-inline navbar-form" action="${rootURL}home" method="POST">
+						<div class="form-group">
+							<label class="sr-only" for="username">User Name</label>
+							<input name="username" type="text" class="form-control" id="username" placeholder="user name">
+						</div>
+						<div class="form-group">
+							<label class="sr-only" for="password">Password</label>
+							<input name="password" type="password" class="form-control" id="password" placeholder="Password">
+						</div>
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+						<div class="checkbox">
+							<label>
+								<input type="checkbox"> Remember me
+							</label>
+						</div>
+						<input class="btn btn-primary " name="submit" type="submit" value="Sign in">
+					</form>
+				</c:otherwise>
+			</c:choose>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
+<div class="container">
+	<div class="">
+		<img src="resources/images/pile_of_receipts.jpg" class="img-responsive center-block"/>
+	</div>
+	<c:if test="${not empty error}">
+		<div class="alert alert-danger" role="alert"><strong>${error}</strong></div>
 	</c:if>
-	<p>Please click on the buttons below to start</p>
-	<c:if test="${empty username}">
-		<a href="login" target="_self">login</a> |
+	<c:if test="${not empty msg}">
+		<div class="alert alert-danger" role="alert"><strong>${msg}</strong></div>
 	</c:if>
-	<a href="register" target="_self">register</a> | <a href="uploadfloor" target="_self">upload floor</a>
 </div>
 </body>
 </html>

@@ -1,9 +1,8 @@
 package edu.umsl.esi.floorplan.services;
 
 import edu.umsl.esi.floorplan.dao.UserDAO;
-import edu.umsl.esi.floorplan.dao.impl.UserDaoImpl;
 import edu.umsl.esi.floorplan.domain.Authority;
-import edu.umsl.esi.floorplan.domain.User;
+import edu.umsl.esi.floorplan.domain.UsersDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,9 +26,9 @@ public class MyUserDetailsServiceImpl implements UserDetailsService {
     @Transactional(readOnly=true)
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userDAO.findByUserName(userName);
-        List<GrantedAuthority> authorities = buildUserAuthority(user.getAuthority());
-        return buildUserForAuthentication(user, authorities);
+        UsersDO usersDO = userDAO.findByUserName(userName);
+        List<GrantedAuthority> authorities = buildUserAuthority(usersDO.getAuthority());
+        return buildUserForAuthentication(usersDO, authorities);
     }
 
     private List<GrantedAuthority> buildUserAuthority(Set<Authority> authorities) {
@@ -43,8 +42,8 @@ public class MyUserDetailsServiceImpl implements UserDetailsService {
         return result;
     }
 
-    private org.springframework.security.core.userdetails.User buildUserForAuthentication(User user, List<GrantedAuthority> authorities) {
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.isEnabled(), true, true, true, authorities);
+    private org.springframework.security.core.userdetails.User buildUserForAuthentication(UsersDO usersDO, List<GrantedAuthority> authorities) {
+        return new org.springframework.security.core.userdetails.User(usersDO.getUsername(), usersDO.getPassword(), usersDO.isEnabled(), true, true, true, authorities);
     }
 
 

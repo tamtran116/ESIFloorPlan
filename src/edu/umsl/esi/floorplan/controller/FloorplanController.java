@@ -1,32 +1,21 @@
 package edu.umsl.esi.floorplan.controller;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.io.File;
 
 import javax.validation.Valid;
 
 import edu.umsl.esi.floorplan.domain.*;
 import edu.umsl.esi.floorplan.services.*;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 /*import com.google.zxing.BarcodeFormat;
@@ -54,8 +43,8 @@ public class FloorplanController {
 	private String ERROR = "you don't have enough power to do this, please practice more";
 	private String floorUrl;
 	private int floorId;
-	private Cube currentCube;
-	private Cube updateCube;
+	private CubeDO currentCubeDO;
+	private CubeDO updateCubeDO;
 	
 	
 	 @RequestMapping(value = "/incorrectPage")
@@ -68,9 +57,9 @@ public class FloorplanController {
          return mov; // logical view name
       }
 	
-    @RequestMapping(value = {"/home", "/"}, method = {RequestMethod.GET, RequestMethod.HEAD})
+    @RequestMapping(value = {"/"}, method = {RequestMethod.GET, RequestMethod.HEAD})
     public ModelAndView homePage() {
-		System.out.println("Going to home page");
+		System.out.println("Going to root context");
 		ModelAndView mov = new ModelAndView("home");
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		String text = "98376373783"; // this is the text that we want to encode
@@ -119,14 +108,14 @@ public class FloorplanController {
     	roles = AuthorityUtils
                 .authorityListToSet(SecurityContextHolder.getContext()
                         .getAuthentication().getAuthorities());
-    	if (currentCube != null) {
-    		mov.addObject("currentCube",currentCube);
+    	if (currentCubeDO != null) {
+    		mov.addObject("currentCube", currentCubeDO);
     	}
-    	if (updateCube != null) {
-    		mov.addObject("updateCube",updateCube);
+    	if (updateCubeDO != null) {
+    		mov.addObject("updateCube", updateCubeDO);
     	}
     	mov.addObject("role",roles);
-    	mov.addObject("request", new Request());
+    	mov.addObject("request", new RequestDO());
     	if (requesService.listRequest() !=null) {
     		mov.addObject("requestList", requesService.listRequest());
     	}
@@ -135,7 +124,7 @@ public class FloorplanController {
     		mov.addObject("cubeList", cubeService.listCubeByFloorId(floorId));
     		mov.addObject("floorId",floorId);
     	}
-		mov.addObject("cube", new Cube());
+		mov.addObject("cube", new CubeDO());
 		
 		return mov;
 	}
@@ -148,83 +137,83 @@ public class FloorplanController {
                         .getAuthentication().getAuthorities());
     	mov.addObject("error",ERROR);
     	mov.addObject("role",roles);
-		mov.addObject("cube", new Cube());
-		mov.addObject("currentCube", new Cube());
-		mov.addObject("updateCube", new Cube());
+		mov.addObject("cube", new CubeDO());
+		mov.addObject("currentCube", new CubeDO());
+		mov.addObject("updateCube", new CubeDO());
 		mov.addObject("cubeList", cubeService.listCube());
-		if (currentCube != null) {
-    		mov.addObject("currentCube",currentCube);
+		if (currentCubeDO != null) {
+    		mov.addObject("currentCube", currentCubeDO);
     	};
-    	if (updateCube != null) {
-    		mov.addObject("updateCube",updateCube);
+    	if (updateCubeDO != null) {
+    		mov.addObject("updateCube", updateCubeDO);
     	};
 		return mov;
 	}
 
 	@RequestMapping(value = "/addCube", method = RequestMethod.POST)
-    public String addCube(@ModelAttribute("cube") @Valid Cube cube, BindingResult result, Model m) {
+    public String addCube(@ModelAttribute("cube") @Valid CubeDO cubeDO, BindingResult result, Model m) {
 		roles = getRoles();
 		if (roles.contains("ROLE_ADMIN")) {
-			cube.setFloor(floorService.getFloorInfo(floorId));
-			cubeService.addCube(cube);
+			cubeDO.setFloor(floorService.getFloorInfo(floorId));
+			cubeService.addCube(cubeDO);
 			return "redirect:/list";
 		} else {
 			return "redirect:/error";
 		}
-    };
+    }
     
     @RequestMapping(value = "/addRequest", method = RequestMethod.POST)
-    public String addCube(@ModelAttribute("request") @Valid Request request, BindingResult result, Model m) {
+    public String addCube(@ModelAttribute("request") @Valid RequestDO requestDO, BindingResult result, Model m) {
 		roles = getRoles();
 		if (roles.contains("ROLE_USER")) {	
-			requesService.addRequest(request);
+			requesService.addRequest(requestDO);
 			return "redirect:/list";
 		} else {
 			return "redirect:/error";
 		}
-    };
+    }
 	
     @RequestMapping("/cube/{cube_id}")
     public String getCube(@PathVariable("cube_id") String cube_id) {
-    	currentCube = cubeService.getCubeInfo(cube_id);
+    	currentCubeDO = cubeService.getCubeInfo(cube_id);
     	return "redirect:/list";
     }
     
     @RequestMapping("/json/{cube_id}")
     @ResponseBody
-    public Cube getCubeJson(@PathVariable("cube_id") String cube_id) {
-    	currentCube = cubeService.getCubeInfo(cube_id);
-    	return currentCube;
+    public CubeDO getCubeJson(@PathVariable("cube_id") String cube_id) {
+    	currentCubeDO = cubeService.getCubeInfo(cube_id);
+    	return currentCubeDO;
     }
     
     @RequestMapping("/listcubejson")
     @ResponseBody
-    public List<Cube> listCubeJson() {
-    	List<Cube> cubeList = cubeService.listCube();
-    	return cubeList;
+    public List<CubeDO> listCubeJson() {
+    	List<CubeDO> cubeDOList = cubeService.listCube();
+    	return cubeDOList;
     }
     
     @RequestMapping("/listfloorjson")
     @ResponseBody
-    public List<FloorEntity> listFloorJson() {
-    	List<FloorEntity> floorList = floorService.listFloor();
+    public List<FloorDO> listFloorJson() {
+    	List<FloorDO> floorList = floorService.listFloor();
     	return floorList;
     }
     
     //using request param
     @RequestMapping(value="/updateCube", method={RequestMethod.GET, RequestMethod.HEAD})
     public String edit(@RequestParam("id")String id) {
-    	updateCube = cubeService.getCubeInfo(id);
+    	updateCubeDO = cubeService.getCubeInfo(id);
     	System.out.println("Get cube for update , cube id = " + id);
-    	System.out.println("Cube from view "+currentCube);
+    	System.out.println("CubeDO from view "+ currentCubeDO);
     	return "redirect:/list";
     }
     
     @RequestMapping(value = "/updateCube", method = RequestMethod.POST )
-    public String updateCube(@ModelAttribute("updateCube") @Valid Cube updateCube) {
+    public String updateCube(@ModelAttribute("updateCube") @Valid CubeDO updateCubeDO) {
 		roles = getRoles();
 		if (roles.contains("ROLE_ADMIN") || roles.contains("ROLE_MANAGER")) {
-			cubeService.updateCube(updateCube);
+			cubeService.updateCube(updateCubeDO);
 			return "redirect:/list";
 		} else {
 			return "redirect:/error";
@@ -233,31 +222,31 @@ public class FloorplanController {
     
     @RequestMapping(value = "/swap", method = {RequestMethod.GET, RequestMethod.HEAD} )
     public String updateCube(@RequestParam("swap-one")String cube1_id, @RequestParam("swap-two")String cube2_id) {
-		Cube cube1 = cubeService.getCubeInfo(cube1_id);
-		Cube cube2 = cubeService.getCubeInfo(cube2_id);
+		CubeDO cubeDO1 = cubeService.getCubeInfo(cube1_id);
+		CubeDO cubeDO2 = cubeService.getCubeInfo(cube2_id);
 		System.out.println("before swap");
-		System.out.println(cube1);
-		System.out.println(cube2);
+		System.out.println(cubeDO1);
+		System.out.println(cubeDO2);
 		
-		String nswap1 = cube2.getEmployee_name();
-		String nswap2 = cube1.getEmployee_name();
-		Boolean oswap1 = cube2.getOccupied();
-		Boolean oswap2 = cube1.getOccupied();
-		String tswap1 = cube2.getTeam_leader();
-		String tswap2 = cube1.getTeam_leader();
+		String nswap1 = cubeDO2.getEmployee_name();
+		String nswap2 = cubeDO1.getEmployee_name();
+		Boolean oswap1 = cubeDO2.getOccupied();
+		Boolean oswap2 = cubeDO1.getOccupied();
+		String tswap1 = cubeDO2.getTeam_leader();
+		String tswap2 = cubeDO1.getTeam_leader();
 		
-		cube1.setEmployee_name(nswap1);
-		cube2.setEmployee_name(nswap2);
-		cube1.setOccupied(oswap1);
-		cube2.setOccupied(oswap2);
-		cube1.setTeam_leader(tswap1);
-		cube2.setTeam_leader(tswap2);
+		cubeDO1.setEmployee_name(nswap1);
+		cubeDO2.setEmployee_name(nswap2);
+		cubeDO1.setOccupied(oswap1);
+		cubeDO2.setOccupied(oswap2);
+		cubeDO1.setTeam_leader(tswap1);
+		cubeDO2.setTeam_leader(tswap2);
 		
-		cubeService.updateCube(cube1);
-		cubeService.updateCube(cube2);
+		cubeService.updateCube(cubeDO1);
+		cubeService.updateCube(cubeDO2);
 		System.out.println("after swap");
-		System.out.println(cube1);
-		System.out.println(cube2);
+		System.out.println(cubeDO1);
+		System.out.println(cubeDO2);
 		return "redirect:/list";
     }
     
@@ -274,41 +263,19 @@ public class FloorplanController {
     
 //	@RequestMapping("/{team_leader}")
 //    public String getCubeByTeam(@PathVariable("team_leader") String team_leader, Map<String, Object> map) {
-//		map.put("cube", new Cube());
+//		map.put("cube", new CubeDO());
 //    	map.put("cubeList",cubeService.listCubesByTeam(team_leader));
 //    	return "floor";
 //    }
 //
 //	@RequestMapping("/{team_leader}/{c_choice}")
 //    public String getClosest(@PathVariable("team_leader") String team_leader,@PathVariable("c_choice") int c_choice, Map<String, Object> map) {
-//		map.put("cube", new Cube());
+//		map.put("cube", new CubeDO());
 //    	map.put("cubeList",cubeService.getClosest(team_leader,c_choice));
 //    	return "floor";
 //    }
 
-	//Spring Security see this :
-	@RequestMapping(value = "/login",  method = {RequestMethod.GET, RequestMethod.HEAD})
-	public ModelAndView login(
-			@RequestParam(value = "error", required = false) String error) {
 
-		ModelAndView model = new ModelAndView();
-		if (error != null) {
-			model.addObject("error", "Invalid username and password!");
-		}
-		model.setViewName("login");
-		return model;
-	}
-    @RequestMapping(value = "/accessdenied", method = {RequestMethod.GET, RequestMethod.HEAD})
-    public String loginerror(Map<String, Object> map) {
-        map.put("error", "true");
-        return "denied";
-    }
-
-    @RequestMapping(value = "/logout", method = {RequestMethod.GET, RequestMethod.HEAD})
-    public String logout(Map map) {
-        return "logout";
-    }
-    
     public Set<String> getRoles() {
     	roles = AuthorityUtils
                 .authorityListToSet(SecurityContextHolder.getContext()
@@ -316,18 +283,5 @@ public class FloorplanController {
     	return roles;
     }
 
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String registerUser(@ModelAttribute("userRegisterRequest") @Valid UserRegisterRequest userRegisterRequest) {
-		System.out.println(userRegisterRequest.toString());
-		//TODO: server side validation
-		userService.addUser(userRegisterRequest);
 
-		return null;
-	}
-
-	@RequestMapping(value = "/register", method = {RequestMethod.GET, RequestMethod.HEAD})
-	public String register(Model m) {
-		m.addAttribute("userInfo", new UserInfo());
-		return "register";
-	}
 }

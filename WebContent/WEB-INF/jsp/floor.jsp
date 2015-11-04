@@ -26,13 +26,13 @@
 <body ondragstart="return false;" ondrop="return false;">
 	<div id="container">
 		<div id="img-wrapper"><img id="map" src="${floorUrl}" />
-			<c:if  test="${!empty cubeList}">
-				<c:forEach items="${cubeList}" var="cube">
-					<c:if test="${cube.occupied != 'true'}">
-						<div draggable="true" id="${cube.cube_id}" class="cube-open clickable swappable" style="left:${cube.x1}px; top:${cube.y1}px; width:${cube.width}px; height:${cube.height}px;"><p>${cube.employee_name}<br><span class="cube_id">${cube.cube_id}</span></p><a name="${cube.cube_id}" class="hidden">${cube.cube_id}</a></div>
+			<c:if  test="${!empty cubeDOList}">
+				<c:forEach items="${cubeDOList}" var="cubeDO">
+					<c:if test="${cubeDO.occupied != 'true'}">
+						<div draggable="true" id="${cubeDO.cube_id}" class="cubeDO-open clickable swappable" style="left:${cubeDO.x1}px; top:${cubeDO.y1}px; width:${cubeDO.width}px; height:${cubeDO.height}px;"><p>${cubeDO.employee_name}<br><span class="cube_id">${cubeDO.cube_id}</span></p><a name="${cubeDO.cube_id}" class="hidden">${cubeDO.cube_id}</a></div>
 					</c:if>
-					<c:if test="${cube.occupied != 'false'}">
-						<div draggable="true" id="${cube.cube_id}" class="cube-close clickable swappable" style="left:${cube.x1}px; top:${cube.y1}px; width:${cube.width}px; height:${cube.height}px;"><p>${cube.employee_name}<br><span class="cube_id">${cube.cube_id}</span><br><span class="team" style="color:#00CCFF;">${cube.team_leader}</span></p></div>
+					<c:if test="${cubeDO.occupied != 'false'}">
+						<div draggable="true" id="${cubeDO.cube_id}" class="cubeDO-close clickable swappable" style="left:${cubeDO.x1}px; top:${cubeDO.y1}px; width:${cubeDO.width}px; height:${cubeDO.height}px;"><p>${cubeDO.employee_name}<br><span class="cube_id">${cubeDO.cube_id}</span><br><span class="team" style="color:#00CCFF;">${cubeDO.team_leader}</span></p></div>
 					</c:if>
 				</c:forEach>
 			</c:if>
@@ -47,13 +47,13 @@
 				
 				Hello <h1 id="user_role" style="color:red; display:inline-block;">${role}</h1>, <br/> <h3 style="color:blue;">${error}</h3><br/>
 				Welcome Back to ESI Floor Plan
-				<p>Please click on one of these accordions below to customize the cube</p><br/>
+				<p>Please click on one of these accordions below to customize the cubeDO</p><br/>
 				Click on the gear button on the top left of your screen to hide the tool box.
 			</div>
 			<h3>Add Cube</h3>
 			<div>
-				<form:form id="form" name="form" method="post" action="addCube" commandName="cube" target="_self" onsubmit="return validateForm(this)">
-					<p style="font-size: 0.8em;">To add cube, Please select the area of the cube <br/>by clicking and dragging on your designated position.</p> 
+				<form:form id="form" name="form" method="post" action="addCube" commandName="cubeDO" target="_self" onsubmit="return validateForm(this)">
+					<p style="font-size: 0.8em;">To add cubeDO, Please select the area of the cubeDO <br/>by clicking and dragging on your designated position.</p>
 					<h2>Cube ID</h2><form:input path="cube_id" id="cube_id"/>
 					<p>Occupy status:</p><form:radiobutton path="occupied" value="true"/>Yes
 		            <form:radiobutton path="occupied" value="false"/>No
@@ -90,9 +90,9 @@
 			</div>
 			<h3>Update Cube</h3>
 			<div id="u-form">
-				<!-- Update Cube -->
+				<!-- Update CubeDO -->
 				<c:if test="${not empty currentCube}">
-				<form:form id="update-form" name="udpate-form" method="post" action="updateCube" commandName="currentCube" target="_self" onsubmit="return validateUpdate(this)">
+				<form:form id="update-form" name="udpate-form" method="post" action="updateCubeDO" commandName="currentCube" target="_self" onsubmit="return validateUpdate(this)">
 					<h1 style="color:blue;">Update Cube</h1>
 					<h2>Cube ID</h2><form:input path="cube_id" id="cube_id" readonly="true"/>
 					<p>Occupy status:</p>
@@ -128,24 +128,24 @@
 				          <input type="reset"> <input type="submit" value="Update"><!-- <button id="ajax">Submit By Ajax</button> -->
 				</form:form></c:if>
 			</div>
-			<!-- /update Cube -->
+			<!-- /update CubeDO -->
 			<h3>Swap Cube</h3>
 			<div>
 				<form action="swap" method="get" accept-charset="UTF-8">
-					<p>Begin by clicking on the first cube input<br/>Then clicking on any cube<br/> when you finish choosing the first cube, please click on the second input to pick the second cube</p>
+					<p>Begin by clicking on the first cubeDO input<br/>Then clicking on any cubeDO<br/> when you finish choosing the first cubeDO, please click on the second input to pick the second cubeDO</p>
 					<p>First Cube</p><input id="swap-one" name="swap-one" type="text"/>
-					<p>Second Cube</p><p>Please choose the second cube</p>
+					<p>Second Cube</p><p>Please choose the second cubeDO</p>
 					<input id="swap-two" name="swap-two" type="text"/>
 					<p>Please pick which info you want to swap</p>
 					<input type="checkbox" name="swapinfo" value="name" checked disabled>Name only<br>
 					<!-- <input type="checkbox" name="swapinfo" value="ipphone" readonly > -->IP Phone (not implemented yet)<br>
-					<!-- <input type="checkbox" name="swapinfo" value="cube" readonly > -->whole cube (not implemented yet)<br> 
+					<!-- <input type="checkbox" name="swapinfo" value="cubeDO" readonly > -->whole cubeDO (not implemented yet)<br>
 					<input type="reset"/> | <input type="submit" value="submit"/>
 				</form>
 			</div>
 			<h3>Cube Database</h3>
 			<div><span style="color:red;">${message}</span>
-				<c:if  test="${!empty cubeList}">
+				<c:if  test="${!empty cubeDOList}">
 					<table id="data-table">
 					<thead>
 						<tr>
@@ -157,13 +157,13 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach items="${cubeList}" var="cube">
-						    <tr id="${cube.cube_id}">
-						        <td><a href="#${cube.cube_id}" class="data-cube-id">${cube.cube_id}</a></td>
-						        <td>${cube.employee_name}</td>
-						        <td>${cube.occupied}</td>
-						        <td><a href="${cube.team_leader}">${cube.team_leader}</a></td>
-						        <td><a href="deleteCube/${cube.cube_id}" onclick="return confirm('Are you sure want to delete this cube?')">Delete</a></td>
+						<c:forEach items="${cubeDOList}" var="cubeDO">
+						    <tr id="${cubeDO.cube_id}">
+						        <td><a href="#${cubeDO.cube_id}" class="data-cubeDO-id">${cubeDO.cube_id}</a></td>
+						        <td>${cubeDO.employee_name}</td>
+						        <td>${cubeDO.occupied}</td>
+						        <td><a href="${cubeDO.team_leader}">${cubeDO.team_leader}</a></td>
+						        <td><a href="deleteCube/${cubeDO.cube_id}" onclick="return confirm('Are you sure want to delete this cubeDO?')">Delete</a></td>
 						    </tr>
 						</c:forEach>
 					</tbody>
@@ -171,7 +171,7 @@
 				</c:if>
 			</div>
 			<h3>Cube information</h3>
-				<div class="cube-info">
+				<div class="cubeDO-info">
 					<p>Cube ID: <span id="delCubeId">${currentCube.cube_id}</span></p>
 					<p>Employee Name: ${currentCube.employee_name}</p>
 					<p>Occupied: ${currentCube.occupied}</p>
@@ -182,7 +182,7 @@
 					<p>Cordinate: Y2 ${currentCube.y2}</p>
 					<p>Height: ${currentCube.height}</p>
 					<p>Width: ${currentCube.width}</p>
-					<a href="deleteCube/${currentCube.cube_id}" class="delCube" onclick="return confirm('Are you sure want to delete this cube?')">Delete</a>
+					<a href="deleteCube/${currentCube.cube_id}" class="delCube" onclick="return confirm('Are you sure want to delete this cubeDO?')">Delete</a>
 					<span id="currentx1" style="display:none">${currentCube.x1}</span>
 					<span id="currenty1" style="display:none">${currentCube.y1}</span>
 					<span id="currentx2" style="display:none">${currentCube.x2}</span>
@@ -232,16 +232,16 @@
 				</div>
 		</div><!-- End accordion -->
 		<div id="commands"><br/>
-		<p>To save time clicking and dragging, please hit on the click on any of the cube open or closed cube and hit the "pre-location" button and you will have the size of the cube. 
-		Then you can click on the selected area and drag to a new cube and click on add cube to save the new information for the new cube. </p>
+		<p>To save time clicking and dragging, please hit on the click on any of the cubeDO open or closed cubeDO and hit the "pre-location" button and you will have the size of the cubeDO.
+		Then you can click on the selected area and drag to a new cubeDO and click on add cubeDO to save the new information for the new cubeDO. </p>
 		<button onclick="return window.location.assign('/list')">Refresh</button> |
 		<a class="j-ui-button" href="logout" target="_self">Log Out</a> | 
 		<button type="button" id="pre-locaton">Pre-location</button><br/><br/>
-		Optimization Option will be available when you click on the team name inside the cube database
+		Optimization Option will be available when you click on the team name inside the cubeDO database
 		<hr>
 		<a class="j-ui-button" href="uploadfloor" target="_self">Upload Floor</a>
 			<div id="optimize" style="font-size:1em !important;">
-			Number of Closest Open Cube for <span id="current-team">${cubeList[0].team_leader}</span> Team
+			Number of Closest Open Cube for <span id="current-team">${cubeDOList[0].team_leader}</span> Team
 			
 			<select id="closestOpen">
 			  <option value="1">1</option>
@@ -256,8 +256,8 @@
 			  <option value="10">10</option>
 			</select>
 			
-			<c:if  test="${!empty cubeList}">
-					<table id="table-open-cubes">
+			<c:if  test="${!empty cubeDOList}">
+					<table id="table-open-cubeDOs">
 					<thead>
 						<tr>
 						    <th>Cube ID</th>
@@ -268,14 +268,14 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach items="${cubeList}" var="cube">
-							<c:if test="${cube.occupied != 'true'}">
-						    <tr id="${cube.cube_id}">
-						        <td><a href="#${cube.cube_id}" class="open-cube-id" onclick="customSlide()">${cube.cube_id}</a></td>
-						        <td>${cube.employee_name}</td>
-						        <td>${cube.occupied}</td>
-						        <td><a href="${cube.team_leader}">${cube.team_leader}</a></td>
-						        <td><a href="deleteCube/${cube.cube_id}" onclick="return confirm('Are you sure want to delete this cube?')">Delete</a></td>
+						<c:forEach items="${cubeDOList}" var="cubeDO">
+							<c:if test="${cubeDO.occupied != 'true'}">
+						    <tr id="${cubeDO.cube_id}">
+						        <td><a href="#${cubeDO.cube_id}" class="open-cubeDO-id" onclick="customSlide()">${cubeDO.cube_id}</a></td>
+						        <td>${cubeDO.employee_name}</td>
+						        <td>${cubeDO.occupied}</td>
+						        <td><a href="${cubeDO.team_leader}">${cubeDO.team_leader}</a></td>
+						        <td><a href="deleteCube/${cubeDO.cube_id}" onclick="return confirm('Are you sure want to delete this cubeDO?')">Delete</a></td>
 						    </tr>
 						    </c:if>
 						</c:forEach>
@@ -286,11 +286,11 @@
 			</div><!-- End optimize -->
 		</div><!-- End commands -->
 	</div><!-- End resizer -->
-	<div id="accordion-user">
+	<div id="accordion-usersDO">
 		<h3>Cube Data</h3>
 		<div style="background-color: white;">
-			<c:if  test="${!empty cubeList}">
-				<table id="user-data-table">
+			<c:if  test="${!empty cubeDOList}">
+				<table id="usersDO-data-table">
 				<thead>
 					<tr>
 					    <th>Cube ID</th>
@@ -300,12 +300,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items="${cubeList}" var="cube">
-					    <tr id="${cube.cube_id}">
-					        <td><a href="#${cube.cube_id}" class="data-cube-id">${cube.cube_id}</a></td>
-					        <td>${cube.employee_name}</td>
-					        <td>${cube.occupied}</td>
-					        <td>${cube.team_leader}</td>
+					<c:forEach items="${cubeDOList}" var="cubeDO">
+					    <tr id="${cubeDO.cube_id}">
+					        <td><a href="#${cubeDO.cube_id}" class="data-cubeDO-id">${cubeDO.cube_id}</a></td>
+					        <td>${cubeDO.employee_name}</td>
+					        <td>${cubeDO.occupied}</td>
+					        <td>${cubeDO.team_leader}</td>
 					    </tr>
 					</c:forEach>
 				</tbody>
@@ -313,8 +313,8 @@
 			</c:if>
 		</div>
 		<h3>Request</h3>
-		<div><c:if  test="${!empty request}">
-			<form:form id="request-form" name="request-form" method="post" action="addRequest" commandName="request" target="_self" onsubmit="return validateRequest(this)">
+		<div><c:if  test="${!empty requestDO}">
+			<form:form id="requestDO-form" name="requestDO-form" method="post" action="addRequest" commandName="requestDO" target="_self" onsubmit="return validateRequest(this)">
 			<table>
 				<tr>
 					<td>Employee name: (required)</td>
@@ -337,7 +337,7 @@
 					<td><form:input path="request_team"/></td>
 				</tr>
 				<tr>
-					<td>Other request : (required)</td>
+					<td>Other requestDO : (required)</td>
 					<td><form:textarea id="other_request" path="other_request"/></td>
 				</tr>
 			</table>
@@ -346,7 +346,7 @@
 		</div><!-- /Test Form -->
 		<h3>Actions</h3>
 		<div><button onclick='goHome()'>Log Out</button> | <button onclick='refresh()'>refresh</button></div>
-	</div><!-- /accordion user -->
+	</div><!-- /accordion usersDO -->
 	<!-- <img id="minimap" class="shadow"/> -->
 	<script src="resources/js/newfloor.js" type="text/javascript"></script>
 	</body>
