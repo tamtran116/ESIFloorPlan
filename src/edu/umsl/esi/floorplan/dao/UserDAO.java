@@ -1,15 +1,15 @@
 package edu.umsl.esi.floorplan.dao;
 
-import edu.umsl.esi.floorplan.domain.User;
-import edu.umsl.esi.floorplan.domain.UserInfo;
+import edu.umsl.esi.floorplan.domain.UsersDO;
+import edu.umsl.esi.floorplan.domain.UserInfoDO;
 
 /**
  * Created by Tam Tran on 7/18/2015.
  */
 public interface UserDAO {
-    User findByUserName(String username);
+    UsersDO findByUserName(String username);
 
-    UserInfo addUserInfo(UserInfo userInfo);
+    UserInfoDO addUserInfo(UserInfoDO userInfoDO);
 
-    void addUser(User user);
+    void addUser(UsersDO usersDO);
 }

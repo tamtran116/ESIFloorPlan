@@ -1,8 +1,8 @@
 package edu.umsl.esi.floorplan.dao.impl;
 
 import edu.umsl.esi.floorplan.dao.UserDAO;
-import edu.umsl.esi.floorplan.domain.User;
-import edu.umsl.esi.floorplan.domain.UserInfo;
+import edu.umsl.esi.floorplan.domain.UsersDO;
+import edu.umsl.esi.floorplan.domain.UserInfoDO;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -24,34 +24,34 @@ public class UserDaoImpl implements UserDAO {
     private SessionFactory sessionFactory;
 
     @Override
-    public User findByUserName(String username) {
-        List<User> users = new ArrayList<User>();
+    public UsersDO findByUserName(String username) {
+        List<UsersDO> usersDOs = new ArrayList<UsersDO>();
 
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class)
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(UsersDO.class)
                 .add(Restrictions.eq("username", username ));
 
-        /*users = sessionFactory.getCurrentSession()
-                .createQuery("from User where username=?")
+        /*usersDOs = sessionFactory.getCurrentSession()
+                .createQuery("from UsersDO where username=?")
                 .setParameter(0, username)
                 .list();*/
 
-        users = criteria.list();
+        usersDOs = criteria.list();
 
-        if (users.size() > 0) {
-            return users.get(0);
+        if (usersDOs.size() > 0) {
+            return usersDOs.get(0);
         } else {
             return null;
         }
     }
 
     @Override
-    public UserInfo addUserInfo(UserInfo userInfo) {
-        sessionFactory.getCurrentSession().save(userInfo);
-        return userInfo;
+    public UserInfoDO addUserInfo(UserInfoDO userInfoDO) {
+        sessionFactory.getCurrentSession().save(userInfoDO);
+        return userInfoDO;
     }
 
     @Override
-    public void addUser(User user) {
-        sessionFactory.getCurrentSession().save(user);
+    public void addUser(UsersDO usersDO) {
+        sessionFactory.getCurrentSession().save(usersDO);
     }
 }

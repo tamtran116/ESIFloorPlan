@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name="REQUEST")
-public class Request implements Serializable{
+public class RequestDO implements Serializable{
     
 	@Id
 	@Column(name="REQUEST_ID")
@@ -95,7 +95,7 @@ public class Request implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Request [request_id=" + request_id + ", employee_name="
+		return "RequestDO [request_id=" + request_id + ", employee_name="
 				+ employee_name + ", employee_phone=" + employee_phone
 				+ ", employee_email=" + employee_email + ", request_cube="
 				+ request_cube + ", request_team=" + request_team

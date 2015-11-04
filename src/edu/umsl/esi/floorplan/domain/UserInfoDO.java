@@ -4,15 +4,13 @@ import org.apache.commons.lang3.builder.RecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Tam Tran on 7/18/2015.
  */
 @Entity
 @Table(name = "USER_INFO")
-public class UserInfo {
+public class UserInfoDO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -55,8 +53,8 @@ public class UserInfo {
     @Column(name = "ADDRESS_COUNTRY")
     private String addressCountry;
 
-    @OneToOne(mappedBy = "userInfo")
-    private User user;
+    @OneToOne(mappedBy = "userInfoDO")
+    private UsersDO usersDO;
 
     public Long getUserInfoId() {
         return userInfoId;
@@ -162,12 +160,12 @@ public class UserInfo {
         this.addressCountry = addressCountry;
     }
 
-    public User getUser() {
-        return user;
+    public UsersDO getUsersDO() {
+        return usersDO;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsersDO(UsersDO usersDO) {
+        this.usersDO = usersDO;
     }
 
     @Override

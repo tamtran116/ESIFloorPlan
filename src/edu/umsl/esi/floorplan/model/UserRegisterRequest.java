@@ -1,4 +1,4 @@
-package edu.umsl.esi.floorplan.domain;
+package edu.umsl.esi.floorplan.model;
 
 /**
  * Created by Tam Tran on 9/5/2015.

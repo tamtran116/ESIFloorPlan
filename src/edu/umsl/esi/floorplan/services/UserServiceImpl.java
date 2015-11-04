@@ -1,9 +1,9 @@
 package edu.umsl.esi.floorplan.services;
 
 import edu.umsl.esi.floorplan.dao.UserDAO;
-import edu.umsl.esi.floorplan.domain.UserInfo;
-import edu.umsl.esi.floorplan.domain.UserRegisterRequest;
-import edu.umsl.esi.floorplan.domain.User;
+import edu.umsl.esi.floorplan.domain.UserInfoDO;
+import edu.umsl.esi.floorplan.model.UserRegisterRequest;
+import edu.umsl.esi.floorplan.domain.UsersDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,22 +19,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(UserRegisterRequest userRegisterRequest) {
-        UserInfo userInfo = new UserInfo();
-        User user = new User();
+        UserInfoDO userInfoDO = new UserInfoDO();
+        UsersDO usersDO = new UsersDO();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String hashedPassword = passwordEncoder.encode(userRegisterRequest.getPassword());
 
-        userInfo.setFirstName(userRegisterRequest.getFirstName());
-        userInfo.setLastName(userRegisterRequest.getLastName());
-        userInfo.setPhoneNumber(userRegisterRequest.getPhoneNumber());
-        userInfo.setEmail(userRegisterRequest.getEmail());
+        userInfoDO.setFirstName(userRegisterRequest.getFirstName());
+        userInfoDO.setLastName(userRegisterRequest.getLastName());
+        userInfoDO.setPhoneNumber(userRegisterRequest.getPhoneNumber());
+        userInfoDO.setEmail(userRegisterRequest.getEmail());
 
-        user.setUsername(userRegisterRequest.getUserName());
-        user.setPassword(hashedPassword);
-        userDao.addUserInfo(userInfo);
+        usersDO.setUsername(userRegisterRequest.getUserName());
+        usersDO.setPassword(hashedPassword);
+        userDao.addUserInfo(userInfoDO);
 
-        user.setUserInfoId(userInfo.getUserInfoId());
-        user.setEnabled(true);
-        userDao.addUser(user);
+        usersDO.setUserInfoId(userInfoDO.getUserInfoId());
+        usersDO.setEnabled(true);
+        userDao.addUser(usersDO);
     }
 }

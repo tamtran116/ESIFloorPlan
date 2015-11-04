@@ -2,12 +2,11 @@ package edu.umsl.esi.floorplan.dao;
 
 import java.util.List;
 
+import edu.umsl.esi.floorplan.domain.RequestDO;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import edu.umsl.esi.floorplan.domain.Request;
 
 @Transactional
 @Repository
@@ -16,31 +15,31 @@ public class requestDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 	
-	public void addRequest(Request request) {
-        sessionFactory.getCurrentSession().save(request);
-        System.out.print("Saved " + request.toString());
+	public void addRequest(RequestDO requestDO) {
+        sessionFactory.getCurrentSession().save(requestDO);
+        System.out.print("Saved " + requestDO.toString());
 	}
 	
-	public void updateRequest(Request request) {
-		sessionFactory.getCurrentSession().update(request);
+	public void updateRequest(RequestDO requestDO) {
+		sessionFactory.getCurrentSession().update(requestDO);
 	}
 	
 	public void removeRequest(int request_id) {
-		Request request = (Request) sessionFactory.getCurrentSession().load(Request.class, request_id);
-		if (null!= request) {
-			sessionFactory.getCurrentSession().delete(request);
+		RequestDO requestDO = (RequestDO) sessionFactory.getCurrentSession().load(RequestDO.class, request_id);
+		if (null!= requestDO) {
+			sessionFactory.getCurrentSession().delete(requestDO);
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
-    public List<Request> listRequest() {
+    public List<RequestDO> listRequest() {
  
         return sessionFactory.getCurrentSession().createQuery("from Request").list();
     }
 	
-	public Request getRequestById(int request_id) {
-		Request request = (Request) sessionFactory.getCurrentSession().load(Request.class, request_id);
-		return request;
+	public RequestDO getRequestById(int request_id) {
+		RequestDO requestDO = (RequestDO) sessionFactory.getCurrentSession().load(RequestDO.class, request_id);
+		return requestDO;
 	}
 	
 	public SessionFactory getSessionFactory() {

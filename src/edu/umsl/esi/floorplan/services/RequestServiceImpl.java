@@ -2,13 +2,12 @@ package edu.umsl.esi.floorplan.services;
 
 import java.util.List;
 
+import edu.umsl.esi.floorplan.domain.RequestDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.umsl.esi.floorplan.dao.CubeDAO;
 import edu.umsl.esi.floorplan.dao.requestDAO;
-import edu.umsl.esi.floorplan.domain.Request;
 
 @Service
 public class RequestServiceImpl implements RequestService {
@@ -18,20 +17,20 @@ public class RequestServiceImpl implements RequestService {
 	
 	@Override
 	@Transactional
-	public void addRequest(Request re) {
+	public void addRequest(RequestDO re) {
 		// TODO Auto-generated method stub
 		requestDao.addRequest(re);
 	}
 
 	@Override
 	@Transactional
-	public List<Request> listRequest() {
+	public List<RequestDO> listRequest() {
 		return requestDao.listRequest();
 	}
 
 	@Override
 	@Transactional
-	public void updateRequest(Request re) {
+	public void updateRequest(RequestDO re) {
 		// TODO Auto-generated method stub
 		requestDao.updateRequest(re);
 	}

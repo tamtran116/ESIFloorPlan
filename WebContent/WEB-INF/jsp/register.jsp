@@ -74,7 +74,7 @@
 					<span id="ConfirmedEmailError2Status" class="sr-only">(error)</span>
 				</div>
 
-				<!-- TODO: real time validation (promises) / check if user name is taken-->
+				<!-- TODO: real time validation (promises) / check if usersDO name is taken-->
 				<div class="form-group">
 					<label for="formUserName" class="sr-only">User Name</label>
 					<input type="text" name="userName" id="formUserName"  placeholder="Username" th:field="*{userName}" class="form-control" aria-describedby=""/>

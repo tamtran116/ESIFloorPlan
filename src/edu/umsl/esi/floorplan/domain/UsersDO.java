@@ -9,26 +9,26 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "USERS")
-public class User {
+public class UsersDO {
 
     private String username;
     private String password;
     private boolean enabled;
     private Set<Authority> userRole = new HashSet<Authority>(0);
     private Long userInfoId;
-    private UserInfo userInfo;
+    private UserInfoDO userInfoDO;
 
-    public User() {
+    public UsersDO() {
     }
 
-    public User(String username, String password, boolean enabled) {
+    public UsersDO(String username, String password, boolean enabled) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
     }
 
-    public User(String username, String password,
-                boolean enabled, Set<Authority> userRole) {
+    public UsersDO(String username, String password,
+                   boolean enabled, Set<Authority> userRole) {
         this.username = username;
         this.password = password;
         this.enabled = enabled;
@@ -65,7 +65,7 @@ public class User {
         this.enabled = enabled;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usersDO")
     public Set<Authority> getAuthority() {
         return this.userRole;
     }
@@ -85,11 +85,11 @@ public class User {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_INFO_ID", insertable = false, updatable = false)
-    public UserInfo getUserInfo() {
-        return userInfo;
+    public UserInfoDO getUserInfoDO() {
+        return userInfoDO;
     }
 
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
+    public void setUserInfoDO(UserInfoDO userInfoDO) {
+        this.userInfoDO = userInfoDO;
     }
 }
