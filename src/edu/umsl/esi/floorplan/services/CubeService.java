@@ -2,16 +2,16 @@ package edu.umsl.esi.floorplan.services;
 
 import java.util.List;
 
-import edu.umsl.esi.floorplan.domain.Cube;
+import edu.umsl.esi.floorplan.domain.CubeDO;
 
 public interface CubeService {
-	public void addCube(Cube cube);
-	public Cube getCubeInfo(String cube_id);
-	public List<Cube> listCube();
-	public List<Cube> listCubeByFloorId(int floorId);
-	public List<Cube> listFreeCube();
-	public List<Cube> listCubesByTeam(String team);
-	public List<Cube> getClosest(String team, int c_choice);
-	public void updateCube(Cube cube);
+	public void addCube(CubeDO cubeDO);
+	public CubeDO getCubeInfo(String cube_id);
+	public List<CubeDO> listCube();
+	public List<CubeDO> listCubeByFloorId(int floorId);
+	public List<CubeDO> listFreeCube();
+	public List<CubeDO> listCubesByTeam(String team);
+	public List<CubeDO> getClosest(String team, int c_choice);
+	public void updateCube(CubeDO cubeDO);
 	public void removeCube(String cube_id);
 }

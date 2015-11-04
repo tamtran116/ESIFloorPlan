@@ -11,14 +11,14 @@ import javax.persistence.*;
                 columnNames = { "authority", "username" }))
 public class Authority {
     private Integer userRoleId;
-    private User user;
+    private UsersDO usersDO;
     private String authority;
 
     public Authority() {
     }
 
-    public Authority(User user, String authority) {
-        this.user = user;
+    public Authority(UsersDO usersDO, String authority) {
+        this.usersDO = usersDO;
         this.authority = authority;
     }
 
@@ -36,12 +36,12 @@ public class Authority {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username", nullable = false)
-    public User getUser() {
-        return this.user;
+    public UsersDO getUsersDO() {
+        return this.usersDO;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsersDO(UsersDO usersDO) {
+        this.usersDO = usersDO;
     }
 
     @Column(name = "authority", nullable = false, length = 45)

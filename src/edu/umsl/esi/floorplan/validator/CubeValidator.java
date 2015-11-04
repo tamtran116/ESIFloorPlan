@@ -1,18 +1,18 @@
 package edu.umsl.esi.floorplan.validator;
 
+import edu.umsl.esi.floorplan.domain.CubeDO;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import edu.umsl.esi.floorplan.domain.Cube;
 @Component
 public class CubeValidator implements Validator{
 
 	@Override
 	public boolean supports(Class<?> clazz) {
 		// TODO Auto-generated method stub
-		return Cube.class.isAssignableFrom(clazz);
+		return CubeDO.class.isAssignableFrom(clazz);
 	}
 
 	@Override

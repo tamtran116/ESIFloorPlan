@@ -3,18 +3,12 @@ package edu.umsl.esi.floorplan.config;
 /**
  * Created by Tam Tran on 2/21/2015.
  */
-import edu.umsl.esi.floorplan.domain.Cube;
-import edu.umsl.esi.floorplan.domain.FileUpload;
-import edu.umsl.esi.floorplan.domain.FloorEntity;
-import edu.umsl.esi.floorplan.domain.Request;
-import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.Ordered;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
@@ -51,7 +45,7 @@ public class ApplicationContextConfig extends WebMvcConfigurerAdapter {
     @Bean(name = "sessionFactory")
     public SessionFactory getSessionFactory(DataSource dataSource) {
         LocalSessionFactoryBuilder sessionBuilder = new LocalSessionFactoryBuilder(dataSource);
-//        sessionBuilder.addAnnotatedClasses(Cube.class, FileUpload.class, FloorEntity.class, Request.class);
+//        sessionBuilder.addAnnotatedClasses(CubeDO.class, FileUpload.class, FloorDO.class, RequestDO.class);
         sessionBuilder.scanPackages("edu.umsl.esi.floorplan.domain");
         sessionBuilder.addProperties(getHibernateProperties());
         return sessionBuilder.buildSessionFactory();
@@ -89,6 +83,20 @@ public class ApplicationContextConfig extends WebMvcConfigurerAdapter {
         resolver.setDefaultEncoding("utf-8");
         return resolver;
     }
+
+    /*@Bean(name="simpleMappingExceptionResolver")
+    public SimpleMappingExceptionResolver createSimpleMappingExceptionResolver() {
+        SimpleMappingExceptionResolver r = new SimpleMappingExceptionResolver();
+
+        Properties mappings = new Properties();
+        mappings.setProperty("DatabaseException", "databaseError");
+        mappings.setProperty("InvalidCreditCardException", "creditCardError");
+        r.setExceptionMappings(mappings);  // None by default
+        r.setDefaultErrorView("error");    // No default
+        r.setExceptionAttribute("ex");     // Default is "exception"
+        r.setWarnLogCategory("example.MvcLogger");     // No default
+        return r;
+    }*/
 
     /*@Override
     public void addViewControllers(ViewControllerRegistry registry) {
