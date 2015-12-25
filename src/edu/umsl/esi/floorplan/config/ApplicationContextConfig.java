@@ -3,6 +3,7 @@ package edu.umsl.esi.floorplan.config;
 /**
  * Created by Tam Tran on 2/21/2015.
  */
+import edu.umsl.esi.floorplan.interceptor.SampleInterceptor;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,9 +13,12 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.sql.DataSource;
@@ -84,19 +88,26 @@ public class ApplicationContextConfig extends WebMvcConfigurerAdapter {
         return resolver;
     }
 
-    /*@Bean(name="simpleMappingExceptionResolver")
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new SampleInterceptor());
+    }
+
+    @Bean(name="simpleMappingExceptionResolver")
     public SimpleMappingExceptionResolver createSimpleMappingExceptionResolver() {
         SimpleMappingExceptionResolver r = new SimpleMappingExceptionResolver();
 
         Properties mappings = new Properties();
-        mappings.setProperty("DatabaseException", "databaseError");
-        mappings.setProperty("InvalidCreditCardException", "creditCardError");
+//        mappings.setProperty("DatabaseException", "databaseError");
+//        mappings.setProperty("InvalidCreditCardException", "creditCardError");
+        mappings.setProperty("HttpRequestMethodNotSupportedException", "error");
+
         r.setExceptionMappings(mappings);  // None by default
         r.setDefaultErrorView("error");    // No default
         r.setExceptionAttribute("ex");     // Default is "exception"
-        r.setWarnLogCategory("example.MvcLogger");     // No default
+//        r.setWarnLogCategory("example.MvcLogger");     // No default
         return r;
-    }*/
+    }
 
     /*@Override
     public void addViewControllers(ViewControllerRegistry registry) {

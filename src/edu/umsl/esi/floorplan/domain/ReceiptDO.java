@@ -1,6 +1,7 @@
 package edu.umsl.esi.floorplan.domain;
 
 import javax.persistence.*;
+import java.sql.Blob;
 import java.util.Date;
 
 /**
@@ -34,6 +35,15 @@ public class ReceiptDO {
     @Column(name="RECEIPT_DATE", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date receiptDate;
+
+    @Column(name = "RECEIPT_PATH")
+    private String receiptPath;
+
+    @Column(name = "RAW_RECEIPT_DATA", nullable = false, columnDefinition = "TEXT")
+    private String rawReceiptData;
+
+    @Column(name = "PROCESSED_RECEIPT_DATA", nullable = false, columnDefinition = "TEXT")
+    private String processedReceiptData;
 
     @Column(name="ACTV_SW", nullable = false)
     private String activeSwitch;
@@ -100,6 +110,30 @@ public class ReceiptDO {
 
     public void setReceiptDate(Date receiptDate) {
         this.receiptDate = receiptDate;
+    }
+
+    public String getReceiptPath() {
+        return receiptPath;
+    }
+
+    public void setReceiptPath(String receiptPath) {
+        this.receiptPath = receiptPath;
+    }
+
+    public String getRawReceiptData() {
+        return rawReceiptData;
+    }
+
+    public void setRawReceiptData(String rawReceiptData) {
+        this.rawReceiptData = rawReceiptData;
+    }
+
+    public String getProcessedReceiptData() {
+        return processedReceiptData;
+    }
+
+    public void setProcessedReceiptData(String processedReceiptData) {
+        this.processedReceiptData = processedReceiptData;
     }
 
     public String getActiveSwitch() {

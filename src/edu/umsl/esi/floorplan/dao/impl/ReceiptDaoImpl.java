@@ -44,6 +44,7 @@ public class ReceiptDaoImpl {
 
     public void updateReceipt(ReceiptDO receiptDO) {
         sessionFactory.getCurrentSession().update(receiptDO);
+        System.out.println("Success update receipt: " + receiptDO.getExtendReceiptId());
     }
 
     public void deleteReceipt(ReceiptDO receiptDO) {

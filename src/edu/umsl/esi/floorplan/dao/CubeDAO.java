@@ -1,10 +1,14 @@
 package edu.umsl.esi.floorplan.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.umsl.esi.floorplan.domain.CubeDO;
+import edu.umsl.esi.floorplan.domain.FloorDO;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,17 +39,20 @@ public class CubeDAO {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
     public List<CubeDO> listCube() {
- 
-        return sessionFactory.getCurrentSession().createQuery("from Cube").list();
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CubeDO.class);
+		return criteria.list();
     }
 	
-	@SuppressWarnings("unchecked")
     public List<CubeDO> listCubeFromFloorId(int floorId) {
-        Query query =  sessionFactory.getCurrentSession().createQuery("from Cube where floor_id =:floorId");
-        query.setParameter("floorId",floorId);
-		return query.list();
+		List<CubeDO> cubeDOList = new ArrayList<CubeDO>();
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(FloorDO.class)
+				.add(Restrictions.eq("floorId", floorId));
+		FloorDO floorDO = (FloorDO) criteria.uniqueResult();
+		if (null != floorDO) {
+			cubeDOList.addAll(floorDO.getCubeDOs());
+		}
+		return cubeDOList;
     }
 	
 	public CubeDO getCubeById(String cube_id) {
@@ -55,15 +62,17 @@ public class CubeDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<CubeDO> getCubesByTeam(String team) {
-		Query query = sessionFactory.getCurrentSession().createQuery("from Cube where TEAM_LEADER = :team");
-		query.setParameter("team",team);
-		return query.list();
+	public List<CubeDO> getCubesByTeam(String teamLead) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CubeDO.class)
+				.add(Restrictions.eq("teamLead", teamLead));
+		return criteria.list();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<CubeDO> getFreeCubes() {
-		return sessionFactory.getCurrentSession().createQuery("from Cube where OCCUPIED = 0").list();
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(CubeDO.class)
+				.add(Restrictions.eq("occupied", false));
+		return criteria.list();
 	}
 	
 	public SessionFactory getSessionFactory() {

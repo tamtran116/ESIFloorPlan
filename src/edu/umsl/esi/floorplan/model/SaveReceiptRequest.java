@@ -4,12 +4,24 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class SaveReceiptRequest {
+    private String extrlRequestId;
     private String userName;
     private String placeId;
     private String placeName;
     private String placeLocation;
     private String receiptTotal;
     private String date;
+    private String receiptPath;
+    private String rawData;
+    private String processedData;
+
+    public String getExtrlRequestId() {
+        return extrlRequestId;
+    }
+
+    public void setExtrlRequestId(String extrlRequestId) {
+        this.extrlRequestId = extrlRequestId;
+    }
 
     public String getUserName() {
         return userName;
@@ -57,6 +69,30 @@ public class SaveReceiptRequest {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getReceiptPath() {
+        return receiptPath;
+    }
+
+    public void setReceiptPath(String receiptPath) {
+        this.receiptPath = receiptPath;
+    }
+
+    public String getRawData() {
+        return rawData;
+    }
+
+    public void setRawData(String rawData) {
+        this.rawData = rawData;
+    }
+
+    public String getProcessedData() {
+        return processedData;
+    }
+
+    public void setProcessedData(String processedData) {
+        this.processedData = processedData;
     }
 
     @Override

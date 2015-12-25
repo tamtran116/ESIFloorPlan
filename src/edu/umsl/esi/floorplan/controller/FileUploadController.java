@@ -6,11 +6,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import edu.umsl.esi.floorplan.domain.FloorDO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -53,40 +54,28 @@ public class FileUploadController {
         }
     }*/
 
-    @RequestMapping(value="/uploadfloor")
-    public ModelAndView getUploadForm(@ModelAttribute("uploadedFile") FileUpload uploadedFile, BindingResult result) {
-        ModelAndView mov = new ModelAndView("uploadForm");
-        mov.addObject("floor", new FloorDO());
-        mov.addObject("floorList", floorService.listFloor());
-        return mov;
+    @RequestMapping(value="/uploadfloor", method=RequestMethod.GET)
+    public String getUploadForm(Model model) {
+        model.addAttribute("floor", new FloorDO());
+        model.addAttribute("floorList", floorService.listFloor());
+        return "uploadForm";
     }
 
-    // @SuppressWarnings("unchecked")
-    //@RequestMapping(value="/floordata", method=RequestMethod.GET)
-    // public ModelAndView getFloorList() {
-    //	 ModelAndView mov = new ModelAndView("uploadForm");
-    //	 mov.addObject("uploadedFile", new FileUpload());
-    //	 mov.addObject("floor", new FloorDO());
-    //	 mov.addObject("floorList", floorService.listFloor());
-    //	 System.out.println("Controller floor size = "+floorService.listFloor().size());
-    //	 return mov;
-    // }
 
-    @SuppressWarnings("resource")
-    @RequestMapping(value="/fileUpload", method=RequestMethod.POST)
-    public ModelAndView fileUploaded(@ModelAttribute("uploadedFile") FileUpload uploadedFile, BindingResult result, HttpServletRequest request) {
+    @RequestMapping(value="/uploadfloor", method=RequestMethod.POST)
+    public String fileUploaded(@RequestParam("file") MultipartFile file,
+            @ModelAttribute("uploadFloorInfo") FileUpload uploadFloorInfo, HttpServletRequest request, Model model,BindingResult result) {
         InputStream inputStream = null;
         OutputStream outputStream = null;
-        MultipartFile file = uploadedFile.getFile();
-        fileValidator.validate(uploadedFile, result);
+        fileValidator.validate(uploadFloorInfo, result);
         FloorDO floorDO = new FloorDO();
-        floorDO.setFloorName(uploadedFile.getFloorName());
-        floorDO.setFloorLocation(uploadedFile.getFloorLocation());
-        floorDO.setUploadedBy(uploadedFile.getUploadedBy());
-        floorDO.setFloorDesc(uploadedFile.getFloorDesc());
+        floorDO.setFloorName(uploadFloorInfo.getFloorName());
+        floorDO.setFloorLocation(uploadFloorInfo.getFloorLocation());
+        floorDO.setUploadedBy(uploadFloorInfo.getUploadedBy());
+        floorDO.setFloorDesc(uploadFloorInfo.getFloorDesc());
         String fileName = file.getOriginalFilename();
         if (result.hasErrors()) {
-            return new ModelAndView("uploadForm");
+            return "uploadForm";
         }
 
         try {
@@ -94,15 +83,14 @@ public class FileUploadController {
             String relativeWebPath = "/WEB-INF/resources/uploaded";
             String absoluteFilePath = request.getSession().getServletContext().getRealPath(relativeWebPath);
             File newFile = null;
-            if (OS.indexOf("win") >= 0) {
+            if (OS.contains("win")) {
                 // The Double Backslash "\\" is applied because of window path for localhost server
                 newFile = new File(absoluteFilePath+"\\"+fileName);
-            } else if (OS.indexOf("nix") >= 0 || OS.indexOf("nux") >= 0 || OS.indexOf("aix") > 0) {
+            } else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) {
                 newFile = new File(absoluteFilePath+"/"+fileName);
             }
 
-            if (!newFile.exists()) {
-                newFile.createNewFile();
+            if (null!= newFile && !newFile.exists() && newFile.createNewFile()) {
                 floorDO.setFilePath("resources/uploaded/"+fileName);
                 System.out.println(floorDO.toString());
                 floorService.addFloor(floorDO);
@@ -115,10 +103,19 @@ public class FileUploadController {
             }
         } catch (IOException e) {
         // TODO Auto-generated catch block
-        e.printStackTrace();
-            return new ModelAndView("uploadForm", "error", "Error in uploading file, contact admin or developer");
+            e.printStackTrace();
+//            return new ModelAndView("uploadForm", "error", "Error in uploading file, contact admin or developer");
+            return "error";
         }
-        return new ModelAndView("showFile", "message", fileName);
+        model.addAttribute("message", fileName);
+        return getUploadForm(model);
     }
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<String> handleIOException(HttpRequestMethodNotSupportedException ex) {
+        // prepare responseEntity
+        System.out.println(ex.getMessage());
+        return null;
+    }
+
 }
 

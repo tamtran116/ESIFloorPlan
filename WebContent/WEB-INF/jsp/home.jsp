@@ -41,7 +41,6 @@
 		</div>
 		<div id="navbar" class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
-				<li><a href="login">login</a></li>
 				<li><a href="register">register</a></li>
 				<li><a href="uploadfloor">uploadfloor</a></li>
 				<li><a href="receipt">Save My Receipt</a></li>
@@ -50,6 +49,7 @@
 				<c:when test="${not empty username}">
 					<ul class="nav navbar-nav navbar-right">
 						<li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ${username}</a></li>
+						<li><a href="logout">logout</a></li>
 					</ul>
 				</c:when>
 				<c:otherwise>

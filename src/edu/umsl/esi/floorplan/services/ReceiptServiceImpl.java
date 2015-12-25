@@ -28,18 +28,22 @@ public class ReceiptServiceImpl {
     private ReceiptDaoImpl receiptDao;
     public void saveReceipt(SaveReceiptRequest saveReceiptRequest) {
         ReceiptDO receiptDO = new ReceiptDO();
-        receiptDO.setExtendReceiptId(UUID.randomUUID().toString());
+        receiptDO.setExtendReceiptId(saveReceiptRequest.getExtrlRequestId());
         receiptDO.setPlaceId(saveReceiptRequest.getPlaceId());
         receiptDO.setPlaceLocation(saveReceiptRequest.getPlaceLocation());
         receiptDO.setPlaceName(saveReceiptRequest.getPlaceName());
         try {
-            receiptDO.setReceiptDate(DateUtils.parseDate(saveReceiptRequest.getDate(), "yyyy-MM-dd HH:mm:ss"));
+            receiptDO.setReceiptDate(DateUtils.parseDate(saveReceiptRequest.getDate(), "yyyy-MM-dd HH:mm"));
         } catch (ParseException e) {
             e.printStackTrace();
             receiptDO.setReceiptDate(new Date());
         }
         receiptDO.setReceiptTotal(saveReceiptRequest.getReceiptTotal());
         receiptDO.setUserName(saveReceiptRequest.getUserName());
+//        receiptDO.setRawReceiptData(saveReceiptRequest.getRawData());
+        receiptDO.setRawReceiptData("Unprocessed");
+        receiptDO.setProcessedReceiptData("Unprocessed");
+        receiptDO.setReceiptPath(saveReceiptRequest.getReceiptPath());
         receiptDO.setActiveSwitch(ReceiptConstants.ACTIVE_SW.Y.toString());
         System.out.println(ReflectionToStringBuilder.toString(receiptDO, ToStringStyle.MULTI_LINE_STYLE));
         receiptDao.addReceipt(receiptDO);
@@ -53,9 +57,11 @@ public class ReceiptServiceImpl {
             receiptResource.setPlaceName(receiptDO.getPlaceName());
             receiptResource.setPlaceLocation(receiptDO.getPlaceLocation());
             receiptResource.setReceiptTotal(receiptDO.getReceiptTotal());
+            receiptResource.setReceiptPath(receiptDO.getReceiptPath());
             if (null != receiptDO.getReceiptDate()) {
                 receiptResource.setReceiptDateTime(DateFormatUtils.ISO_DATETIME_FORMAT.format(receiptDO.getReceiptDate()));
             }
+            receiptResource.setItems(receiptDO.getProcessedReceiptData());
             receiptResources.add(receiptResource);
         }
         return receiptResources;
@@ -63,5 +69,12 @@ public class ReceiptServiceImpl {
 
     public void deleteReceipts(DeleteReceiptRequest deleteReceiptRequest) {
         receiptDao.deleteReceipts(deleteReceiptRequest.getReceiptIds());
+    }
+
+    public void updateReceipt(ReceiptResource receiptResource) {
+        ReceiptDO receiptDO = receiptDao.getReceiptByExtId(receiptResource.getReceiptId());
+        receiptDO.setRawReceiptData(receiptResource.getReceiptRaw());
+        receiptDO.setProcessedReceiptData(receiptResource.getReceiptProcessed());
+        receiptDao.updateReceipt(receiptDO);
     }
 }

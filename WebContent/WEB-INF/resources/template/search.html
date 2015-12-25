@@ -1,0 +1,29 @@
+<div class="page-header">
+	<h3>Search Places</h3>
+</div>
+<div class="input-group">
+	<input type="text" class="form-control" ng-model="searchValue" placeholder="Search for...">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit" ng-click="searchPlace(searchValue)" >Go!</button>
+      </span>
+</div><!-- /input-group -->
+<div>
+	<h4>Found <span class="badge">{{getPlaces.placeList.length}}</span> places near {{coordinate}}</h4>
+	<input type="search" class="form-control" placeholder="search by place name" ng-model="search">
+	<div class="table-responsive">
+		<table class="table table-hover table-striped">
+			<thead>
+			<tr>
+				<td>Name</td>
+				<td>Location</td>
+			</tr>
+			</thead>
+			<tr ng-repeat="y in getPlaces.placeList | filter:search">
+				<td><img ng-src="{{y.icon}}" width="30px" height="30px"/> {{y.name}} </td>
+				<td><a href="#/place/{{getPlaces.placeList.indexOf(y)}}">{{y.vincinity}}{{y.formatted_address}}</a></td>
+			</tr>
+		</table>
+	</div>
+</div>
+<p id="demo"/>
+<p id="error"/>

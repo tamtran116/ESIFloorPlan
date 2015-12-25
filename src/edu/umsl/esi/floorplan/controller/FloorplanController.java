@@ -124,7 +124,7 @@ public class FloorplanController {
     		mov.addObject("cubeList", cubeService.listCubeByFloorId(floorId));
     		mov.addObject("floorId",floorId);
     	}
-		mov.addObject("cube", new CubeDO());
+		mov.addObject("cubeDO", new CubeDO());
 		
 		return mov;
 	}
@@ -232,15 +232,15 @@ public class FloorplanController {
 		String nswap2 = cubeDO1.getEmployee_name();
 		Boolean oswap1 = cubeDO2.getOccupied();
 		Boolean oswap2 = cubeDO1.getOccupied();
-		String tswap1 = cubeDO2.getTeam_leader();
-		String tswap2 = cubeDO1.getTeam_leader();
+		String tswap1 = cubeDO2.getTeamLeader();
+		String tswap2 = cubeDO1.getTeamLeader();
 		
 		cubeDO1.setEmployee_name(nswap1);
 		cubeDO2.setEmployee_name(nswap2);
 		cubeDO1.setOccupied(oswap1);
 		cubeDO2.setOccupied(oswap2);
-		cubeDO1.setTeam_leader(tswap1);
-		cubeDO2.setTeam_leader(tswap2);
+		cubeDO1.setTeamLeader(tswap1);
+		cubeDO2.setTeamLeader(tswap2);
 		
 		cubeService.updateCube(cubeDO1);
 		cubeService.updateCube(cubeDO2);

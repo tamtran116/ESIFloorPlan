@@ -1,10 +1,10 @@
 package edu.umsl.esi.floorplan.controller;
 
-import edu.umsl.esi.floorplan.domain.ReceiptDO;
 import edu.umsl.esi.floorplan.model.DeleteReceiptRequest;
 import edu.umsl.esi.floorplan.model.ReceiptResource;
 import edu.umsl.esi.floorplan.model.SaveReceiptRequest;
 import edu.umsl.esi.floorplan.services.ReceiptServiceImpl;
+import edu.umsl.esi.floorplan.tesseract.TessOcr;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,15 +12,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
+import java.util.UUID;
 
 @Controller
 public class ReceiptController {
@@ -66,42 +70,97 @@ public class ReceiptController {
 		return restTemplate.getForObject(url, Object.class);
 	}
 
-	@RequestMapping(value = "/receipt", method = RequestMethod.POST)
-	public String saveReceipt(@ModelAttribute("saveReceiptRequest") @Valid SaveReceiptRequest saveReceiptRequest, Model model) {
-		saveReceiptRequest.setUserName(SecurityContextHolder.getContext().getAuthentication().getName());
-		receiptService.saveReceipt(saveReceiptRequest);
-		System.out.println(saveReceiptRequest.toString());
+	@RequestMapping(value = "/receipt", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
+	public @ResponseBody String saveReceipt(@RequestParam(value = "file", required = false) MultipartFile file,
+											@ModelAttribute("saveReceiptRequest") @Valid SaveReceiptRequest saveReceiptRequest,
+											HttpServletRequest request) {
 		//TODO: server side validation
-		model.addAttribute("message", "Receipt saved successfully.");
-		return saveReceipt(model);
+//		model.addAttribute("message", "Receipt saved successfully.");
+		if (!file.isEmpty() && isValidContentType(file)) {
+			String OS = System.getProperty("os.name").toLowerCase();
+			String relativeWebPath = "/WEB-INF/resources/uploaded";
+			String absoluteFilePath = request.getSession().getServletContext().getRealPath(relativeWebPath);
+			String extrlRequestId = UUID.randomUUID().toString();
+			File newFile = null;
+			if (OS.contains("win")) {
+				// The Double Backslash "\\" is applied because of window path for localhost server
+				newFile = new File(absoluteFilePath+"\\"+extrlRequestId);
+			} else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) {
+				newFile = new File(absoluteFilePath+"/"+extrlRequestId);
+			} else {
+				return "You failed to upload " + file.getOriginalFilename() + " because of unknown operation system.";
+			}
+			System.out.println(newFile.getPath());
+			try {
+				byte[] bytes = file.getBytes();
+				BufferedOutputStream stream =
+						new BufferedOutputStream(new FileOutputStream(newFile));
+				stream.write(bytes);
+				stream.close();
+				saveReceiptRequest.setUserName(SecurityContextHolder.getContext().getAuthentication().getName());
+				saveReceiptRequest.setExtrlRequestId(extrlRequestId);
+				saveReceiptRequest.setReceiptPath(newFile.getPath());
+				receiptService.saveReceipt(saveReceiptRequest);
+				System.out.println(saveReceiptRequest.toString());
+				return "You successfully uploaded " + file.getOriginalFilename() + "!";
+			} catch (Exception e) {
+				return "You failed to upload " + file.getOriginalFilename() + " => " + e.getMessage();
+			}
+		} else {
+			return "You failed to upload " + file.getOriginalFilename() + " because the file was empty.";
+		}
+	}
+
+	private boolean isValidContentType(MultipartFile file) {
+		return (file.getContentType().contains("jpg") | file.getContentType().contains("png") | file.getContentType().contains("jpeg"));
 	}
 
 	@RequestMapping(value = {"/receipt", "/receipt#"}, method = RequestMethod.GET)
 	public String saveReceipt(Model model) {
-		Double receiptTotal = 0.0;
-		List<ReceiptResource> receiptResourceList = receiptService.getReceipts(SecurityContextHolder.getContext().getAuthentication().getName());
 		DeleteReceiptRequest deleteReceiptRequest = new DeleteReceiptRequest();
 		deleteReceiptRequest.setReceiptIds(new ArrayList<String>());
 		for (ReceiptResource receiptResource : receiptService.getReceipts(SecurityContextHolder.getContext().getAuthentication().getName())) {
 			deleteReceiptRequest.getReceiptIds().add(receiptResource.getReceiptId());
-			if (StringUtils.isNotBlank(receiptResource.getReceiptTotal())) {
-				receiptTotal = receiptTotal + Double.parseDouble(receiptResource.getReceiptTotal().replaceAll(",", ""));
-			}
 		}
-		SaveReceiptRequest saveReceiptRequest = new SaveReceiptRequest();
-		saveReceiptRequest.setUserName(SecurityContextHolder.getContext().getAuthentication().getName());
 		model.addAttribute("deleteReceiptRequest", deleteReceiptRequest);
-		model.addAttribute("saveReceiptRequest", saveReceiptRequest);
 		model.addAttribute("userName", SecurityContextHolder.getContext().getAuthentication().getName());
-		model.addAttribute("receiptResourceList", receiptResourceList);
-		model.addAttribute("receiptTotal", df2.format(receiptTotal));
 		return "receipt";
 	}
 
+	@RequestMapping(value = "/getreceipts", method = RequestMethod.GET, produces={"application/json"})
+	public @ResponseBody List<ReceiptResource> getReceipts() {
+		return receiptService.getReceipts(SecurityContextHolder.getContext().getAuthentication().getName());
+	}
+
+
 	@RequestMapping(value = "/deletereceipts", method = RequestMethod.POST)
-	public String deleteReceipts(@ModelAttribute("deleteReceiptRequest") @Valid DeleteReceiptRequest deleteReceiptRequest, Model model) {
+	public @ResponseBody List<ReceiptResource> deleteReceipts(@ModelAttribute("deleteReceiptRequest") @Valid DeleteReceiptRequest deleteReceiptRequest, Model model) {
 		receiptService.deleteReceipts(deleteReceiptRequest);
-		model.addAttribute("message", "Receipt deleted successfully.");
-		return saveReceipt(model);
+//		model.addAttribute("message", "Receipt deleted successfully.");
+		return getReceipts();
+	}
+
+	@RequestMapping(value = "/convertreceipt/{receiptId}", method = RequestMethod.GET, produces = "text/plain; charset=utf-8")
+	public @ResponseBody String convertReceipt(@PathVariable("receiptId") String receiptId){
+		String receiptPath = "";
+		List<ReceiptResource> receiptResourceList = receiptService.getReceipts(SecurityContextHolder.getContext().getAuthentication().getName());
+		for (ReceiptResource receiptResource : receiptResourceList) {
+			if (StringUtils.isNotBlank(receiptId) && receiptId.equals(receiptResource.getReceiptId())) {
+				receiptPath = receiptResource.getReceiptPath();
+				System.out.println("Receipt Path: " + receiptPath);
+				File file = new File(receiptPath);
+				if (file.isFile()) {
+					TessOcr ocr = new TessOcr();
+					String rawDataString = ocr.processRaw(receiptPath);
+					String processedDataString = ocr.processedData(rawDataString);
+					receiptResource.setReceiptRaw(rawDataString);
+					receiptResource.setReceiptProcessed(processedDataString);
+					receiptService.updateReceipt(receiptResource);
+					return processedDataString;
+				}
+			}
+		}
+		return "File not found !";
 	}
 }
+

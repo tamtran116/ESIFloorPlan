@@ -3,6 +3,7 @@ package edu.umsl.esi.floorplan.dao;
 import java.util.List;
 
 import edu.umsl.esi.floorplan.domain.RequestDO;
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -31,25 +32,13 @@ public class requestDAO {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
     public List<RequestDO> listRequest() {
- 
-        return sessionFactory.getCurrentSession().createQuery("from Request").list();
-    }
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RequestDO.class);
+		return criteria.list();
+	}
 	
 	public RequestDO getRequestById(int request_id) {
 		RequestDO requestDO = (RequestDO) sessionFactory.getCurrentSession().load(RequestDO.class, request_id);
 		return requestDO;
 	}
-	
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
-	}
-	
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-	
-	
-	
 }

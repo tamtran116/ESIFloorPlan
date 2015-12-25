@@ -5,9 +5,10 @@ var x = document.getElementById("demo");
 var y = document.getElementById("error");
 var myAppControllers = angular.module('myAppControllers', []);
 /*window.onbeforeunload = function() {
-    return "Data will be lost if you leave the page";
-};*/
+ return "Data will be lost if you leave the page";
+ };*/
 $(document).ready(function() {
+    $('img#loading').hide();
     $('#receiptTotal').mask('0,000,000.00', {reverse: true});
     $('#date').mask('0000-00-00 00:00:00');
 });
@@ -15,6 +16,7 @@ myAppControllers.factory('places',function(){
     return {};
 });
 myAppControllers.controller("ListController", function($scope, $http, places, $filter) {
+    $scope.timestamp = $filter('date')(Date.now(), "yyyy-MM-MM HH:mm");
     var url;
     $scope.getReceipts = function () {
         url = "getreceipts";
@@ -28,14 +30,31 @@ myAppControllers.controller("ListController", function($scope, $http, places, $f
             y.innerHTML = "AJAX failed! URL is: " + url;
         });
     };
-    $scope.getTotal = function () {
-        var total = 0;
-        for (var i = 0; i < $scope.receipts.length; i++) {
-            var receipt = $scope.receipts[i];
-            total += parseFloat(receipt.receiptTotal);
-        }
-        return total;
+    $scope.submitAddReceipt = function () {
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        console.log(header);
+        var formData = new FormData($('#saveForm')[0]);
+        console.log(formData);
+        var ajaxConfig = {
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'Content-Type': undefined
+            }
+        };
+        $http.post('receipt', formData, ajaxConfig).then(function successCallback(responseData, status, headers, config){
+            console.log(responseData);
+            $('#message').empty().append(responseData.data);
+            $('#myModal').modal('show');
+            document.getElementById("saveForm").reset();
+        }, function errorCallback(data, status, headers, config){
+            console.log(data);
+            $('#message').empty().append(data);
+            $('#myModal').modal('show');
+            document.getElementById("saveForm").reset();
+        });
     };
+
     $scope.getTimestamp = function () {
         $scope.timestamp = $filter('date')(Date.now(), "yyyy-MM-MM HH:mm");
     };
@@ -68,18 +87,6 @@ myAppControllers.controller("ListController", function($scope, $http, places, $f
         }
     };
 
-    $scope.submitDelete = function () {
-        //console.log("--> Submitting form");
-        var responsePromise = $http.post("/esi/deletereceipts", $( "#deleteForm" ).serialize(), {});
-
-        responsePromise.success(function (dataFromServer, status, headers, config) {
-            var content = $( dataFromServer ).find( "#deleteForm" );
-            $( "#deleteForm").parent().empty().append( content );
-        });
-        responsePromise.error(function (data, status, headers, config) {
-            alert("Submitting form failed!");
-        });
-    };
 
 
     function ajaxGetPlaces($scope, $http, url, places) {
@@ -141,6 +148,69 @@ myAppControllers.controller("SearchController", function($scope, $http, places) 
         } else {
             x.innerHTML = "Geolocation is not supported by this browser.";
         }
+    };
+});
+myAppControllers.controller("ListReceiptController", function($scope, $http, places) {
+    var responsePromise = $http.get('getreceipts');
+    responsePromise.success(function(data, status, headers, config) {
+        console.log(data);
+        $scope.receipts = data;
+        $scope.getTotal = function () {
+            var total = 0;
+            for (var i = 0; i < $scope.receipts.length; i++) {
+                var receipt = $scope.receipts[i];
+                total += parseFloat(receipt.receiptTotal);
+            }
+            return total;
+        };
+    });
+    responsePromise.error(function(data, status, headers, config) {
+        console.log(data);
+        alert(status);
+        //y.innerHTML = "AJAX failed! URL is: "+ url;
+    });
+
+    $scope.submitDelete = function () {
+        var token = $("meta[name='_csrf']").attr("content");
+        var ajaxConfig = {
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'Content-Type': undefined
+            }
+        };
+        var formData = new FormData($('#deleteForm')[0]);
+        console.log(formData);
+        //console.log("--> Submitting form");
+        var responsePromise = $http.post("deletereceipts", formData, ajaxConfig);
+
+        responsePromise.success(function (data, status, headers, config) {
+            $scope.receipts = data;
+            /*var content = $( dataFromServer ).find( "#deleteForm" );
+             $( "#deleteForm").parent().empty().append( content );*/
+        });
+        responsePromise.error(function (data, status, headers, config) {
+            console.log(data);
+            alert("Submitting form failed!");
+        });
+    };
+
+    $scope.editReceipt = function(receiptId, event) {
+        console.log(receiptId);
+        console.log(event);
+        var buttonTarget = event.currentTarget;
+        $( buttonTarget ).empty().append("<img id='loading' src='resources/images/ajax-loader.gif'/>");
+        var responsePromise = $http.get("convertreceipt/"+receiptId);
+        responsePromise.success(function (data, status, headers, config) {
+            $( buttonTarget ).empty().append("<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>");
+            $scope.scanned = data;
+            console.log(data);
+        });
+        responsePromise.error(function (data, status, headers, config) {
+            $( buttonTarget ).empty().append("<span class='glyphicon glyphicon-remove' aria-hidden='true'></span>");
+            $scope.scanned = data;
+            console.log(data);
+            alert("Submitting form failed!");
+        });
     };
 });
 myAppControllers.controller("RegisterController", function($scope, $route, $routeParams, places) {

@@ -9,6 +9,10 @@ public class ReceiptResource {
     private String placeLocation;
     private String receiptTotal;
     private String receiptDateTime;
+    private String receiptPath;
+    private String receiptRaw;
+    private String receiptProcessed;
+    private String items;
 
     public String getReceiptId() {
         return receiptId;
@@ -48,5 +52,37 @@ public class ReceiptResource {
 
     public void setReceiptDateTime(String receiptDateTime) {
         this.receiptDateTime = receiptDateTime;
+    }
+
+    public String getReceiptPath() {
+        return receiptPath;
+    }
+
+    public void setReceiptPath(String receiptPath) {
+        this.receiptPath = receiptPath;
+    }
+
+    public String getReceiptRaw() {
+        return receiptRaw;
+    }
+
+    public void setReceiptRaw(String receiptRaw) {
+        this.receiptRaw = receiptRaw;
+    }
+
+    public String getReceiptProcessed() {
+        return receiptProcessed;
+    }
+
+    public void setReceiptProcessed(String receiptProcessed) {
+        this.receiptProcessed = receiptProcessed;
+    }
+
+    public String getItems() {
+        return items;
+    }
+
+    public void setItems(String items) {
+        this.items = items;
     }
 }

@@ -26,13 +26,13 @@
 <body ondragstart="return false;" ondrop="return false;">
 	<div id="container">
 		<div id="img-wrapper"><img id="map" src="${floorUrl}" />
-			<c:if  test="${!empty cubeDOList}">
-				<c:forEach items="${cubeDOList}" var="cubeDO">
+			<c:if  test="${!empty cubeList}">
+				<c:forEach items="${cubeList}" var="cubeDO">
 					<c:if test="${cubeDO.occupied != 'true'}">
 						<div draggable="true" id="${cubeDO.cube_id}" class="cubeDO-open clickable swappable" style="left:${cubeDO.x1}px; top:${cubeDO.y1}px; width:${cubeDO.width}px; height:${cubeDO.height}px;"><p>${cubeDO.employee_name}<br><span class="cube_id">${cubeDO.cube_id}</span></p><a name="${cubeDO.cube_id}" class="hidden">${cubeDO.cube_id}</a></div>
 					</c:if>
 					<c:if test="${cubeDO.occupied != 'false'}">
-						<div draggable="true" id="${cubeDO.cube_id}" class="cubeDO-close clickable swappable" style="left:${cubeDO.x1}px; top:${cubeDO.y1}px; width:${cubeDO.width}px; height:${cubeDO.height}px;"><p>${cubeDO.employee_name}<br><span class="cube_id">${cubeDO.cube_id}</span><br><span class="team" style="color:#00CCFF;">${cubeDO.team_leader}</span></p></div>
+						<div draggable="true" id="${cubeDO.cube_id}" class="cubeDO-close clickable swappable" style="left:${cubeDO.x1}px; top:${cubeDO.y1}px; width:${cubeDO.width}px; height:${cubeDO.height}px;"><p>${cubeDO.employee_name}<br><span class="cube_id">${cubeDO.cube_id}</span><br><span class="team" style="color:#00CCFF;">${cubeDO.teamLeader}</span></p></div>
 					</c:if>
 				</c:forEach>
 			</c:if>
@@ -67,7 +67,7 @@
 		            <form:hidden path="height" id="cube_height" readonly="true"/>
 		            <p>Floor ID is ${floorId}</p>
 		            <p>Employee Name:</p><form:input path="employee_name"/>
-		            <p>Team Leader:</p><form:input path="team_leader"/>
+		            <p>Team Leader:</p><form:input path="teamLeader"/>
 		            <p>Phone number:</p><form:input path="phone"/>
 		            <p>Software Request:</p><form:textarea path="software" rows="5" cols="30" />
 		            <p>New Hire Check-list :</p><hr>
@@ -107,7 +107,7 @@
 				          <form:hidden path="width" id="cube_width" readonly="true"/>
 				          <form:hidden path="height" id="cube_height" readonly="true"/>
 				          <p>Employee Name:</p><form:input path="employee_name"/>
-				          <p>Team Leader:</p><form:input path="team_leader"/>
+				          <p>Team Leader:</p><form:input path="teamLeader"/>
 				          <p>Phone number:</p><form:input path="phone"/>
 				          <p>Software Request:</p><form:textarea path="software" rows="5" cols="30" />
 				          <p>New Hire Check-list :</p><hr>
@@ -145,7 +145,7 @@
 			</div>
 			<h3>Cube Database</h3>
 			<div><span style="color:red;">${message}</span>
-				<c:if  test="${!empty cubeDOList}">
+				<c:if  test="${!empty cubeList}">
 					<table id="data-table">
 					<thead>
 						<tr>
@@ -157,12 +157,12 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach items="${cubeDOList}" var="cubeDO">
+						<c:forEach items="${cubeList}" var="cubeDO">
 						    <tr id="${cubeDO.cube_id}">
 						        <td><a href="#${cubeDO.cube_id}" class="data-cubeDO-id">${cubeDO.cube_id}</a></td>
 						        <td>${cubeDO.employee_name}</td>
 						        <td>${cubeDO.occupied}</td>
-						        <td><a href="${cubeDO.team_leader}">${cubeDO.team_leader}</a></td>
+						        <td><a href="${cubeDO.teamLeader}">${cubeDO.teamLeader}</a></td>
 						        <td><a href="deleteCube/${cubeDO.cube_id}" onclick="return confirm('Are you sure want to delete this cubeDO?')">Delete</a></td>
 						    </tr>
 						</c:forEach>
@@ -175,7 +175,7 @@
 					<p>Cube ID: <span id="delCubeId">${currentCube.cube_id}</span></p>
 					<p>Employee Name: ${currentCube.employee_name}</p>
 					<p>Occupied: ${currentCube.occupied}</p>
-					<p>Team Leader: ${currentCube.team_leader}</p>
+					<p>Team Leader: ${currentCube.teamLeader}</p>
 					<p>Cordinate: X1 ${currentCube.x1}</p>
 					<p>Cordinate: Y1 ${currentCube.y1}</p>
 					<p>Cordinate: X2 ${currentCube.x2}</p>
@@ -241,7 +241,7 @@
 		<hr>
 		<a class="j-ui-button" href="uploadfloor" target="_self">Upload Floor</a>
 			<div id="optimize" style="font-size:1em !important;">
-			Number of Closest Open Cube for <span id="current-team">${cubeDOList[0].team_leader}</span> Team
+			Number of Closest Open Cube for <span id="current-team">${cubeList[0].teamLeader}</span> Team
 			
 			<select id="closestOpen">
 			  <option value="1">1</option>
@@ -256,7 +256,7 @@
 			  <option value="10">10</option>
 			</select>
 			
-			<c:if  test="${!empty cubeDOList}">
+			<c:if  test="${!empty cubeList}">
 					<table id="table-open-cubeDOs">
 					<thead>
 						<tr>
@@ -268,13 +268,13 @@
 						</tr>
 					</thead>
 					<tbody>
-						<c:forEach items="${cubeDOList}" var="cubeDO">
+						<c:forEach items="${cubeList}" var="cubeDO">
 							<c:if test="${cubeDO.occupied != 'true'}">
 						    <tr id="${cubeDO.cube_id}">
 						        <td><a href="#${cubeDO.cube_id}" class="open-cubeDO-id" onclick="customSlide()">${cubeDO.cube_id}</a></td>
 						        <td>${cubeDO.employee_name}</td>
 						        <td>${cubeDO.occupied}</td>
-						        <td><a href="${cubeDO.team_leader}">${cubeDO.team_leader}</a></td>
+						        <td><a href="${cubeDO.teamLeader}">${cubeDO.teamLeader}</a></td>
 						        <td><a href="deleteCube/${cubeDO.cube_id}" onclick="return confirm('Are you sure want to delete this cubeDO?')">Delete</a></td>
 						    </tr>
 						    </c:if>
@@ -289,7 +289,7 @@
 	<div id="accordion-usersDO">
 		<h3>Cube Data</h3>
 		<div style="background-color: white;">
-			<c:if  test="${!empty cubeDOList}">
+			<c:if  test="${!empty cubeList}">
 				<table id="usersDO-data-table">
 				<thead>
 					<tr>
@@ -300,12 +300,12 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items="${cubeDOList}" var="cubeDO">
+					<c:forEach items="${cubeList}" var="cubeDO">
 					    <tr id="${cubeDO.cube_id}">
 					        <td><a href="#${cubeDO.cube_id}" class="data-cubeDO-id">${cubeDO.cube_id}</a></td>
 					        <td>${cubeDO.employee_name}</td>
 					        <td>${cubeDO.occupied}</td>
-					        <td>${cubeDO.team_leader}</td>
+					        <td>${cubeDO.teamLeader}</td>
 					    </tr>
 					</c:forEach>
 				</tbody>

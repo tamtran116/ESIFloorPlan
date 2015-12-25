@@ -20,6 +20,14 @@ myApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: 'resources/template/search.html',
             controller: 'SearchController'
         }).
+        when('/receipts', {
+            templateUrl: 'resources/template/receipts.html',
+            controller: 'ListReceiptController'
+        }).
+        when('/add', {
+            templateUrl: 'resources/template/add.html',
+            controller: 'ListController'
+        }).
         when('/saveRequest', {
             templateUrl: 'resources/template/saverequest.html'
         }).
@@ -27,7 +35,7 @@ myApp.config(['$routeProvider', function ($routeProvider) {
             templateUrl: 'resources/template/userprofile.html'
         }).
         otherwise({
-            redirectTo: '/list'
+            redirectTo: '/receipts'
         })
 }]);
 myApp.config(['$httpProvider', function ($httpProvider) {

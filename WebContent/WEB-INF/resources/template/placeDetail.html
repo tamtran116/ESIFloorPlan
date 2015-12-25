@@ -1,0 +1,44 @@
+<div class="page-header">
+    <h3>Place Detail</h3>
+</div>
+<div ng-show="placeDetail">
+    <nav>
+        <ul class="pager">
+            <li class="previous" ng-show="previousPlace + 1 > 0"><a href="#/place/{{previousPlace}}"><span aria-hidden="true">&larr;</span> Previous</a></li>
+            <li class="next" ng-show="nextPlace < totalCount"><a href="#/place/{{nextPlace}}">Next <span aria-hidden="true">&rarr;</span></a></li>
+        </ul>
+    </nav>
+    <div class="clearfix">
+        <div class="pull-left"><h2><img ng-src="{{placeDetail.icon}}" width="30px" height="30px"/> {{placeDetail.name}}</h2></div>
+        <div class="pull-right"><h2 class="text-right"><span class="label label-primary">{{whichPlace}}/{{totalCount}}</span></h2></div>
+    </div>
+    <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-2"><strong>LOCATION</strong></div>
+            <div class="col-md-10">{{placeDetail.vicinity}}{{placeDetail.formatted_address}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"><strong>CATEGORY</strong></div>
+            <div class="col-md-10 "><p style="word-wrap: break-word;">{{placeDetail.types.toString()}}</p></div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"><strong>GEOMETRY</strong></div>
+            <div class="col-md-10">Lat: {{placeDetail.geometry.location.lat}}; Long: {{placeDetail.geometry.location.lng}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"><strong>OPEN NOW</strong></div>
+            <div class="col-md-10">{{placeDetail.opening_hours.open_now}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"><strong>PLACE ID</strong></div>
+            <div class="col-md-10">{{placeDetail.id}}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-2"><strong>RATING</strong></div>
+            <div class="col-md-10">{{placeDetail.rating}}</div>
+        </div>
+    </div>
+</div>
+<div ng-hide="placeDetail">
+    <h2>Unable to get detail, please go back to list !!!</h2>
+</div>

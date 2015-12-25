@@ -1,0 +1,53 @@
+<div class="page-header">
+    <h2 class="form-signin-heading">Please fill the form</h2>
+</div>
+<div style="margin-bottom: 1em;" id="saveFormContainer">
+    <form class="form-signin" id="saveForm" enctype="multipart/form-data" th:object="${saveReceiptRequest}" method="post" ng-submit="submitAddReceipt()">
+        <div class="form-group">
+            <label for="placeId" class="sr-only">Place Id</label>
+            <input type="text" name="placeId" id="placeId" placeholder="place id" th:field="*{placeId}" class="form-control" ng-model="inputPlaceId" required="true" readonly="true"/>
+        </div>
+        <div class="form-group">
+            <label for="placeName" class="sr-only">Place Name</label>
+            <input type="text" name="placeName" id="placeName" placeholder="place name" th:field="*{placeName}" class="form-control" ng-model="inputPlaceName" required="true" readonly="true"/>
+        </div>
+        <div class="form-group">
+            <label for="placeLocation" class="sr-only">Place location</label>
+            <input type="text" name="placeLocation" id="placeLocation"  placeholder="place location" th:field="*{placeLocation}" class="form-control" ng-model="inputPlaceVicinity" required="true" readonly="true"/>
+        </div>
+        <div class="form-group">
+            <label for="receiptTotal" class="sr-only">Receipt Total</label>
+            <input type="number" name="receiptTotal" id="receiptTotal" placeholder="receipt total" th:field="*{receiptTotal}" class="form-control" aria-describedby="" required="true"/>
+        </div>
+        <div class="form-group">
+            <label for="date" class="sr-only">Place location</label>
+            <div class="input-group">
+                <input type="text" name="date" id="date" placeolder="YYYY-MM-DD HH:MI" th:field="*{date}" class="form-control" aria-describedby="" required="true" ng-model="timestamp"/>
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" ng-click="getTimestamp()">Now!</button>
+      </span>
+            </div><!-- /input-group -->
+        </div>
+        <div class="form-group">
+            <label for="formFile" class="sr-only">Upload File</label>
+            <input id="formFile" name="file" type="file"/>
+        </div>
+        <input class="btn btn-lg btn-primary btn-block" name="submit" type="submit" value="submit"/>
+    </form>
+</div>
+<button class="btn btn-info btn-block" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" ng-click="showPlaces()">
+    show places
+</button>
+<hr>
+<div class="collapse" id="collapseExample">
+    <div class="well">
+        <h4>Found <span class="badge">{{places.results.length}}</span> places <span ng-show="coordinate">near my location <strong>({{coordinate}})</strong></span></h4>
+        <input type="search" class="form-control" placeholder="search by place name" ng-model="search">
+        <br>
+        <div class="list-group">
+            <!--<a ng-repeat="y in places.results | filter:search" href="#/place/{{places.results.indexOf(y)}}" class="list-group-item clearfix"><img ng-src="{{y.icon}}" width="30px" height="30px"/> <strong>{{y.name}}</strong> <span class="pull-right">{{y.vicinity}}{{y.formatted_address}}</span></a>-->
+            <a ng-repeat="y in places.results | filter:search" class="list-group-item clearfix" ng-click="putDetail(y.id, y.name, y.vicinity)"><img ng-src="{{y.icon}}" width="30px" height="30px"/> <strong>{{y.name}}</strong> <span class="pull-right">{{y.vicinity}}{{y.formatted_address}}</span></a>
+        </div>
+        <button ng-show="token" class="btn btn-default" ng-click="getNextPage()">next result</button>
+    </div>
+</div>

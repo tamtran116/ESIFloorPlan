@@ -50,7 +50,7 @@ public class CubeDO implements Serializable{
 	private Boolean occupied;
 	
 	@Column(name="TEAM_LEADER")
-	private String team_leader = DEFAULT_TEAM_LEADER;
+	private String teamLeader = DEFAULT_TEAM_LEADER;
 	
 	@Column(name="CX")
 	private double cx;
@@ -216,12 +216,12 @@ public class CubeDO implements Serializable{
 	}
 
 	@JsonProperty
-	public String getTeam_leader() {
-		return team_leader;
+	public String getTeamLeader() {
+		return teamLeader;
 	}
 
-	public void setTeam_leader(String team_leader) {
-		this.team_leader = team_leader;
+	public void setTeamLeader(String teamLeader) {
+		this.teamLeader = teamLeader;
 	}
 
 	public double getX1() {
@@ -285,7 +285,7 @@ public class CubeDO implements Serializable{
 		return "CubeDO [cube_id=" + cube_id + ", x1=" + x1 + ", y1=" + y1
 				+ ", x2=" + x2 + ", y2=" + y2 + ", width=" + width
 				+ ", height=" + height + ", employee_name=" + employee_name
-				+ ", occupied=" + occupied + ", team_leader=" + team_leader
+				+ ", occupied=" + occupied + ", teamLeader=" + teamLeader
 				+ ", cx=" + cx + ", cy=" + cy + ", current_distance="
 				+ current_distance + ", phone=" + phone + ", software="
 				+ software + ", onshore=" + onshore + ", offshore=" + offshore

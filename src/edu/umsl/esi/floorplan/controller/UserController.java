@@ -39,7 +39,7 @@ public class UserController {
     @RequestMapping(value = "/accessdenied", method = {RequestMethod.GET, RequestMethod.HEAD})
     public String loginerror(Map<String, Object> map) {
         map.put("error", "true");
-        return "denied";
+        return "error";
     }
 
     @RequestMapping(value = "/logout", method = {RequestMethod.GET, RequestMethod.HEAD})

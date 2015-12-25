@@ -6,9 +6,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 	<meta http-equiv="Cache-control" content="NO-CACHE">
-	<meta name="description" content="login page for ESI">
+	<meta name="description" content="register page">
 	<meta name="author" content="Tam Tran">
-	<title>Signin Template for Bootstrap</title>
+	<title>Register Template for Bootstrap</title>
 
 	<!-- Bootstrap core CSS -->
 	<link href="resources/css/bootstrap.min.css" rel="stylesheet">
@@ -30,6 +30,29 @@
 		  window.onunload=function(){null};
 	</script>
 </head>
+<nav class="navbar navbar-default navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">My Receipts</a>
+		</div>
+		<div id="navbar" class="navbar-collapse collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="register">register</a></li>
+				<li><a href="uploadfloor">uploadfloor</a></li>
+				<li><a href="receipt">Save My Receipt</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="logout">logout</a></li>
+			</ul>
+		</div><!--/.nav-collapse -->
+	</div>
+</nav>
     <body>
 		<div class="container">
 			<form class="form-signin" action="#" th:action="@{/register}" th:object="${userRegisterRequest}" method="post">
