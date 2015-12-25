@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta http-equiv="Cache-control" content="NO-CACHE">
+    <meta name="description" content="login page for ESI">
+    <meta name="author" content="Tam Tran">
+    <title>My angular app</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+    <!-- Jquery first-->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <!-- angular js last-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+</head>
+<body ng-app="myapp">
+
+<div ng-controller="MyController" class="container" id="controllerDivId">
+    <div class="jumbotron">
+        <h1>My Receipt</h1>
+        <p>This place will soon to be a ultimate form to send place info to server and store the place id with user id, plus any info related to it. Happy receipting</p>
+    </div>
+    <div class="page-header">
+        <h1>DRAFT</h1>
+    </div>
+    <button type="button" class="btn btn-info" ng-click="myData.doClick(item, $event)">Test AJAX Request</button>
+    <br/>
+    <ul>
+        <li ng-repeat="x in myData.names">
+            {{ x.Name + ', ' + x.Country }}
+        </li>
+    </ul>
+    <button id="getPlacesButton" type="button" class="btn btn-info" ng-click="myData.getPlaces()" disabled>Get Places Location Request</button>
+    <br/>
+    <div id="loading" >
+        <h3 class="center-block">working on your location...</h3>
+        <img src="http://www.arabianbusiness.com/skins/ab.main/gfx/loading_spinner.gif" class="center-block"/>
+    </div>
+
+    <div class="table-responsive" ng-show="myData.places">
+        <br>
+        <div class="form-group">
+            <label for="searchPlacesByName">Search Place</label>
+            <input type="text" class="form-control" id="searchPlacesByName" placeholder="Search by name" ng-model="searchPlaces">
+            <label for="placeId">Place ID</label>
+            <input type="text" class="form-control" id="placeId" placeholder="Place Id" ng-model="placeId">
+            <label for="identifier">Identifier</label>
+            <input type="text" class="form-control" id="identifier" placeholder="Place Name" ng-model="nameVicinity">
+        </div>
+        <a class="btn btn-default" role="button" href="https://maps.googleapis.com/maps/api/place/details/json?placeid={{placeId}}&key=AIzaSyC0CxtTnmp4k5XWITiFs4o77LU95lIpyRc" target="_blank">get places detail in json</a>
+        <a class="btn btn-default" role="button" href="https://www.google.com/maps/search/{{nameVicinity}}" target="_blank">Go to this place in google map</a>
+        <table class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <td>ICON</td>
+                <td>NAME</td>
+                <td>VICINITY</td>
+                <td>TYPE</td>
+            </tr>
+            </thead>
+            <tr ng-repeat="y in myData.places | filter:searchPlaces" ng-click="myData.alertPlaceId(y, $event)">
+                <td><img ng-src="{{y.icon}}"/></td>
+                <td>{{y.name}}</td>
+                <td>{{y.vicinity}}</td>
+                <td>{{y.types.toString()}}</td>
+            </tr>
+        </table>
+    </div>
+    <p id="demo"/>
+    <p id="error"/>
+</div>
+
+<script>
+    var x = document.getElementById("demo");
+    var y = document.getElementById("error");
+    var long;
+    var lat;
+    $(document).ready(function(){
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(setPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    });
+
+    function setPosition(position) {
+        lat = position.coords.latitude;
+        long = position.coords.longitude;
+        $("#loading").hide();
+        $("#getPlacesButton").prop('disabled', false);
+        angular.element(document.getElementById('controllerDivId')).scope().myData.getPlaces();
+
+    }
+
+    angular.module("myapp", [])
+            .controller("MyController", function($scope, $http) {
+                $scope.myData = {};
+                $scope.myData.doClick = function(item, event) {
+
+                    var responsePromise = $http.get("http://www.w3schools.com/angular/customers.php");
+
+                    responsePromise.success(function(data, status, headers, config) {
+                        $scope.myData.names = data.records;
+                    });
+                    responsePromise.error(function(data, status, headers, config) {
+                        alert("AJAX failed!");
+                    });
+                }
+
+                $scope.myData.getPlaces = function() {
+                    var url = "getNearBy.php?lat="+lat+"&lng="+long;
+                    console.log(url);
+                    var responsePromise = $http.get(url);
+
+                    responsePromise.success(function(data, status, headers, config) {
+                        $scope.myData.places = data.results;
+//                        $scope.myData.names = data.records;
+                    });
+                    responsePromise.error(function(data, status, headers, config) {
+                        alert(status);
+                        y.innerHTML = "AJAX failed! URL is: "+ url;
+
+                    });
+                }
+
+                $scope.myData.alertPlaceId = function(item, event) {
+                    $scope.placeId = item.place_id;
+                    $scope.placeName = item.name;
+                    $scope.nameVicinity = item.name + " " + item.vicinity;
+                }
+
+
+
+            } );
+
+</script>
+
+</body>
+</html>
