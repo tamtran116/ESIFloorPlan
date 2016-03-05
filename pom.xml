@@ -3,23 +3,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>ESIFloorPlan</groupId>
-    <artifactId>ESIFloorPlan</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <groupId>com.tamtran</groupId>
+    <artifactId>MyApp</artifactId>
+    <version>0.0.4-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <properties>
         <java-version>1.7</java-version>
-        <org.springframework-version>4.0.3.RELEASE</org.springframework-version>
+        <org.springframework-version>4.2.5.RELEASE</org.springframework-version>
+        <spring-security-version>4.0.4.RELEASE</spring-security-version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
@@ -111,7 +106,7 @@
 	    <dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-core</artifactId>
-		    <version>3.1.4.RELEASE</version>
+		    <version>${spring-security-version}</version>
 			<exclusions>
 			    <exclusion>
 			        <artifactId>spring-asm</artifactId>
@@ -122,17 +117,17 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
-            <version>3.2.5.RELEASE</version>
+            <version>${spring-security-version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-config</artifactId>
-            <version>3.2.5.RELEASE</version>
+            <version>${spring-security-version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-taglibs</artifactId>
-            <version>3.2.5.RELEASE</version>
+            <version>${spring-security-version}</version>
         </dependency>
         <dependency>
             <groupId>cglib</groupId>
@@ -154,7 +149,7 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
           <groupId>com.google.zxing</groupId>
           <artifactId>core</artifactId>
           <version>3.0.1-SNAPSHOT</version>
@@ -163,7 +158,7 @@
           <groupId>com.google.zxing</groupId>
           <artifactId>javase</artifactId>
           <version>3.0.1-SNAPSHOT</version>
-         </dependency>
+         </dependency>-->
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
@@ -178,8 +173,8 @@
             <groupId>org.bytedeco.javacpp-presets</groupId>
             <artifactId>tesseract</artifactId>
             <version>3.04-1.1</version>
+            <classifier>linux-x86_64</classifier>
             <!--<classifier>windows-x86_64</classifier>-->
-            <classifier>windows-x86_64</classifier>
         </dependency>
         <dependency>
             <groupId>org.bytedeco.javacpp-presets</groupId>
@@ -190,12 +185,26 @@
             <groupId>org.bytedeco.javacpp-presets</groupId>
             <artifactId>leptonica</artifactId>
             <version>1.72-1.1</version>
-            <!--<classifier>linux-x86_64</classifier>-->
-            <classifier>windows-x86_64</classifier>
+            <classifier>linux-x86_64</classifier>
+            <!--<classifier>windows-x86_64</classifier>-->
         </dependency>
+        <!--Test-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
     <build>
-        <sourceDirectory>src</sourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -209,7 +218,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
-                    <warSourceDirectory>WebContent</warSourceDirectory>
+                    <warSourceDirectory>src/main/webapp</warSourceDirectory>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
@@ -218,6 +227,28 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.1</version>
             </plugin>
+            <!--For remote deployment-->
+            <!--<plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>7.7.Final</version>
+
+                <configuration>
+                    <hostname>192.168.10.116</hostname>
+                    <port>9999</port>
+                    <username>jboss</username>
+                    <password>Qwer1234.</password>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
         </plugins>
     </build>
 </project>
