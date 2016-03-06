@@ -70,6 +70,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#/userProfile"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ${userName}</a></li>
+        <li><a href="logout">logout</a></li>
       </ul>
     </div><!--/.nav-collapse -->
   </div>

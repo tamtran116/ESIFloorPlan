@@ -9,9 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * Created by Tam Tran on 9/4/2015.
- */
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -19,7 +18,7 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public void addUser(UserRegisterRequest userRegisterRequest) {
+    public void createUser(UserRegisterRequest userRegisterRequest) {
         UserInfoDO userInfoDO = new UserInfoDO();
         UsersDO usersDO = new UsersDO();
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -37,5 +36,25 @@ public class UserServiceImpl implements UserService {
         usersDO.setUserInfoId(userInfoDO.getUserInfoId());
         usersDO.setEnabled(true);
         userDao.addUser(usersDO);
+    }
+
+    @Override
+    public UserInfoDO getUser(String userName) {
+        return userDao.getUserInfoByUserName(userName);
+    }
+
+    @Override
+    public List<UserInfoDO> listUser() {
+        return null;
+    }
+
+    @Override
+    public void updateUser(UserRegisterRequest userRegisterRequest) {
+
+    }
+
+    @Override
+    public void removeUser(UserRegisterRequest userRegisterRequest) {
+
     }
 }

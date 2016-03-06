@@ -1,9 +1,11 @@
 package com.tamtran.myreceipt.business.services.impl;
 
+import com.tamtran.myreceipt.business.services.ReceiptService;
 import com.tamtran.myreceipt.common.constant.ReceiptConstants;
 import com.tamtran.myreceipt.common.model.DeleteReceiptRequest;
 import com.tamtran.myreceipt.common.model.ReceiptResource;
 import com.tamtran.myreceipt.common.model.SaveReceiptRequest;
+import com.tamtran.myreceipt.data.dao.ReceiptDao;
 import com.tamtran.myreceipt.data.dao.impl.ReceiptDaoImpl;
 import com.tamtran.myreceipt.data.domain.ReceiptDO;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -18,13 +20,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Tam Tran on 10/29/2015.
- */
 @Service
-public class ReceiptServiceImpl {
+public class ReceiptServiceImpl implements ReceiptService {
+
     @Autowired
-    private ReceiptDaoImpl receiptDao;
+    private ReceiptDao receiptDao;
+
     public void saveReceipt(SaveReceiptRequest saveReceiptRequest) {
         ReceiptDO receiptDO = new ReceiptDO();
         receiptDO.setExtendReceiptId(saveReceiptRequest.getExtrlRequestId());

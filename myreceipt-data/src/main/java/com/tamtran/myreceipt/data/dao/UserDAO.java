@@ -8,6 +8,8 @@ public interface UserDao {
 
     UsersDO findByUserName(String username);
 
+    UserInfoDO getUserInfoByUserName(String username);
+
     UserInfoDO addUserInfo(UserInfoDO userInfoDO);
 
     void addUser(UsersDO usersDO);

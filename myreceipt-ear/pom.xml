@@ -10,6 +10,37 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>myreceipt-ear</artifactId>
+    <packaging>ear</packaging>
 
+
+    <dependencies>
+        <dependency>
+            <groupId>com.tamtran</groupId>
+            <artifactId>myreceipt-war</artifactId>
+            <version>0.0.4-SNAPSHOT</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-ear-plugin</artifactId>
+                <version>2.10.1</version>
+                <configuration>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <generateApplicationXml>true</generateApplicationXml>
+                    <modules>
+                        <webModule>
+                            <artifactId>myreceipt-war</artifactId>
+                            <groupId>${project.groupId}</groupId>
+                            <contextRoot>/myreceipt</contextRoot>
+                        </webModule>
+                    </modules>
+                </configuration>
+            </plugin>
+        </plugins>
+
+    </build>
 
 </project>

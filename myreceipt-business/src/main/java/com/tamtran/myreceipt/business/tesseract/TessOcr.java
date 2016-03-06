@@ -1,12 +1,12 @@
 package com.tamtran.myreceipt.business.tesseract;
 
+
+import com.tamtran.myreceipt.common.utils.OSValidator;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.lept;
 import org.bytedeco.javacpp.tesseract.*;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,12 +30,13 @@ public class TessOcr {
         return processedData;
     }
 
-    public String processRaw(String file) {
+    public String processRaw(String file) throws Exception{
         TessBaseAPI api = new TessBaseAPI();
         api.SetVariable("tessedit_char_whitelist", "0123456789,/ABCDEFGHJKLMNPQRSTUVWXY");
-        if (api.Init("/usr/local/share/" , "eng") != 0) {
-//        if (api.Init("C:/Tesseract-OCR" , "eng") != 0) {
-            throw new RuntimeException("Could not initialize tesseract.");
+        if (OSValidator.isWindows() && api.Init("C:/Tesseract-OCR" , "eng") != 0) {
+            throw new Exception("Could not initialize tesseract.");
+        } else if (OSValidator.isUnix() && api.Init("C:/Tesseract-OCR" , "eng") != 0){
+            throw new Exception("Could not initialize tesseract.");
         }
 
         lept.PIX image = null;
