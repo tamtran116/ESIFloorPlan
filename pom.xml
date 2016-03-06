@@ -4,9 +4,16 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tamtran</groupId>
-    <artifactId>MyApp</artifactId>
+    <artifactId>myreceipt-master</artifactId>
     <version>0.0.4-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <modules>
+        <module>myreceipt-data</module>
+        <module>myreceipt-common</module>
+        <module>myreceipt-business</module>
+        <module>myreceipt-war</module>
+        <module>myreceipt-ear</module>
+    </modules>
+    <packaging>pom</packaging>
 
     <properties>
         <java-version>1.7</java-version>
@@ -174,7 +181,12 @@
             <artifactId>tesseract</artifactId>
             <version>3.04-1.1</version>
             <classifier>linux-x86_64</classifier>
-            <!--<classifier>windows-x86_64</classifier>-->
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>tesseract</artifactId>
+            <version>3.04-1.1</version>
+            <classifier>windows-x86_64</classifier>
         </dependency>
         <dependency>
             <groupId>org.bytedeco.javacpp-presets</groupId>
@@ -186,7 +198,12 @@
             <artifactId>leptonica</artifactId>
             <version>1.72-1.1</version>
             <classifier>linux-x86_64</classifier>
-            <!--<classifier>windows-x86_64</classifier>-->
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>leptonica</artifactId>
+            <version>1.72-1.1</version>
+            <classifier>windows-x86_64</classifier>
         </dependency>
         <!--Test-->
         <dependency>
@@ -204,7 +221,8 @@
 
     </dependencies>
     <build>
-        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/</testSourceDirectory>
+        <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -218,7 +236,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
-                    <warSourceDirectory>src/main/webapp</warSourceDirectory>
+                    <warSourceDirectory>myreceipt-war/src/main/webapp</warSourceDirectory>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
