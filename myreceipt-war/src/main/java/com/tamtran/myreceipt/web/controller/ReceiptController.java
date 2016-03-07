@@ -22,9 +22,12 @@ import java.io.FileOutputStream;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.util.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @Controller
 public class ReceiptController {
+	private static final Logger logger = LogManager.getLogger();
 	private static final String API_KEY = "AIzaSyC0CxtTnmp4k5XWITiFs4o77LU95lIpyRc";
 	private static final String APPLICATION_JSON = "application/json; charset=utf-8";
 	private static DecimalFormat df2 = new DecimalFormat(".##");
@@ -152,6 +155,7 @@ public class ReceiptController {
 					TessOcr ocr = new TessOcr();
 					String rawDataString = ocr.processRaw(receiptPath);
 					String processedDataString = ocr.processedData(rawDataString);
+					logger.info("raw data string : " + rawDataString);
 					receiptResource.setReceiptRaw(rawDataString);
 					receiptResource.setReceiptProcessed(processedDataString);
 					receiptService.updateReceipt(receiptResource);
