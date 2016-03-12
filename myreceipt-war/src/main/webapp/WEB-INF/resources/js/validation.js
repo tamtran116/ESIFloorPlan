@@ -6,66 +6,60 @@ var socialRegex ='^\\d{3}-\\d{3}-\\d{4}$';
 var emailRegex = /^[-a-z0-9~!$%^&*_=+}{'?]+(\.[-a-z0-9~!$%^&*_=+}{'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
 var alphaNumericRegex = /^[a-zA-Z0-9\s]*$/;
 $(document).ready(function() {
-
     console.log( "document loaded" );
-    $("#formFirstName").change(function() {
-        validateLength("#formFirstName", 20, 0);
-    });
-    $("#formLastName").change(function() {
-        validateLength("#formLastName", 20, 0);
-    });
-    $("#formPhoneNumber").mask('(000) 000-0000').change(function() {
-        validateRegex("#formPhoneNumber", phoneRegex)
-    });
-    $("#formEmail").change(function() {
-        validateRegex("#formEmail", emailRegex)
-    });
-    $("#formConfirmedEmail").change(function() {
+    $("#formPhoneNumber").mask('(000) 000-0000');
+    validateLength("#formFirstName", 20, 1);
+    validateLength("#formLastName", 20, 1);
+    $('form-signin').on("keyup", function() {
+        validateRegex("#formPhoneNumber", phoneRegex);
+        validateRegex("#formEmail", emailRegex);
         validateConfirm("#formConfirmedEmail", "#formEmail");
     });
-});
 
-$(window).load(function() {
-    console.log( "window loaded" );
 });
-
 
 function validateLength(jquerySelector, maxLength, minLength) {
-    var describeAttribute = jquerySelector.substring(5);
-    var valueLength = $(jquerySelector).val().length;
-    var parentDiv = $(jquerySelector).parent();
-    if (valueLength > maxLength || valueLength < minLength) {
-        errorMessage =
-        addError(parentDiv, jquerySelector, describeAttribute, "not valid due to input length = " + $(jquerySelector).val().length)
-    } else {
-        addSuccess(parentDiv, jquerySelector, describeAttribute);
-    }
+    $(jquerySelector).on('keyup', function () {
+        var describeAttribute = jquerySelector.substring(5);
+        var valueLength = $(jquerySelector).val().length;
+        var parentDiv = $(jquerySelector).parent();
+        if (valueLength > maxLength || valueLength < minLength) {
+            errorMessage =
+                addError(parentDiv, jquerySelector, describeAttribute, "not valid due to input length = " + $(jquerySelector).val().length)
+        } else {
+            addSuccess(parentDiv, jquerySelector, describeAttribute);
+        }
+    });
 }
 
 function validateRegex(jquerySelector, pattern) {
-    var describeAttribute = jquerySelector.substring(5);
-    var value = $(jquerySelector).val();
-    var regex = new RegExp(pattern);
-    var parentDiv = $(jquerySelector).parent();
-    if(regex.test(value)) {
-        addSuccess(parentDiv, jquerySelector, describeAttribute);
-    } else {
-        addError(parentDiv, jquerySelector, describeAttribute, "not valid format")
-    }
+    $(jquerySelector).on('keyup', function () {
+        var describeAttribute = jquerySelector.substring(5);
+        var value = $(jquerySelector).val();
+        var regex = new RegExp(pattern);
+        var parentDiv = $(jquerySelector).parent();
+        if (regex.test(value)) {
+            addSuccess(parentDiv, jquerySelector, describeAttribute);
+        } else {
+            addError(parentDiv, jquerySelector, describeAttribute, "not valid format")
+        }
+    });
 }
 
 function validateConfirm(jquerySelector, jsConfirmElement) {
-    var describeAttribute = jquerySelector.substring(5);
-    var objectToConfirm = $(jsConfirmElement).val();
-    var confirmObj = $(jquerySelector).val();
-    var parentDiv = $(jquerySelector).parent();
+    $(jquerySelector).on('keyup', function () {
+        var describeAttribute = jquerySelector.substring(5);
+        var objectToConfirm = $(jsConfirmElement).val();
+        var confirmObj = $(jquerySelector).val();
+        var parentDiv = $(jquerySelector).parent();
 
-    if (objectToConfirm == confirmObj) {
-        addSuccess(parentDiv, jquerySelector, describeAttribute);
-    } else {
-        addError(parentDiv, jquerySelector, describeAttribute, "fail confirm, value not match")
+        if (objectToConfirm == confirmObj) {
+            addSuccess(parentDiv, jquerySelector, describeAttribute);
+        } else {
+            addError(parentDiv, jquerySelector, describeAttribute, "fail confirm, value not match")
 
-    }
+        }
+    });
 }
 
 function addError(jqueryObj, jsSelector, descAttr, errorMsg) {
