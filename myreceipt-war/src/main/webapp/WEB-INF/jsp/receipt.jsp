@@ -37,6 +37,9 @@
       height: 1.5em;
     }
   </style>
+  <script>
+
+  </script>
 </head>
 <body ng-app="myApp" >
 <!-- Fixed navbar -->
@@ -53,8 +56,8 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li><a href="#/add">add</a></li>
-        <li><a href="#/receipts">receipts</a></li>
+        <li><a href="#/add" data-toggle="collapse" data-target="#navbar">add</a></li>
+        <li><a href="#/receipts" data-toggle="collapse" data-target="#navbar">receipts</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -69,7 +72,7 @@
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#/userProfile"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ${userName}</a></li>
+        <li><a href="#/userProfile" data-toggle="collapse" data-target="#navbar"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ${userName}</a></li>
         <li><a href="logout">logout</a></li>
       </ul>
     </div><!--/.nav-collapse -->
@@ -96,7 +99,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <a href="#/receipts" class="btn btn-primary" data-dismiss="modal">Go To Receipt</a>
       </div>
     </div>
   </div>

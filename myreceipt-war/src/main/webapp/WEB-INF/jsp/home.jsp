@@ -21,6 +21,19 @@
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
+	<style>
+		body {
+			background: url('resources/images/pile_of_receipts.jpg') no-repeat fixed center;
+		}
+		.sign-in {
+			background-color: #f7f7f7;
+			width: 260px;
+			padding: 20px 20px;
+			margin: 0 auto 20px;
+		}
+	</style>
+
+
 	<!-- Jquery first-->
 	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 	<script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
@@ -45,46 +58,47 @@
 				<li><a href="uploadfloor">uploadfloor</a></li>
 				<li><a href="receipt">Save My Receipt</a></li>
 			</ul>
-			<c:choose>
-				<c:when test="${not empty username}">
-					<ul class="nav navbar-nav navbar-right">
-						<li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ${username}</a></li>
-						<li><a href="logout">logout</a></li>
-					</ul>
-				</c:when>
-				<c:otherwise>
-					<form class="form-inline navbar-form" action="${rootURL}home" method="POST">
-						<div class="form-group">
-							<label class="sr-only" for="username">User Name</label>
-							<input name="username" type="text" class="form-control" id="username" placeholder="user name">
-						</div>
-						<div class="form-group">
-							<label class="sr-only" for="password">Password</label>
-							<input name="password" type="password" class="form-control" id="password" placeholder="Password">
-						</div>
-						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-						<div class="checkbox">
-							<label>
-								<input type="checkbox"> Remember me
-							</label>
-						</div>
-						<input class="btn btn-primary " name="submit" type="submit" value="Sign in">
-					</form>
-				</c:otherwise>
-			</c:choose>
+<c:choose>
+	<c:when test="${not empty username}">
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> ${username}</a></li>
+				<li><a href="logout">logout</a></li>
+			</ul>
+	</c:when>
+</c:choose>
 		</div><!--/.nav-collapse -->
 	</div>
 </nav>
-<div class="container">
-	<div class="">
-		<img src="resources/images/pile_of_receipts.jpg" class="img-responsive center-block"/>
+<div class="container" style="padding-top:100px;">
+<c:choose>
+	<c:when test="${empty username}">
+	<div class="sign-in">
+		<form action="${rootURL}home" method="POST">
+			<div class="form-group">
+				<label class="sr-only" for="username">User Name</label>
+				<input name="username" type="text" class="form-control" id="username" placeholder="user name" autofocus>
+			</div>
+			<div class="form-group">
+				<label class="sr-only" for="password">Password</label>
+				<input name="password" type="password" class="form-control" id="password" placeholder="Password">
+			</div>
+			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox"> Remember me
+				</label>
+			</div>
+			<input class="btn btn-primary " name="submit" type="submit" value="Sign in">
+		</form>
 	</div>
-	<c:if test="${not empty error}">
-		<div class="alert alert-danger" role="alert"><strong>${error}</strong></div>
-	</c:if>
-	<c:if test="${not empty msg}">
-		<div class="alert alert-danger" role="alert"><strong>${msg}</strong></div>
-	</c:if>
+	</c:when>
+</c:choose>
+<c:if test="${not empty error}">
+	<div class="alert alert-danger" role="alert"><strong>${error}</strong></div>
+</c:if>
+<c:if test="${not empty msg}">
+	<div class="alert alert-danger" role="alert"><strong>${msg}</strong></div>
+</c:if>
 </div>
 </body>
 </html>

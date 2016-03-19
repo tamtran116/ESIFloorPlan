@@ -1,6 +1,0 @@
-Shape
-PinX
-PinY
-Width
-Height
-Text

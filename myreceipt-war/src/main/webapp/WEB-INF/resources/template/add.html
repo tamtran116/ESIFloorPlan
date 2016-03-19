@@ -6,8 +6,14 @@
           method="post" ng-submit="submitAddReceipt()">
         <div class="form-group">
             <label for="placeId" class="sr-only">Place Id</label>
-            <input type="text" name="placeId" id="placeId" placeholder="place id" th:field="*{placeId}"
-                   class="form-control" ng-model="inputPlaceId" required="true" readonly="true"/>
+            <div class="input-group">
+                <input type="text" name="placeId" id="placeId" placeholder="place id" th:field="*{placeId}"
+                       class="form-control" ng-model="inputPlaceId" required="true" readonly="true"/>
+                <span class="input-group-btn">
+                    <a class="btn btn-default" href="#/place/{{inputPlaceIndex}}">detail</a>
+                </span>
+            </div>
+
         </div>
         <div class="form-group">
             <label for="placeName" class="sr-only">Place Name</label>
@@ -30,9 +36,9 @@
             <div class="input-group">
                 <input type="text" name="date" id="date" placeolder="YYYY-MM-DD HH:MI" th:field="*{date}"
                        class="form-control" aria-describedby="" required="true" ng-model="timestamp"/>
-      <span class="input-group-btn">
-        <button class="btn btn-default" type="button" ng-click="getTimestamp()">Now!</button>
-      </span>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" ng-click="getTimestamp()">Now!</button>
+                </span>
             </div><!-- /input-group -->
         </div>
         <div class="form-group">
@@ -58,7 +64,7 @@
         <div class="list-group">
             <!--<a ng-repeat="y in places.results | filter:search" href="#/place/{{places.results.indexOf(y)}}" class="list-group-item clearfix"><img ng-src="{{y.icon}}" width="30px" height="30px"/> <strong>{{y.name}}</strong> <span class="pull-right">{{y.vicinity}}{{y.formatted_address}}</span></a>-->
             <a ng-repeat="y in places.results | filter:search" class="list-group-item clearfix"
-               ng-click="putDetail(y.id, y.name, y.vicinity)"><img ng-src="{{y.icon}}" width="30px" height="30px"/>
+               ng-click="putDetail(y.id, y.name, y.vicinity, places.results.indexOf(y))"><img ng-src="{{y.icon}}" width="30px" height="30px"/>
                 <strong>{{y.name}}</strong> <span class="pull-right">{{y.vicinity}}{{y.formatted_address}}</span></a>
         </div>
         <button ng-show="token" class="btn btn-default" ng-click="getNextPage()">next result</button>

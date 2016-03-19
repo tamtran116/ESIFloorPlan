@@ -24,6 +24,8 @@
 	</style>
 	<script src="resources/js/jquery.min.js" type="text/javascript"></script>
 	<script src="resources/js/jquery.dataTables.min.js" type="text/javascript" language="javascript"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 	<script>
 		$( document ).ready(function() {
 
@@ -107,9 +109,11 @@
 	</div>
 </nav>
 <div class="container">
-	<img class="center-block" src="resources/images/ExpressScripts-logo1.jpg"/>
 	<div class="page-header">
-		<h3>Please select a "floor" to upload !</h3>
+		<h3>Please select a "floor" to upload</h3>
+	</div>
+	<div >
+		<img src="resources/images/floorplan_icon.png" class="img-responsive center-block"/>
 	</div>
 	<div class="clearfix">
 		<form id="uploadForm" method="post" enctype="multipart/form-data" th:object="${uploadFloorInfo}">

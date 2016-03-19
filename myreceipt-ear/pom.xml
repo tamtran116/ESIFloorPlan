@@ -39,6 +39,28 @@
                     </modules>
                 </configuration>
             </plugin>
+            <!--For remote deployment-->
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>7.7.Final</version>
+
+                <configuration>
+                    <hostname>192.168.10.116</hostname>
+                    <port>9999</port>
+                    <username>jboss</username>
+                    <password>Qwer1234.</password>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
     </build>

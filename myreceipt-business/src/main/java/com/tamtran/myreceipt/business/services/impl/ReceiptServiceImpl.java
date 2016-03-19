@@ -3,18 +3,21 @@ package com.tamtran.myreceipt.business.services.impl;
 import com.tamtran.myreceipt.business.services.ReceiptService;
 import com.tamtran.myreceipt.common.constant.ReceiptConstants;
 import com.tamtran.myreceipt.common.model.DeleteReceiptRequest;
+import com.tamtran.myreceipt.common.model.ReceiptItems;
 import com.tamtran.myreceipt.common.model.ReceiptResource;
 import com.tamtran.myreceipt.common.model.SaveReceiptRequest;
 import com.tamtran.myreceipt.data.dao.ReceiptDao;
-import com.tamtran.myreceipt.data.dao.impl.ReceiptDaoImpl;
 import com.tamtran.myreceipt.data.domain.ReceiptDO;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,6 +25,7 @@ import java.util.List;
 
 @Service
 public class ReceiptServiceImpl implements ReceiptService {
+    private static final Logger logger = LogManager.getLogger();
 
     @Autowired
     private ReceiptDao receiptDao;
@@ -58,8 +62,14 @@ public class ReceiptServiceImpl implements ReceiptService {
             receiptResource.setPlaceLocation(receiptDO.getPlaceLocation());
             receiptResource.setReceiptTotal(receiptDO.getReceiptTotal());
             receiptResource.setReceiptPath(receiptDO.getReceiptPath());
+            File f = new File(receiptDO.getReceiptPath());
+            if(!f.exists()){
+                logger.error("scanned receipt missing for receipt {} with path {}",receiptDO.getExtendReceiptId(),receiptDO.getReceiptPath());
+                receiptResource.setReceiptPath("Not found");
+            }
             if (null != receiptDO.getReceiptDate()) {
-                receiptResource.setReceiptDateTime(DateFormatUtils.ISO_DATETIME_FORMAT.format(receiptDO.getReceiptDate()));
+//                receiptResource.setReceiptDateTime(DateFormatUtils.ISO_DATETIME_FORMAT.format(receiptDO.getReceiptDate()));
+                receiptResource.setReceiptDateTime(String.valueOf(receiptDO.getReceiptDate().getTime()));
             }
             receiptResource.setItems(receiptDO.getProcessedReceiptData());
             receiptResources.add(receiptResource);
@@ -76,5 +86,11 @@ public class ReceiptServiceImpl implements ReceiptService {
         receiptDO.setRawReceiptData(receiptResource.getReceiptRaw());
         receiptDO.setProcessedReceiptData(receiptResource.getReceiptProcessed());
         receiptDao.updateReceipt(receiptDO);
+    }
+
+    public void updateReceiptItems(ReceiptItems receiptItems) {
+        ReceiptDO receiptDo = receiptDao.getReceiptByExtId(receiptItems.getReceiptId());
+        receiptDo.setProcessedReceiptData(receiptItems.getReceiptItems());
+        receiptDao.updateReceipt(receiptDo);
     }
 }

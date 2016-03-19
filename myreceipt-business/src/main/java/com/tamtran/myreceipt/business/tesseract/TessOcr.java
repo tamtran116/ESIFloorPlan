@@ -12,14 +12,6 @@ import java.util.regex.Pattern;
 
 public class TessOcr {
 
-    public TessOcr(){}
-
-    /*public static void main(String[] args) {
-        TessOcr tessOcr = new TessOcr();
-        String raw = tessOcr.processRaw("C:/Tesseract-OCR/FullSizeRender1.jpg");
-        System.out.println(raw);
-    }*/
-
     public String processedData(String raw) {
         Pattern pattern = Pattern.compile("^([0-9a-zA-Z :./]+ )([$-]?[0-9]+\\.[0-9]+-?)(.*)$", Pattern.MULTILINE);
         Matcher matcher = pattern.matcher(raw);
@@ -35,10 +27,9 @@ public class TessOcr {
         api.SetVariable("tessedit_char_whitelist", "0123456789,/ABCDEFGHJKLMNPQRSTUVWXY");
         if (OSValidator.isWindows() && api.Init("C:/Tesseract-OCR" , "eng") != 0) {
             throw new Exception("Could not initialize tesseract.");
-        } else if (OSValidator.isUnix() && api.Init("C:/Tesseract-OCR" , "eng") != 0){
+        } else if (OSValidator.isUnix() && api.Init("/usr/local/share/" , "eng") != 0){
             throw new Exception("Could not initialize tesseract.");
         }
-
         lept.PIX image = null;
         BytePointer outText = null;
         try {
@@ -46,6 +37,7 @@ public class TessOcr {
             api.SetImage(image);
             outText = api.GetUTF8Text();
             String string = outText.getString("UTF-8");
+//            String stringResult = string.replaceAll("[^\\w\n\\.\\*$;: ]","");
             if (string != null) {
                 string = string.trim();
             }

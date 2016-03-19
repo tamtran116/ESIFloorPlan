@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ESIFloorPlan:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="ESIFloorPlan-0.0.2-SNAPSHOT.war">
+      <element id="artifact" artifact-name="ESIFloorPlan:war exploded" />
+    </root>
+  </artifact>
+</component>

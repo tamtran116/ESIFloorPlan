@@ -25,7 +25,8 @@ $( document ).ready(function() {
 	$('a').button();
 });
 function delayedRedirect(){
-    window.location = "../"
+    var context = $('#back-btn').attr('href');
+    window.location = context + "/"
 }
 </script>
 
@@ -36,7 +37,7 @@ function delayedRedirect(){
 <img src="resources/images/floorplan_icon.png"/><br/><br/>
 <h1>Logging out</h1>
 <h2>You'll be redirected soon!</h2> <p>Or click the button to go back now</p>
-<a href="${pageContext.request.contextPath}/">Back</a>
+<a id="back-btn" href="${pageContext.request.contextPath}/">Back</a>
 </div>
 </body>
 </html> 

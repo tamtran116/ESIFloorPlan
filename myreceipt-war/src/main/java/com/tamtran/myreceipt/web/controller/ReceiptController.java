@@ -1,10 +1,14 @@
 package com.tamtran.myreceipt.web.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tamtran.myreceipt.business.services.impl.ReceiptServiceImpl;
 import com.tamtran.myreceipt.business.tesseract.TessOcr;
 import com.tamtran.myreceipt.common.model.DeleteReceiptRequest;
+import com.tamtran.myreceipt.common.model.ReceiptItems;
 import com.tamtran.myreceipt.common.model.ReceiptResource;
 import com.tamtran.myreceipt.common.model.SaveReceiptRequest;
+import com.tamtran.myreceipt.web.adapter.FaceDetectApp;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +24,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URLEncoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +35,9 @@ import org.apache.logging.log4j.Logger;
 public class ReceiptController {
 	private static final Logger logger = LogManager.getLogger();
 	private static final String API_KEY = "AIzaSyC0CxtTnmp4k5XWITiFs4o77LU95lIpyRc";
-	private static final String APPLICATION_JSON = "application/json; charset=utf-8";
+	private static final String APPLICATION_JSON = "application/json;charset=UTF-8";
+	private static final String TEXT_HTML = "text/html;charset=UTF-8";
+	private static final int MAX_RESULTS = 4;
 	private static DecimalFormat df2 = new DecimalFormat(".##");
 
 	@Autowired
@@ -85,9 +93,11 @@ public class ReceiptController {
 			File newFile = null;
 			if (OS.contains("win")) {
 				// The Double Backslash "\\" is applied because of window path for localhost server
-				newFile = new File(absoluteFilePath+"\\"+extrlRequestId);
+//				newFile = new File(absoluteFilePath+"\\"+extrlRequestId);
+				newFile = new File("C:\\tmp\\" + extrlRequestId + getFileExtension(file));
 			} else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) {
-				newFile = new File(absoluteFilePath+"/"+extrlRequestId);
+//				newFile = new File(absoluteFilePath+"/"+extrlRequestId);
+				newFile = new File("/home/jboss/app_data/myreceipt/" + extrlRequestId + getFileExtension(file));
 			} else {
 				return "You failed to upload " + file.getOriginalFilename() + " because of unknown operation system.";
 			}
@@ -116,6 +126,18 @@ public class ReceiptController {
 		return (file.getContentType().contains("jpg") | file.getContentType().contains("png") | file.getContentType().contains("jpeg"));
 	}
 
+	private String getFileExtension(MultipartFile file) {
+		if(file.getContentType().contains("jpg")) {
+			return ".jpg";
+		} else if (file.getContentType().contains("png")) {
+			return ".png";
+		} else if (file.getContentType().contains("jpeg")) {
+			return ".jpeg";
+		} else {
+			return null;
+		}
+	}
+
 	@RequestMapping(value = {"/receipt", "/receipt#"}, method = RequestMethod.GET)
 	public String saveReceipt(Model model) {
 		DeleteReceiptRequest deleteReceiptRequest = new DeleteReceiptRequest();
@@ -142,9 +164,9 @@ public class ReceiptController {
 	}
 
 
-	@RequestMapping(value = "/convertreceipt/{receiptId}", method = RequestMethod.GET, produces = APPLICATION_JSON)
-	public @ResponseBody String convertReceipt(@PathVariable("receiptId") String receiptId) throws Exception {
-		String receiptPath = "";
+	@RequestMapping(value = "/convertreceipt/{receiptId}", method = RequestMethod.GET, produces = TEXT_HTML)
+	public @ResponseBody String convertReceipt(@PathVariable("receiptId") String receiptId, @RequestParam(value = "premium") boolean premiumFlag) throws Exception {
+		String receiptPath;
 		List<ReceiptResource> receiptResourceList = receiptService.getReceipts(SecurityContextHolder.getContext().getAuthentication().getName());
 		for (ReceiptResource receiptResource : receiptResourceList) {
 			if (StringUtils.isNotBlank(receiptId) && receiptId.equals(receiptResource.getReceiptId())) {
@@ -152,18 +174,50 @@ public class ReceiptController {
 				System.out.println("Receipt Path: " + receiptPath);
 				File file = new File(receiptPath);
 				if (file.isFile()) {
-					TessOcr ocr = new TessOcr();
-					String rawDataString = ocr.processRaw(receiptPath);
-					String processedDataString = ocr.processedData(rawDataString);
-					logger.info("raw data string : " + rawDataString);
-					receiptResource.setReceiptRaw(rawDataString);
-					receiptResource.setReceiptProcessed(processedDataString);
-					receiptService.updateReceipt(receiptResource);
-					return processedDataString;
+					if (premiumFlag) {
+						Path inputPath = Paths.get(receiptPath);
+						FaceDetectApp faceDetectApp = new FaceDetectApp(FaceDetectApp.getVisionService());
+						List<String> responseStringList = faceDetectApp.detectText(inputPath,MAX_RESULTS);
+						if (responseStringList.size() > 0) {
+							String rawDataString = faceDetectApp.detectText(inputPath, MAX_RESULTS).get(0);
+							String processedDataString = rawDataString;
+							logger.info("raw data string : " + rawDataString);
+							receiptResource.setReceiptRaw(rawDataString);
+							receiptResource.setReceiptProcessed(processedDataString);
+							receiptService.updateReceipt(receiptResource);
+							return processedDataString;
+						} else {
+							throw new Exception("Cannot convert to text");
+						}
+					} else {
+						TessOcr ocr = new TessOcr();
+						String rawDataString = ocr.processRaw(receiptPath);
+						String processedDataString = rawDataString;
+						logger.info("raw data string : " + rawDataString);
+						receiptResource.setReceiptRaw(rawDataString);
+						receiptResource.setReceiptProcessed(processedDataString);
+						receiptService.updateReceipt(receiptResource);
+						return processedDataString;
+					}
+				} else {
+					throw new Exception("Could not get file");
 				}
 			}
 		}
 		return "File not found !";
+	}
+
+	@RequestMapping(value = "/save-receipt-items", method = RequestMethod.POST, consumes = {"application/json"}, produces={APPLICATION_JSON})
+	public @ResponseBody String saveReceiptItems(@RequestBody ReceiptItems receiptItems) throws Exception {
+		logger.info(receiptItems.getReceiptId());
+		logger.info(receiptItems.getReceiptItems());
+		String[] itemArray = receiptItems.getReceiptItems().split("\\r?\\n");
+		logger.info("number of items = " + itemArray.length);
+		receiptService.updateReceiptItems(receiptItems);
+		ObjectMapper om = new ObjectMapper();
+		Map<String, String> response = new LinkedHashMap<String, String>();
+		response.put("result", "success");
+		return om.writeValueAsString(response);
 	}
 
 	@ExceptionHandler({Exception.class})

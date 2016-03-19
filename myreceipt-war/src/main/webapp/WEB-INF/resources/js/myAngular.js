@@ -13,7 +13,7 @@ myApp.config(['$routeProvider', function ($routeProvider) {
             controller: 'ListController'
         }).
         when('/place/:placeId', {
-            templateUrl: 'resources/template/placedetail.html',
+            templateUrl: 'resources/template/placeDetail.html',
             controller: 'DetailController'
         }).
         when('/search', {
@@ -34,21 +34,13 @@ myApp.config(['$routeProvider', function ($routeProvider) {
         when('/userProfile', {
             templateUrl: 'resources/template/userprofile.html'
         }).
+        when('/item/:receiptId', {
+            templateUrl: 'resources/template/receipt-items.html',
+        controller: 'ItemController'
+        }).
         otherwise({
             redirectTo: '/receipts'
         })
 }]);
-myApp.config(['$httpProvider', function ($httpProvider) {
-    //delete $httpProvider.defaults.headers.common['X-Requested-With'];
-    //$httpProvider.defaults.headers.post['Accept'] = 'application/json, text/javascript';
-    //$httpProvider.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
-    //$httpProvider.defaults.headers.post['Access-Control-Max-Age'] = '1728000';
-    //$httpProvider.defaults.headers.common['Access-Control-Max-Age'] = '1728000';
-    //$httpProvider.defaults.headers.common['Accept'] = 'application/json, text/javascript';
-    //$httpProvider.defaults.headers.common['Content-Type'] = 'application/json; charset=utf-8';
-    //$httpProvider.defaults.useXDomain = true;
-    var token = $("meta[name='_csrf']").attr("content");
-    $httpProvider.defaults.headers.post = { 'X-XSRF-TOKEN' : token };
-    $httpProvider.defaults.headers.post = {'Content-Type': 'application/x-www-form-urlencoded'};
-}]);
+
 
