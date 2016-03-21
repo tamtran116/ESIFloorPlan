@@ -31,11 +31,12 @@ myAppControllers.controller("ListController", function($scope, $http, places, $f
         });
     };
     $scope.submitAddReceipt = function () {
+        $('#submit-receipt-btn').empty().append("<img id='loading' src='resources/images/ajax-loader.gif'/>");
         var token = $("meta[name='_csrf']").attr("content");
         var header = $("meta[name='_csrf_header']").attr("content");
-        console.log(header);
         var formData = new FormData($('#saveForm')[0]);
         console.log(formData);
+        console.log(header);
         var ajaxConfig = {
             headers: {
                 'X-CSRF-TOKEN': token,
@@ -43,15 +44,22 @@ myAppControllers.controller("ListController", function($scope, $http, places, $f
             }
         };
         $http.post('receipt', formData, ajaxConfig).then(function successCallback(responseData, status, headers, config){
-            console.log(responseData);
-            $('#message').empty().append(responseData.data);
-            $('#myModal').modal('show');
+            console.log(JSON.stringify(responseData));
+            if(responseData.data.receiptId != null) {
+                console.log("receiptId:"+responseData.data.receiptId);
+                window.location = "#/receipts";
+            } else if (responseData.data.error != null) {
+                $('#message').empty().append(responseData.data.error);
+                $('#myModal').modal('show');
+            }
             document.getElementById("saveForm").reset();
+            $('#submit-receipt-btn').empty().append("submit");
         }, function errorCallback(data, status, headers, config){
             console.log(data);
             $('#message').empty().append(data);
             $('#myModal').modal('show');
             document.getElementById("saveForm").reset();
+            $('#submit-receipt-btn').empty().append("submit");
         });
     };
     $scope.getTimestamp = function () {
@@ -69,11 +77,13 @@ myAppControllers.controller("ListController", function($scope, $http, places, $f
         $scope.inputPlaceIndex = index;
         $('#collapseExample').collapse('hide');
     };
-    $scope.showPlaces = function () {
+    $scope.showPlaces = function (event) {
+        $('#show-place-btn').empty().append("<img id='loading' src='resources/images/ajax-loader.gif'/>");
         if (null != places.results) {
             console.log("Places reused!!!");
             $scope.places = {};
             $scope.places.results = places.results;
+            $('#show-place-btn').empty().append("show places");
         } else {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
@@ -88,9 +98,7 @@ myAppControllers.controller("ListController", function($scope, $http, places, $f
     };
 
     function ajaxGetPlaces($scope, $http, url, places) {
-        var loading = $('#loader');
         console.log(url);
-        loading.toggleClass("hidden", false);
         var responsePromise = $http.get(url);
         responsePromise.success(function(data, status, headers, config) {
             $scope.places = places;
@@ -108,7 +116,7 @@ myAppControllers.controller("ListController", function($scope, $http, places, $f
         });
         responsePromise.finally(function() {
             // loading.toggleClass("hidden", true);
-            loading.fadeOut('slow');
+            $('#show-place-btn').empty().append("show places");
         });
     }
 });
@@ -180,6 +188,8 @@ myAppControllers.controller("ItemController", function($scope, $http, $route, $r
         });
     };
     $scope.saveItems = function() {
+        var saveItemBtn = $('#save-item-btn');
+        saveItemBtn.empty().append("<img id='loading' src='resources/images/ajax-loader.gif'/>");
         var token = $("meta[name='_csrf']").attr("content");
         console.log("saving items...");
         console.log("receipt id : " + this.receipt.receiptId);
@@ -202,9 +212,11 @@ myAppControllers.controller("ItemController", function($scope, $http, $route, $r
         var responsePromise = $http(config);
         responsePromise.success(function (data, status, headers, config) {
             console.log(data);
+            saveItemBtn.empty().append("<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>");
         });
         responsePromise.error(function (data, status, headers, config) {
             console.log(data);
+            saveItemBtn.empty().append("<span class='glyphicon glyphicon-warning-sign' aria-hidden='true'></span>");
         });
     };
 });

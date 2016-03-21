@@ -45,19 +45,17 @@
             <label for="formFile" class="sr-only">Upload File</label>
             <input id="formFile" name="file" type="file"/>
         </div>
-        <input class="btn btn-lg btn-primary btn-block" name="submit" type="submit" value="submit"/>
+        <input id="submit-receipt-btn" class="btn btn-lg btn-primary btn-block" name="submit" type="submit" value="submit"/>
     </form>
 </div>
-<button class="btn btn-info btn-block" type="button" data-toggle="collapse" data-target="#collapseExample"
+<button id="show-place-btn" class="btn btn-info btn-block" type="button" data-toggle="collapse" data-target="#collapseExample"
         aria-expanded="false" aria-controls="collapseExample" ng-click="showPlaces()">
     show places
 </button>
 <hr>
 <div class="collapse" id="collapseExample">
     <div class="well">
-        <img src="resources/images/loading.gif" class="hidden" id="loader"
-             style="position:fixed;top:0;left:0;right:0;bottom:0;margin:auto;display: block; z-index: 99999!important;">
-        <h4>Found <span class="badge">{{places.results.length}}</span> places <span ng-show="coordinate">near my location <strong>({{coordinate}})</strong></span>
+        <h4>Found <span class="badge">{{places.results.length}}</span> places <span ng-show="coordinate">near my location <!--<strong>({{coordinate}})</strong>--></span>
         </h4>
         <input type="search" class="form-control" placeholder="search by place name" ng-model="search">
         <br>

@@ -1,6 +1,5 @@
 package com.tamtran.myreceipt.web.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tamtran.myreceipt.business.services.impl.ReceiptServiceImpl;
 import com.tamtran.myreceipt.business.tesseract.TessOcr;
@@ -79,10 +78,12 @@ public class ReceiptController {
 		return restTemplate.getForObject(url, Object.class);
 	}
 
-	@RequestMapping(value = "/receipt", method = RequestMethod.POST, produces = "text/plain; charset=utf-8")
+	@RequestMapping(value = "/receipt", method = RequestMethod.POST, produces = APPLICATION_JSON)
 	public @ResponseBody String saveReceipt(@RequestParam(value = "file", required = false) MultipartFile file,
 											@ModelAttribute("saveReceiptRequest") @Valid SaveReceiptRequest saveReceiptRequest,
 											HttpServletRequest request) {
+		ObjectMapper om = new ObjectMapper();
+		Map<String, String> response = new LinkedHashMap<String, String>();
 		//TODO: server side validation
 //		model.addAttribute("message", "Receipt saved successfully.");
 		if (!file.isEmpty() && isValidContentType(file)) {
@@ -104,8 +105,7 @@ public class ReceiptController {
 			System.out.println(newFile.getPath());
 			try {
 				byte[] bytes = file.getBytes();
-				BufferedOutputStream stream =
-						new BufferedOutputStream(new FileOutputStream(newFile));
+				BufferedOutputStream stream =  new BufferedOutputStream(new FileOutputStream(newFile));
 				stream.write(bytes);
 				stream.close();
 				saveReceiptRequest.setUserName(SecurityContextHolder.getContext().getAuthentication().getName());
@@ -113,12 +113,16 @@ public class ReceiptController {
 				saveReceiptRequest.setReceiptPath(newFile.getPath());
 				receiptService.saveReceipt(saveReceiptRequest);
 				System.out.println(saveReceiptRequest.toString());
-				return "You successfully uploaded " + file.getOriginalFilename() + "!";
+//				return "You successfully uploaded " + file.getOriginalFilename() + "!";
+				response.put("receiptId", extrlRequestId);
+				return om.writeValueAsString(response);
 			} catch (Exception e) {
-				return "You failed to upload " + file.getOriginalFilename() + " => " + e.getMessage();
+				e.printStackTrace();
+				return "{'error':'upload " + file.getOriginalFilename() + " fail, " + e.getMessage() + "'}";
 			}
 		} else {
-			return "You failed to upload " + file.getOriginalFilename() + " because the file was empty.";
+			logger.error("File empty");
+			return "{'error':'upload " + file.getOriginalFilename() + ".File was empty.";
 		}
 	}
 
