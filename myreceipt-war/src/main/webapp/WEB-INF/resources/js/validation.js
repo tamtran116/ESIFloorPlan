@@ -31,7 +31,7 @@ $(document).ready(function() {
     $('[data-toggle="popover"]').popover(popOverOptions);
 
     // init input jquery objects
-    var unInp = $('#user-name-inp'),
+    var unInp = $('#username-inp'),
         pwInp = $('#password-inp'),
         fnInp = $('#first-name-inp'),
         lnInp = $('#last-name-inp'),
@@ -39,14 +39,19 @@ $(document).ready(function() {
         emInp = $('#email-inp'),
         confEmInp = $('#email-confirm-inp');
 
-    fnInp.validateFormInput("First Name", true, 0, 10, "^[a-zA-Z ]*$");
-    lnInp.validateFormInput("Last Name", true, 0, 10, "^[a-zA-Z ]*$");
-    phInp.mask('(000) 000-0000').validateFormInput("Phone Number", true, 0, 14, phoneRegex);
-    emInp.validateFormInput("Email", true, 0, 50, emailRegex);
-    confEmInp.validateFormInput("Email Confirm",true, 0, 50, emailRegex, emInp);
-    unInp.validateFormInput("User Name", true, 0, 20, alphaNumericRegex);
-    //pwInp.validateFormInput("Password", true, 0, 0, null);
+    fnInp.bindInputValidation("First Name", true, 0, 10, "^[a-zA-Z ]*$");
+    lnInp.bindInputValidation("Last Name", true, 0, 10, "^[a-zA-Z ]*$");
+    phInp.bindInputValidation("Phone Number", true, 0, 14, phoneRegex);
+    emInp.bindInputValidation("Email", true, 0, 50, emailRegex);
+    confEmInp.bindInputValidation("Email Confirm",true, 0, 50, emailRegex, emInp);
+    unInp.bindInputValidation("User Name", true, 0, 20, alphaNumericRegex);
+    //pwInp.bindInputValidation("Password", true, 0, 0, null);
     pwInp.strengthenPassword(6, true, true);
+    $('#test-form').submit(function(e) {
+        var message = validateInput($('#username-inp')[0], "User Name", true, 0, 20, alphaNumericRegex);
+        console.log(message);
+        return (message.indexOf(" is valid.") > 0);
+    })
 });
 $.fn.strengthenPassword = function (minLength, specialChar, capitalChar) {
     var warningList = $('<ul>', {
@@ -80,39 +85,50 @@ $.fn.strengthenPassword = function (minLength, specialChar, capitalChar) {
     });
 };
 
-$.fn.validateFormInput = function (source, required, minLength, maxLength, pattern, targetInp) {
+$.fn.bindInputValidation = function (source, required, minLength, maxLength, pattern, targetInp) {
     var consoleMessage;
+    if(this.length < 1) {
+        console.log("Element " + source + " not existed.");
+        return;
+    }
     this.on('focusout', function () {
-        console.log(consoleMessage);
+        if(consoleMessage) {
+            console.log(consoleMessage);
+        }
+        
     });
     this.on('keyup', function (e) {
         var code = (e.keyCode || e.which);
         // do nothing if it's an arrow key or tab
         if(code == 37 || code == 38 || code == 39 || code == 40 || code == 9) {
             return;
-        }
-        var valid = false,
-            inpValue = this.value,
-            length = inpValue.length,
-            status = source.toLowerCase().replace(' ','-') + "-inp-status";
-
-        if (required && !inpValue) {
-            consoleMessage = "Missing required input " + source;
-        } else if (targetInp && inpValue !== targetInp.val()) {
-            consoleMessage = source + " not matched its source.";
-        } else if (maxLength > 0 && length > maxLength) {
-            consoleMessage = source + " has more than " + (length - maxLength) + " characters allowed.";
-        } else if (minLength && length < minLength) {
-            consoleMessage = source + " needs more " + (minLength - length) + " characters.";
-        } else if (pattern && !new RegExp(pattern).test(inpValue)) {
-            consoleMessage = "Invalid value \"" + inpValue + "\" for " + source;
-        } else {
-            consoleMessage = source + " is valid.";
-            valid = true;
-        }
-        $(this).populatePopover(valid, consoleMessage);
+        }          
+        consoleMessage = validateInput(this, source, required, minLength, maxLength, pattern, targetInp);
     });
 };
+function validateInput (jsObject, source, required, minLength, maxLength, pattern, targetInp) {
+    var message,
+        valid=false,
+        inpValue = jsObject.value,
+        length = inpValue.length,
+        status = source.toLowerCase().replace(' ','-') + "-inp-status";
+    if (required && !inpValue) {
+        message = "Missing required input " + source;
+    } else if (targetInp && inpValue !== targetInp.val()) {
+        message = source + " not matched its source.";
+    } else if (maxLength > 0 && length > maxLength) {
+        message = source + " has more than " + (length - maxLength) + " characters allowed.";
+    } else if (minLength && length < minLength) {
+        message = source + " needs more " + (minLength - length) + " characters.";
+    } else if (pattern && !new RegExp(pattern).test(inpValue)) {
+        message = "Invalid value \"" + inpValue + "\" for " + source;
+    } else {
+        message = source + " is valid.";
+        valid=true;
+    }
+    $(jsObject).populatePopover(valid, message);
+    return message;
+}
 $.fn.populatePopover = function (valid, message) {
     var $element = this;
     var $parent = $element.parent();
@@ -134,4 +150,3 @@ $.fn.populatePopover = function (valid, message) {
         $parent.append('<span id="' + status + '" class="sr-only">(warning)</span>');
     }
 };
-
