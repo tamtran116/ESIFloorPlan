@@ -56,25 +56,30 @@ public class ReceiptServiceImpl implements ReceiptService {
     public List<ReceiptResource> getReceipts(String userName) {
         List<ReceiptResource> receiptResources = new ArrayList<ReceiptResource>();
         for(ReceiptDO receiptDO : receiptDao.getReceiptByUserName(userName)) {
-            ReceiptResource receiptResource = new ReceiptResource();
-            receiptResource.setReceiptId(receiptDO.getExtendReceiptId());
-            receiptResource.setPlaceName(receiptDO.getPlaceName());
-            receiptResource.setPlaceLocation(receiptDO.getPlaceLocation());
-            receiptResource.setReceiptTotal(receiptDO.getReceiptTotal());
-            receiptResource.setReceiptPath(receiptDO.getReceiptPath());
-            File f = new File(receiptDO.getReceiptPath());
-            if(!f.exists()){
-                logger.error("scanned receipt missing for receipt {} with path {}",receiptDO.getExtendReceiptId(),receiptDO.getReceiptPath());
-                receiptResource.setReceiptPath("Not found");
-            }
-            if (null != receiptDO.getReceiptDate()) {
-//                receiptResource.setReceiptDateTime(DateFormatUtils.ISO_DATETIME_FORMAT.format(receiptDO.getReceiptDate()));
-                receiptResource.setReceiptDateTime(String.valueOf(receiptDO.getReceiptDate().getTime()));
-            }
-            receiptResource.setItems(receiptDO.getProcessedReceiptData());
+            ReceiptResource receiptResource = mapReceiptDOToReceiptResource(receiptDO);
             receiptResources.add(receiptResource);
         }
         return receiptResources;
+    }
+
+    private ReceiptResource mapReceiptDOToReceiptResource(ReceiptDO receiptDO) {
+        ReceiptResource receiptResource = new ReceiptResource();
+        receiptResource.setReceiptId(receiptDO.getExtendReceiptId());
+        receiptResource.setPlaceName(receiptDO.getPlaceName());
+        receiptResource.setPlaceLocation(receiptDO.getPlaceLocation());
+        receiptResource.setReceiptTotal(receiptDO.getReceiptTotal());
+        receiptResource.setReceiptPath(receiptDO.getReceiptPath());
+        File f = new File(receiptDO.getReceiptPath());
+        if(!f.exists()){
+//            logger.error("scanned receipt missing for receipt {} with path {}",receiptDO.getExtendReceiptId(),receiptDO.getReceiptPath());
+            receiptResource.setReceiptPath("Not found");
+        }
+        if (null != receiptDO.getReceiptDate()) {
+//                receiptResource.setReceiptDateTime(DateFormatUtils.ISO_DATETIME_FORMAT.format(receiptDO.getReceiptDate()));
+            receiptResource.setReceiptDateTime(String.valueOf(receiptDO.getReceiptDate().getTime()));
+        }
+        receiptResource.setItems(receiptDO.getProcessedReceiptData());
+        return receiptResource;
     }
 
     public void deleteReceipts(DeleteReceiptRequest deleteReceiptRequest) {
@@ -92,5 +97,11 @@ public class ReceiptServiceImpl implements ReceiptService {
         ReceiptDO receiptDo = receiptDao.getReceiptByExtId(receiptItems.getReceiptId());
         receiptDo.setProcessedReceiptData(receiptItems.getReceiptItems());
         receiptDao.updateReceipt(receiptDo);
+    }
+
+    @Override
+    public ReceiptResource getReceipt(String receiptId) {
+        ReceiptDO receiptDO = receiptDao.getReceiptByExtId(receiptId);
+        return mapReceiptDOToReceiptResource(receiptDO);
     }
 }

@@ -4,20 +4,30 @@ import com.tamtran.myreceipt.business.services.CubeService;
 import com.tamtran.myreceipt.business.services.FloorService;
 import com.tamtran.myreceipt.business.services.RequestService;
 import com.tamtran.myreceipt.business.services.UserService;
+import com.tamtran.myreceipt.common.model.UserRegisterRequest;
 import com.tamtran.myreceipt.data.domain.CubeDO;
 import com.tamtran.myreceipt.data.domain.FloorDO;
 import com.tamtran.myreceipt.data.domain.RequestDO;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,21 +40,21 @@ import com.google.zxing.qrcode.QRCodeWriter;*/
 
 @Controller
 public class FloorplanController {
-	
+	private static final Logger logger = LogManager.getLogger();
+	private static final String ROLE_ADMIN = "ROLE_ADMIN";
+	private static final String ROLE_PREMIUM_USER = "ROLE_PREMIUM";
+
 	@Autowired
     private CubeService cubeService;
-	
 	@Autowired
 	private FloorService floorService;
-	
 	@Autowired
 	private RequestService requesService;
-
 	@Autowired
 	private UserService userService;
 	
 	private Set<String> roles;
-	private String ERROR = "you don't have enough power to do this, please practice more";
+	private static final String ERROR = "you don't have enough power to do this, please practice more";
 	private String floorUrl;
 	private int floorId;
 	private CubeDO currentCubeDO;
@@ -63,9 +73,8 @@ public class FloorplanController {
 	
     @RequestMapping(value = {"/"}, method = {RequestMethod.GET, RequestMethod.HEAD})
     public ModelAndView homePage() {
-		System.out.println("Going to root context");
 		ModelAndView mov = new ModelAndView("home");
-		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		String userName = SecurityContextHolder.getContext().getAuthentication().getName();
 		String text = "98376373783"; // this is the text that we want to encode
 		int width = 400;
 		int height = 300; // change the height and width as per your requirement
@@ -85,17 +94,72 @@ public class FloorplanController {
 //			e.printStackTrace();
 //		}
 
-		if (!"anonymousUser".equals(username)) {
-			mov.addObject("username", username);
+		if (!"anonymousUser".equals(userName)) {
+			logger.info("User log in : " + userName);
+			mov.addObject("userName", userName);
+			if (isRole(ROLE_ADMIN) || isRole(ROLE_PREMIUM_USER)) {
+				mov.addObject("role", "premium");
+			} else {
+				mov.addObject("role", "regular");
+			}
 		}
 		return mov;
     }
 
-    @RequestMapping(value="/floor" , method={RequestMethod.GET, RequestMethod.HEAD})
+	private boolean isRole(String role) {
+		Set<String> authorities = AuthorityUtils
+				.authorityListToSet(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+		return authorities.contains(role);
+	}
+	@RequestMapping(value = "/", method = RequestMethod.POST)
+	public ModelAndView registerUser(@ModelAttribute("userRegisterRequest") @Valid UserRegisterRequest userRegisterRequest, BindingResult bindingResult) {
+		logger.info("registering user {}", userRegisterRequest);
+		String successMsg;
+		String errorMsg;
+		ModelAndView mov = new ModelAndView("home");
+		if (bindingResult.hasErrors()) {
+			errorMsg = "";
+			for(FieldError fieldError : bindingResult.getFieldErrors()) {
+				errorMsg += "<p>Error in <strong>" + fieldError.getField()+ "</strong>, " + fieldError.getDefaultMessage() + "</p>";
+				mov.addObject("errorMsg", errorMsg);
+			}
+			logger.info("register errors = {}", errorMsg);
+		} else if (isValidRecaptcha(userRegisterRequest.getRecaptcha())){
+			if (null == userService.getUser(userRegisterRequest.getUserName())) {
+				userService.createUser(userRegisterRequest);
+				logger.info("end registering");
+				successMsg = "Register successful";
+				mov.addObject("successMsg", successMsg);
+			} else {
+				errorMsg = "<p>sorry that your username is taken. Please choose another one...</p>";
+				mov.addObject("errorMsg", errorMsg);
+			}
+		} else {
+			errorMsg = "<p>recaptcha validation failed</p>";
+			mov.addObject("errorMsg", errorMsg);
+		}
+		return mov;
+	}
+
+	private boolean isValidRecaptcha(String recaptcha) {
+		logger.info("recaptcha value = " + recaptcha);
+		String url = "https://www.google.com/recaptcha/api/siteverify";
+		RestTemplate restTemplate = new RestTemplate();
+		MultiValueMap<String, String> request = new LinkedMultiValueMap<String, String>();
+		request.add("secret", "6Ld-wxwTAAAAAH19N3D1eIPIJ6roE9kBrcWg3CCg");
+		request.add("response", recaptcha);
+		request.add("remoteip", "24.207.141.67");
+		Map<String, Object> gResponse = restTemplate.postForObject(url, request, Map.class);
+		logger.info("status = " + String.valueOf(gResponse.get("success")));
+		logger.info("error-codes = " + String.valueOf(gResponse.get("error-codes")));
+		return (String.valueOf(gResponse.get("success")).equalsIgnoreCase("true"));
+	}
+
+	@RequestMapping(value="/floor" , method={RequestMethod.GET, RequestMethod.HEAD})
 	 public String getUploadForm( @RequestParam int floorId, Map<String, Object> map ) {
 		this.floorUrl = floorService.getFloorInfo(floorId).getFilePath();
 		this.floorId = floorId;
-		System.out.println("floorUrl " + floorUrl);
+		logger.info("floorUrl " + floorUrl);
 		return "redirect:list";
 	}
 
@@ -132,8 +196,9 @@ public class FloorplanController {
 		
 		return mov;
 	}
-	
-	@RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.HEAD})
+
+	//TODO: error handling need a look
+	/*@RequestMapping(value = "/error", method = {RequestMethod.GET, RequestMethod.HEAD})
 	public ModelAndView error(Map<String, Object> map){
 		ModelAndView mov = new ModelAndView("floor");
     	roles = AuthorityUtils
@@ -152,7 +217,7 @@ public class FloorplanController {
     		mov.addObject("updateCube", updateCubeDO);
     	};
 		return mov;
-	}
+	}*/
 
 	@RequestMapping(value = "/addCube", method = RequestMethod.POST)
     public String addCube(@ModelAttribute("cube") @Valid CubeDO cubeDO, BindingResult result, Model m) {
@@ -208,8 +273,8 @@ public class FloorplanController {
     @RequestMapping(value="/updateCube", method={RequestMethod.GET, RequestMethod.HEAD})
     public String edit(@RequestParam("id")String id) {
     	updateCubeDO = cubeService.getCubeInfo(id);
-    	System.out.println("Get cube for update , cube id = " + id);
-    	System.out.println("CubeDO from view "+ currentCubeDO);
+    	logger.info("Get cube for update , cube id = " + id);
+    	logger.info("CubeDO from view "+ currentCubeDO);
     	return "redirect:/list";
     }
     
@@ -228,9 +293,9 @@ public class FloorplanController {
     public String updateCube(@RequestParam("swap-one")String cube1_id, @RequestParam("swap-two")String cube2_id) {
 		CubeDO cubeDO1 = cubeService.getCubeInfo(cube1_id);
 		CubeDO cubeDO2 = cubeService.getCubeInfo(cube2_id);
-		System.out.println("before swap");
-		System.out.println(cubeDO1);
-		System.out.println(cubeDO2);
+		logger.info("before swap");
+		logger.info(cubeDO1);
+		logger.info(cubeDO2);
 		
 		String nswap1 = cubeDO2.getEmployee_name();
 		String nswap2 = cubeDO1.getEmployee_name();
@@ -248,9 +313,9 @@ public class FloorplanController {
 		
 		cubeService.updateCube(cubeDO1);
 		cubeService.updateCube(cubeDO2);
-		System.out.println("after swap");
-		System.out.println(cubeDO1);
-		System.out.println(cubeDO2);
+		logger.info("after swap");
+		logger.info(cubeDO1);
+		logger.info(cubeDO2);
 		return "redirect:/list";
     }
     

@@ -2,8 +2,12 @@ package com.tamtran.myreceipt.web.controller;
 
 import com.tamtran.myreceipt.business.services.FloorService;
 import com.tamtran.myreceipt.common.model.FileUpload;
+import com.tamtran.myreceipt.common.utils.OSValidator;
+import com.tamtran.myreceipt.common.utils.ReceiptConstants;
 import com.tamtran.myreceipt.data.domain.FloorDO;
 import com.tamtran.myreceipt.web.validator.FileUploadValidator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,37 +23,11 @@ import java.io.*;
 @Controller
 public class FileUploadController {
 
-    private static String OS = System.getProperty("os.name").toLowerCase();
-
+    private static final Logger logger = LogManager.getLogger();
     @Autowired
     FileUploadValidator fileValidator;
-
     @Autowired
     private FloorService floorService;
-
-   /* @RequestMapping(value = "/upload", method = RequestMethod.GET)
-    public @ResponseBody String provideUploadInfo() {
-        return "You can upload a file by posting to this same URL";
-    }
-
-    @RequestMapping(value="/upload", method=RequestMethod.POST)
-    public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
-                                                 @RequestParam("file") MultipartFile file){
-        if (!file.isEmpty()) {
-            try {
-                byte[] bytes = file.getBytes();
-                BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(new File(name)));
-                stream.write(bytes);
-                stream.close();
-                return "You successfully uploaded " + name + "!";
-            } catch (Exception e) {
-                return "You failed to upload " + name + " => " + e.getMessage();
-            }
-        } else {
-            return "You failed to upload " + name + " because the file was empty.";
-        }
-    }*/
 
     @RequestMapping(value="/uploadfloor", method=RequestMethod.GET)
     public String getUploadForm(Model model) {
@@ -62,9 +40,8 @@ public class FileUploadController {
     @RequestMapping(value="/uploadfloor", method=RequestMethod.POST)
     public String fileUploaded(@RequestParam("file") MultipartFile file,
                                @ModelAttribute("uploadFloorInfo") FileUpload uploadFloorInfo, HttpServletRequest request, Model model, BindingResult result) {
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
         fileValidator.validate(uploadFloorInfo, result);
+        
         FloorDO floorDO = new FloorDO();
         floorDO.setFloorName(uploadFloorInfo.getFloorName());
         floorDO.setFloorLocation(uploadFloorInfo.getFloorLocation());
@@ -74,29 +51,23 @@ public class FileUploadController {
         if (result.hasErrors()) {
             return "uploadForm";
         }
-
         try {
-            inputStream = file.getInputStream();
             String relativeWebPath = "/WEB-INF/resources/uploaded";
             String absoluteFilePath = request.getSession().getServletContext().getRealPath(relativeWebPath);
             File newFile = null;
-            if (OS.contains("win")) {
-                // The Double Backslash "\\" is applied because of window path for localhost server
-                newFile = new File(absoluteFilePath+"\\"+fileName);
-            } else if (OS.contains("nix") || OS.contains("nux") || OS.contains("aix")) {
-                newFile = new File(absoluteFilePath+"/"+fileName);
+            if (OSValidator.isWindows()) {
+                newFile = new File(absoluteFilePath + "\\" + fileName);
+            } else if (OSValidator.isUnix()) {
+                newFile = new File(absoluteFilePath + "/" + fileName);
             }
-
             if (null!= newFile && !newFile.exists() && newFile.createNewFile()) {
-                floorDO.setFilePath("/uploaded/" +fileName);
-                System.out.println(floorDO.toString());
+                floorDO.setFilePath("resources/uploaded/" +fileName);
+                logger.info("adding floor:" + floorDO.toString());
                 floorService.addFloor(floorDO);
-            }
-            outputStream = new FileOutputStream(newFile);
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = inputStream.read(bytes)) != -1) {
-                outputStream.write(bytes, 0, read);
+                byte[] bytes = file.getBytes();
+                BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(newFile));
+                stream.write(bytes);
+                stream.close();
             }
         } catch (IOException e) {
         // TODO Auto-generated catch block
@@ -109,8 +80,9 @@ public class FileUploadController {
     }
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<String> handleIOException(HttpRequestMethodNotSupportedException ex) {
+        ex.printStackTrace();
         // prepare responseEntity
-        System.out.println(ex.getMessage());
+        logger.info(ex.getMessage());
         return null;
     }
 

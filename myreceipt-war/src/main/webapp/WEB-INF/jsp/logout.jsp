@@ -33,9 +33,7 @@ function delayedRedirect(){
 </head>
 <body onLoad="setTimeout('delayedRedirect()', 3000)">
 <div style="width:60%; margin:0px auto; text-align: center;">
-<img src="resources/images/ExpressScripts-logo1.jpg"/>
-<img src="resources/images/floorplan_icon.png"/><br/><br/>
-<h1>Logging out</h1>
+<h1>Logging you out. Have a good one :)</h1>
 <h2>You'll be redirected soon!</h2> <p>Or click the button to go back now</p>
 <a id="back-btn" href="${pageContext.request.contextPath}/">Back</a>
 </div>

@@ -28,8 +28,7 @@ public class UserController {
 
 	//Spring Security see this :
 	@RequestMapping(value = "/home",  method = {RequestMethod.GET, RequestMethod.HEAD})
-	public ModelAndView login(
-			@RequestParam(value = "error", required = false) String error) {
+	public ModelAndView login( @RequestParam(value = "error", required = false) String error) {
 
 		ModelAndView model = new ModelAndView();
 		if (error != null) {
@@ -60,7 +59,6 @@ public class UserController {
 	public String registerUser(@ModelAttribute("userRegisterRequest") @Valid UserRegisterRequest userRegisterRequest) {
 		//TODO: server side validation
 		userService.createUser(userRegisterRequest);
-
 		return null;
 	}
 

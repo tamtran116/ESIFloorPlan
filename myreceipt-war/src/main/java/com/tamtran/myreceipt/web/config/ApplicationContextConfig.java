@@ -13,6 +13,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -61,8 +62,7 @@ public class ApplicationContextConfig extends WebMvcConfigurerAdapter {
     @Autowired
     @Bean(name = "transactionManager")
     public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory) {
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager(sessionFactory);
-        return transactionManager;
+        return new HibernateTransactionManager(sessionFactory);
     }
     @Bean(name = "viewResolver")
     public InternalResourceViewResolver jspViewResolver() {
@@ -83,6 +83,15 @@ public class ApplicationContextConfig extends WebMvcConfigurerAdapter {
         CommonsMultipartResolver resolver = new CommonsMultipartResolver();
         resolver.setDefaultEncoding("utf-8");
         return resolver;
+    }
+
+    @Bean
+    public ThreadPoolTaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor pool = new ThreadPoolTaskExecutor();
+        pool.setCorePoolSize(5);
+        pool.setMaxPoolSize(10);
+        pool.setWaitForTasksToCompleteOnShutdown(true);
+        return pool;
     }
 
     @Override

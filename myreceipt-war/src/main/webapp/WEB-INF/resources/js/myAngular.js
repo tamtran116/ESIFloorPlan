@@ -9,11 +9,11 @@ var myApp = angular.module('myApp', [
 myApp.config(['$routeProvider', function ($routeProvider) {
     $routeProvider.
         when('/list', {
-            templateUrl: 'resources/template/placelist.html',
+            templateUrl: 'resources/template/place-list.html',
             controller: 'ListController'
         }).
         when('/place/:placeId', {
-            templateUrl: 'resources/template/placeDetail.html',
+            templateUrl: 'resources/template/place-detail.html',
             controller: 'DetailController'
         }).
         when('/search', {
@@ -21,22 +21,16 @@ myApp.config(['$routeProvider', function ($routeProvider) {
             controller: 'SearchController'
         }).
         when('/receipts', {
-            templateUrl: 'resources/template/receipts.html',
+            templateUrl: 'resources/template/receipt-list.html',
             controller: 'ListReceiptController'
         }).
         when('/add', {
             templateUrl: 'resources/template/add.html',
             controller: 'ListController'
         }).
-        when('/saveRequest', {
-            templateUrl: 'resources/template/saverequest.html'
-        }).
-        when('/userProfile', {
-            templateUrl: 'resources/template/userprofile.html'
-        }).
         when('/item/:receiptId', {
-            templateUrl: 'resources/template/receipt-items.html',
-        controller: 'ItemController'
+            templateUrl: 'resources/template/receipt-item.html',
+            controller: 'ItemController'
         }).
         otherwise({
             redirectTo: '/receipts'

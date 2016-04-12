@@ -37,21 +37,74 @@ $(document).ready(function() {
         lnInp = $('#last-name-inp'),
         phInp = $("#phone-number-inp"),
         emInp = $('#email-inp'),
-        confEmInp = $('#email-confirm-inp');
+        // emConfirm = $('#email-confirm-inp'),
+        registerForm = $('#register-form'),
+        registerBtn = $('#register-btn'),
+        resetBtn = $('#reset-btn');
 
     fnInp.bindInputValidation("First Name", true, 0, 10, "^[a-zA-Z ]*$");
     lnInp.bindInputValidation("Last Name", true, 0, 10, "^[a-zA-Z ]*$");
     phInp.bindInputValidation("Phone Number", true, 0, 14, phoneRegex);
     emInp.bindInputValidation("Email", true, 0, 50, emailRegex);
-    confEmInp.bindInputValidation("Email Confirm",true, 0, 50, emailRegex, emInp);
+    // emConfirm.bindInputValidation("Email Confirm",true, 0, 50, emailRegex, emInp);
     unInp.bindInputValidation("User Name", true, 0, 20, alphaNumericRegex);
     //pwInp.bindInputValidation("Password", true, 0, 0, null);
     pwInp.strengthenPassword(6, true, true);
-    $('#test-form').submit(function(e) {
-        var message = validateInput($('#username-inp')[0], "User Name", true, 0, 20, alphaNumericRegex);
-        console.log(message);
-        return (message.indexOf(" is valid.") > 0);
-    })
+    registerForm.change(function (e) {
+        registerBtn.prop("disabled", false);
+        e.preventDefault();
+    });
+    registerBtn.click(function (e) {
+        registerForm.submit();
+        e.preventDefault();
+    });
+    resetBtn.click(function (e) {
+        registerForm.find('span').remove();
+        registerForm.find('.has-success').toggleClass("has-success", false);
+        registerForm.find('.has-feedback').toggleClass("has-feedback", false);
+        registerForm.find('.has-error').toggleClass("has-error", false);
+        document.getElementById("register-form").reset();
+        e.preventDefault();
+    });
+    registerForm.submit(function(e) {
+        e.preventDefault();
+        var valid = true, gRecaptcha = $('#g-recaptcha-response');
+        validateInput($('#first-name-inp')[0], "First Name", true, 0, 10, "^[a-zA-Z ]*$");
+        validateInput($('#last-name-inp')[0], "Last Name", true, 0, 10, "^[a-zA-Z ]*$");
+        validateInput($('#phone-number-inp')[0], "Phone Number", true, 0, 14, phoneRegex);
+        validateInput($('#email-inp')[0], "Email", true, 0, 50, emailRegex);
+        // validateInput($('#email-confirm-inp')[0], "Email Confirm",true, 0, 50, emailRegex, emInp);
+        validateInput($('#username-inp')[0], "User Name", true, 0, 20, alphaNumericRegex);
+        validateInput($('#password-inp')[0], "Password", true, 0, 0, null);
+        for (var i = 0; i < registerForm.find('input').length; i++) {
+            if($('input')[i].getAttribute("data-valid") === "false") {
+                valid = false;
+                break;
+            }
+        }
+        if (!gRecaptcha ||  gRecaptcha.val().length == 0 ) {
+            alert("Please check recaptcha box");
+            return false;
+        } else if(valid){
+            var $form = $( this ),url = $form.attr( "action" ), 
+                gResponseInp = $('<input>', {
+                    'type':'hidden',
+                    'name':'recaptcha',
+                    'value':gRecaptcha.val()
+                });
+            $form.append(gResponseInp);
+            var posting = $.post( url, $form.serialize() );
+            posting.done(function( data ) {
+                console.log(data);
+                var content = $( data ).find( "#form-msg" ).html();
+                $( "#form-msg" ).empty().append( content );
+            });
+        } else {
+            return valid;
+        }
+    });
+    
+    
 });
 $.fn.strengthenPassword = function (minLength, specialChar, capitalChar) {
     var warningList = $('<ul>', {
@@ -69,6 +122,7 @@ $.fn.strengthenPassword = function (minLength, specialChar, capitalChar) {
             $parent = $(this).parent();
 
         warningList.empty();
+        $parent.find('span').remove();
         if(minLength && length < minLength) {
             warningList.append('<li style="color: #b6434f;"><span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span> Password is less than min length.</li>');
         }
@@ -82,6 +136,14 @@ $.fn.strengthenPassword = function (minLength, specialChar, capitalChar) {
         //$parent.popover('show');
         $parent.append(warningList);
         //console.log(list);
+        if(warningList.find('li').length == 0) {
+            $parent.attr('data-content', "");
+            $parent.popover('hide');
+            $parent.toggleClass("has-success has-feedback", true);
+            $parent.toggleClass("has-error", false);
+            $parent.append('<span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>');
+            $parent.append('<span id="' + status + '" class="sr-only">(success)</span>');
+        }
     });
 };
 
@@ -95,14 +157,17 @@ $.fn.bindInputValidation = function (source, required, minLength, maxLength, pat
         if(consoleMessage) {
             console.log(consoleMessage);
         }
-        
+
     });
     this.on('keyup', function (e) {
         var code = (e.keyCode || e.which);
         // do nothing if it's an arrow key or tab
         if(code == 37 || code == 38 || code == 39 || code == 40 || code == 9) {
             return;
-        }          
+        }
+        consoleMessage = validateInput(this, source, required, minLength, maxLength, pattern, targetInp);
+    });
+    this.change(function (e) {
         consoleMessage = validateInput(this, source, required, minLength, maxLength, pattern, targetInp);
     });
 };
@@ -112,6 +177,7 @@ function validateInput (jsObject, source, required, minLength, maxLength, patter
         inpValue = jsObject.value,
         length = inpValue.length,
         status = source.toLowerCase().replace(' ','-') + "-inp-status";
+    $(jsObject).attr("data-valid", "false");
     if (required && !inpValue) {
         message = "Missing required input " + source;
     } else if (targetInp && inpValue !== targetInp.val()) {
@@ -125,6 +191,7 @@ function validateInput (jsObject, source, required, minLength, maxLength, patter
     } else {
         message = source + " is valid.";
         valid=true;
+        $(jsObject).attr("data-valid", "true");
     }
     $(jsObject).populatePopover(valid, message);
     return message;

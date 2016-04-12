@@ -55,7 +55,7 @@ div#img-wrapper {
 	height:100%;
 	overflow:auto;
 }	
-.cube-open {
+.cubeDO-open {
 	display: table; 
 	background-color:rgba(22,114,209,1);
 	position:absolute;
@@ -65,13 +65,13 @@ div#img-wrapper {
 	border:1px solid white;
 }
 
-.cube-open p , .cube-close p {
+.cubeDO-open p , .cubeDO-close p {
 	display: table-cell; 
 	vertical-align: middle; 
 	text-align: center; 
 }
 
-.cube-close{
+.cubeDO-close{
 	display: table; 
 	background-color:red;
 	position:absolute;
@@ -158,7 +158,7 @@ div#commands {
 .hidden {
 	display:none;
 }
-.cube-selected {
+.cubeDO-selected {
 	background-color: green !important;
 }
 #accordion-user {

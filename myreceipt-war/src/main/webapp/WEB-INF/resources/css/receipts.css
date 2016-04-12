@@ -1,0 +1,22 @@
+body {
+    padding-top: 70px;
+}
+
+input[type='checkbox'] {
+    width: 1em;
+    height: 1em;
+}
+
+#deleteForm td.custom-checkbox {
+    width: 1px;
+    white-space: nowrap;
+}
+#deleteForm td:hover {
+    cursor: pointer;
+}
+@media (max-width: 768px) {
+    .no-phone {
+        display:none;
+    }
+}
+

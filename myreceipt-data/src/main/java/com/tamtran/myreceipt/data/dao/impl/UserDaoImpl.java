@@ -28,7 +28,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public UserInfoDO getUserInfoByUserName(String username) {
         UsersDO usersDO = (UsersDO) sessionFactory.getCurrentSession().createCriteria(UsersDO.class).add(Restrictions.eq("username", username)).uniqueResult();
-        return usersDO.getUserInfoDO();
+        return (null != usersDO ? usersDO.getUserInfoDO() : null);
     }
 
     @Override

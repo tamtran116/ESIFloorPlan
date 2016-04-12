@@ -28,8 +28,13 @@ public class MyUserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         UsersDO usersDO = userDAO.findByUserName(userName);
-        List<GrantedAuthority> authorities = buildUserAuthority(usersDO.getAuthority());
-        return buildUserForAuthentication(usersDO, authorities);
+        if (null != usersDO) {
+            List<GrantedAuthority> authorities = buildUserAuthority(usersDO.getAuthority());
+            return buildUserForAuthentication(usersDO, authorities);
+        } else {
+            throw new UsernameNotFoundException(userName + " not found");
+        }
+
     }
 
     private List<GrantedAuthority> buildUserAuthority(Set<Authority> authorities) {

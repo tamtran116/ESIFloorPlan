@@ -14,6 +14,8 @@ public interface ReceiptService {
 
     List<ReceiptResource> getReceipts(String userName) ;
 
+    ReceiptResource getReceipt(String receiptId);
+
     void deleteReceipts(DeleteReceiptRequest deleteReceiptRequest) ;
 
     void updateReceipt(ReceiptResource receiptResource) ;

@@ -2,12 +2,36 @@
     <h2 class="form-signin-heading">Please fill the form</h2>
 </div>
 <div style="margin-bottom: 1em;" id="saveFormContainer">
-    <form class="form-signin" id="saveForm" enctype="multipart/form-data" th:object="${saveReceiptRequest}"
+    <form class="form-signin" id="saveForm" enctype="multipart/form-data"
           method="post" ng-submit="submitAddReceipt()">
+        <div class="input-group">
+            <label for="formFile" class="sr-only">Upload File</label>
+            <input class="form-control" id="formFile" name="file" type="file"/>
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" ng-click="hidePreview()">Toggle preview <span class="glyphicon glyphicon-picture"></span></button>
+            </span>
+        </div>
+        <div class="form-group">
+            <input type="hidden" id="ios-inp" name="ios"  readonly />
+            <input type="hidden" id="x-inp" name="cropX"  readonly />
+            <input type="hidden" id="y-inp" name="cropY"  readonly />
+            <input type="hidden" id="x2-inp" name="cropX2"  readonly />
+            <input type="hidden" id="y2-inp" name="cropY2"  readonly />
+            <input type="hidden" id="h-inp" name="cropH"  readonly />
+            <input type="hidden" id="w-inp" name="cropW"  readonly />
+            <input type="hidden" id="o-inp" name="cropO"  readonly />
+            <input type="hidden" id="img-h-inp" name="imgH"  readonly />
+            <input type="hidden" id="img-w-inp" name="imgW"  readonly />
+        </div>
+        <!--<button ng-click="crop()">crop</button>-->
+        <!--<button ng-click="removeCrop()">remove crop</button>-->
+        <div class="thumbnail" ng-dblclick="hidePreview()">
+            <img id="previewImg" src=""/>
+        </div>
         <div class="form-group">
             <label for="placeId" class="sr-only">Place Id</label>
             <div class="input-group">
-                <input type="text" name="placeId" id="placeId" placeholder="place id" th:field="*{placeId}"
+                <input type="text" name="placeId" id="placeId" placeholder="place id"
                        class="form-control" ng-model="inputPlaceId" required="true" readonly="true"/>
                 <span class="input-group-btn">
                     <a class="btn btn-default" href="#/place/{{inputPlaceIndex}}">detail</a>
@@ -17,39 +41,39 @@
         </div>
         <div class="form-group">
             <label for="placeName" class="sr-only">Place Name</label>
-            <input type="text" name="placeName" id="placeName" placeholder="place name" th:field="*{placeName}"
+            <input type="text" name="placeName" id="placeName" placeholder="place name"
                    class="form-control" ng-model="inputPlaceName" required="true" readonly="true"/>
         </div>
         <div class="form-group">
             <label for="placeLocation" class="sr-only">Place location</label>
             <input type="text" name="placeLocation" id="placeLocation" placeholder="place location"
-                   th:field="*{placeLocation}" class="form-control" ng-model="inputPlaceVicinity" required="true"
+                   class="form-control" ng-model="inputPlaceVicinity" required="true"
                    readonly="true"/>
         </div>
         <div class="form-group">
             <label for="receiptTotal" class="sr-only">Receipt Total</label>
             <input type="number" name="receiptTotal" id="receiptTotal" placeholder="receipt total"
-                   th:field="*{receiptTotal}" class="form-control" aria-describedby="" required="true"/>
+                   class="form-control" aria-describedby="" required="true"/>
         </div>
         <div class="form-group">
             <label for="date" class="sr-only">Place location</label>
             <div class="input-group">
-                <input type="text" name="date" id="date" placeolder="YYYY-MM-DD HH:MI" th:field="*{date}"
+                <input type="text" name="date" id="date" placeolder="YYYY-MM-DD HH:MI"
                        class="form-control" aria-describedby="" required="true" ng-model="timestamp"/>
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="button" ng-click="getTimestamp()">Now!</button>
                 </span>
             </div><!-- /input-group -->
         </div>
-        <div class="form-group">
-            <label for="formFile" class="sr-only">Upload File</label>
-            <input id="formFile" name="file" type="file"/>
-        </div>
-        <input id="submit-receipt-btn" class="btn btn-lg btn-primary btn-block" name="submit" type="submit" value="submit"/>
+        <button id="submit-receipt-btn" class="btn btn-lg btn-primary btn-block" name="submit" type="submit">Submit</button>
     </form>
 </div>
-<button id="show-place-btn" class="btn btn-info btn-block" type="button" data-toggle="collapse" data-target="#collapseExample"
+<!--<button id="show-place-btn" class="btn btn-info btn-block" type="button" data-toggle="collapse" data-target="#collapseExample"
         aria-expanded="false" aria-controls="collapseExample" ng-click="showPlaces()">
+    show places
+</button>-->
+<button id="show-place-btn-modal" class="btn btn-info btn-block" type="button"
+        ng-click="showPlaces()">
     show places
 </button>
 <hr>
@@ -66,5 +90,34 @@
                 <strong>{{y.name}}</strong> <span class="pull-right">{{y.vicinity}}{{y.formatted_address}}</span></a>
         </div>
         <button ng-show="token" class="btn btn-default" ng-click="getNextPage()">next result</button>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="place-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Found <span class="badge">{{places.results.length}}</span> places <span ng-show="coordinate">near my location <!--<strong>({{coordinate}})</strong>--></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="well">
+                    <input type="search" class="form-control" placeholder="search by place name" ng-model="search">
+                    <br>
+                    <div class="list-group">
+                        <!--<a ng-repeat="y in places.results | filter:search" href="#/place/{{places.results.indexOf(y)}}" class="list-group-item clearfix"><img ng-src="{{y.icon}}" width="30px" height="30px"/> <strong>{{y.name}}</strong> <span class="pull-right">{{y.vicinity}}{{y.formatted_address}}</span></a>-->
+                        <a ng-repeat="y in places.results | filter:search" class="list-group-item clearfix"
+                           ng-click="putDetail(y.id, y.name, y.vicinity, places.results.indexOf(y))"><img ng-src="{{y.icon}}" width="30px" height="30px"/>
+                            <strong>{{y.name}}</strong> <span class="pull-right">{{y.vicinity}}{{y.formatted_address}}</span></a>
+                    </div>
+                    <button ng-show="token" class="btn btn-default" ng-click="getNextPage()">next result</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
     </div>
 </div>

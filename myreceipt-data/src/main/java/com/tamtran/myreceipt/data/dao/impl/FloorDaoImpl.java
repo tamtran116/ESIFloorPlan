@@ -5,6 +5,7 @@ import com.tamtran.myreceipt.data.dao.FloorDao;
 import com.tamtran.myreceipt.data.domain.CubeDO;
 import com.tamtran.myreceipt.data.domain.FloorDO;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,9 +43,9 @@ public class FloorDaoImpl extends BaseDao implements FloorDao {
 
 	}
 	
-	public FloorDO getFloorEntityById(int floor_id) {
-		FloorDO floor = (FloorDO) getSessionFactory().getCurrentSession().load(FloorDO.class, floor_id);
-		return floor;
+	public FloorDO getFloorEntityById(int floorId) {
+		return (FloorDO) getSessionFactory().getCurrentSession().createCriteria(FloorDO.class)
+				.add(Restrictions.eq("floorId", floorId)).uniqueResult();
 	}
 	
 	/*public List<FloorDO> getFloorEntitysByTeam(String team) {

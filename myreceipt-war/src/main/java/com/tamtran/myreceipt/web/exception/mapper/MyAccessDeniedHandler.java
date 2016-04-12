@@ -1,5 +1,7 @@
 package com.tamtran.myreceipt.web.exception.mapper;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.csrf.DefaultCsrfToken;
@@ -19,6 +21,8 @@ import java.util.List;
 @Component
 public class MyAccessDeniedHandler implements AccessDeniedHandler {
     private String errorPage;
+    private static final Logger logger = LogManager.getLogger();
+
 
     public MyAccessDeniedHandler() {
     }
@@ -48,47 +52,47 @@ public class MyAccessDeniedHandler implements AccessDeniedHandler {
         }
 
         String retval = stringBuilder.toString();
-        System.out.println(retval);
+        logger.info(retval);
 
 
-        System.out.println("<-------------------REQUEST HEADER------------------->");
+        logger.info("<-------------------REQUEST HEADER------------------->");
         List<String> headerNames = Collections.list(request.getHeaderNames());
         for (String headerName : headerNames) {
-            System.out.println(headerName + ":" + request.getHeader(headerName));
+            logger.info(headerName + ":" + request.getHeader(headerName));
         }
 
-        System.out.println("Arrived in custom access denied handler.");
+        logger.info("Arrived in custom access denied handler.");
         HttpSession session = request.getSession();
-        System.out.println("Session is " +session );
-        System.out.println("Session id = " + session.getId());
-        System.out.println("Session max interval="+session.getMaxInactiveInterval());
-        System.out.println("Session last used="+session.getLastAccessedTime());
-        System.out.println("Time now="+new Date().getTime());
+        logger.info("Session is " +session );
+        logger.info("Session id = " + session.getId());
+        logger.info("Session max interval="+session.getMaxInactiveInterval());
+        logger.info("Session last used="+session.getLastAccessedTime());
+        logger.info("Time now="+new Date().getTime());
 
-        System.out.println();
-        System.out.println("csrf:");
+        logger.info("\n");
+        logger.info("csrf:");
         Object csrf = request.getAttribute("_csrf");
 
         if (csrf==null) {
-            System.out.println("csrf is null");
+            logger.info("csrf is null");
         } else {
-            System.out.println(csrf.toString());
+            logger.info(csrf.toString());
             if (csrf instanceof DefaultCsrfToken) {
                 DefaultCsrfToken token = (DefaultCsrfToken) csrf;
-                System.out.println("Parm name " + token.getParameterName());
-                System.out.println("Token " + token.getToken());
+                logger.info("Parm name " + token.getParameterName());
+                logger.info("Token " + token.getToken());
             }
 
         }
-        System.out.println();
-        System.out.println("Request:");
-        System.out.println(request.toString());
-        System.out.println();
-        System.out.println("Response:");
-        System.out.println(response.toString());
-        System.out.println();
-        System.out.println("Exception:");
-        System.out.println(accessDeniedException.toString());
+        logger.info("\n");
+        logger.info("Request:");
+        logger.info(request.toString());
+        logger.info("\n");
+        logger.info("Response:");
+        logger.info(response.toString());
+        logger.info("\n");
+        logger.info("Exception:");
+        logger.info(accessDeniedException.toString());
 
         //do some business logic, then redirect to errorPage url
         response.sendRedirect(errorPage);

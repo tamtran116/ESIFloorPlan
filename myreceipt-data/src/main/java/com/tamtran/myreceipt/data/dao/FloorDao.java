@@ -15,6 +15,6 @@ public interface FloorDao {
 	
     List<FloorDO> listFloorEntity();
 	
-	FloorDO getFloorEntityById(int floor_id);
+	FloorDO getFloorEntityById(int floorId);
 	
 }

@@ -3,8 +3,8 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <body>
-<h1>HTTP Status 403 - Access is denied</h1>
+<h1>Oops, something went wrong :( </h1>
 <h2>${ex}</h2>
-<h2>${error}</h2>
+<p>Please contact administrator.</p>
 </body>
 </html>
